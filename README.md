@@ -1,6 +1,7 @@
 # dms
 Add the following code to tomcat server.xml
 
+```
 <GlobalNamingResources>
 <Resource
             name="jdbc/dms"
@@ -24,3 +25,4 @@ Add the following code to tomcat server.xml
             url="jdbc:mysql://localhost:3306/dms?allowMultiQueries=true"
         />
 </GlobalNamingResources>
+```
