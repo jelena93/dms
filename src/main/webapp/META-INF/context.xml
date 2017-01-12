@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/dms">
+  <ResourceLink global="jdbc/dms" name="jdbc/dms" type="javax.sql.DataSource"/>
+</Context>
