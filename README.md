@@ -1,4 +1,4 @@
-# dms
+# Document management system
 Add the following code to tomcat server.xml
 
 ```
