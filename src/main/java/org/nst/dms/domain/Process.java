@@ -6,6 +6,7 @@
 package org.nst.dms.domain;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,7 +14,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -38,12 +41,12 @@ public class Process implements Serializable {
     private Process parent;
     @Column(name = "primitive")
     private boolean primitive;
-    @JoinColumn(name = "input")
-    @ManyToOne
-    private Document input;
-    @JoinColumn(name = "output")
-    @ManyToOne
-    private Document output;
+    @OneToMany
+    @JoinTable(name = "input", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "document"))
+    private List<Document> input;
+    @OneToMany
+    @JoinTable(name = "output", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "document"))
+    private List<Document> output;
 
     public Process() { }
 
@@ -51,7 +54,7 @@ public class Process implements Serializable {
         this.id = id;
     }
 
-    public Process(Long id, String name, Process parent, boolean primitive, Document input, Document output) {
+    public Process(Long id, String name, Process parent, boolean primitive, List<Document> input, List<Document> output) {
         this.id = id;
         this.name = name;
         this.parent = parent;
@@ -84,16 +87,16 @@ public class Process implements Serializable {
     public void setPrimitive(boolean primitive) {
         this.primitive = primitive;
     }
-    public Document getInput() {
+    public List<Document> getInput() {
         return input;
     }
-    public void setInput(Document input) {
+    public void setInput(List<Document> input) {
         this.input = input;
     }
-    public Document getOutput() {
+    public List<Document> getOutput() {
         return output;
     }
-    public void setOutput(Document output) {
+    public void setOutput(List<Document> output) {
         this.output = output;
     }
     @Override
