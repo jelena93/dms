@@ -5,14 +5,15 @@
  */
 package org.nst.dms.service;
 
-import org.nst.dms.domain.User;
+import java.util.List;
+import org.nst.dms.domain.Company;
 
 /**
  *
- * @author Jelena
+ * @author Hachiko
  */
-public interface UserService {
-
-    User login(String username, String password);
-    User save(User user);
+public interface CompanyService {
+    List<Company> search(String name);
+    List<Company> findAll();
+    Company save(Company company);
 }

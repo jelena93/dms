@@ -5,14 +5,15 @@
  */
 package org.nst.dms.service;
 
-import org.nst.dms.domain.User;
+import java.util.List;
+import org.nst.dms.domain.Process;
 
 /**
  *
- * @author Jelena
+ * @author Hachiko
  */
-public interface UserService {
-
-    User login(String username, String password);
-    User save(User user);
+public interface ProcessService {
+    List<Process> search(String name);
+    List<Process> findAll();
+    Process save(Process process);
 }

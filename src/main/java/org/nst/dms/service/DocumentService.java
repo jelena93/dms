@@ -5,14 +5,12 @@
  */
 package org.nst.dms.service;
 
-import org.nst.dms.domain.User;
+import org.nst.dms.domain.Document;
 
 /**
  *
- * @author Jelena
+ * @author Hachiko
  */
-public interface UserService {
-
-    User login(String username, String password);
-    User save(User user);
+public interface DocumentService {
+    Document save(Document document);
 }
