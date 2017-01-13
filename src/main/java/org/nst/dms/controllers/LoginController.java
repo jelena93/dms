@@ -23,9 +23,9 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    @RequestMapping(path = "/add_document", method = RequestMethod.GET)
     public ModelAndView login() {
-        return new ModelAndView("login");
+        return new ModelAndView("add_document");
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)

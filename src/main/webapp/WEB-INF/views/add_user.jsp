@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Add Process</title>
+        <title>Add User</title>
         <jsp:include page = "menu.jsp" />
         <link href="resources/css/bootstrap.min.css" rel="stylesheet">
         <link href="resources/css/signin.css" rel="stylesheet">
@@ -17,16 +17,16 @@
         <script src="resources/js/bootstrap.min.js"></script>
     </head>
     <body>
-        <form class="form-signin" method="POST" action="/index.html">
+        <form class="form-signin" method="POST" action="save_user">
             <h2 class="form-signin-heading">Add New User</h2>
             <br>
-            <input type="text" name = "username" class="form-control" placeholder="Username"  required autofocus>
+            <input type="text" name = "username" class="form-control" placeholder="Username" required>
             <br>
-            <input type="password" name = "password" class="form-control" placeholder="Password"  required autofocus>
+            <input type="password" name = "password" class="form-control" placeholder="Password" required>
             <br>
-            <input type="text" name = "name" class="form-control" placeholder="Name"  required autofocus>
+            <input type="text" name = "name" class="form-control" placeholder="Name" required>
             <br>
-            <input type="text" name = "surname" class="form-control" placeholder="Surname"  required>
+            <input type="text" name = "surname" class="form-control" placeholder="Surname" required>
             <br>
             <div class="dropdown">
                 <button class="btn btn-default btn-lg dropdown-toggle form-control" type="button" data-toggle="dropdown">Choose Company...

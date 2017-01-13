@@ -17,15 +17,22 @@
             <div class="container-fluid">
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a href="add_user">Add user</a></li>
                         <!--bilo bi dobro da se dinamicki ubacuje kao u gwt-u-->
                         <!--vidi se za uploader-a-->
-                        <li><a href="#">Add document</a></li>
+                        <li><a href="add_document">Add document</a></li>
                         <!--vidi se za user-a i admina (admin dodaje company koja je prakticno proces)-->
-                        <li><a href="#">Add new process</a></li>
+                        <li><a href="add_process">Add new process</a></li>
                         <!--vidi se za admina-->
-                        <li><a href="#">Add user to company</a></li>
+                        <li><a href="add_company">Add company</a></li>
                         <!--vidi se za sve koji imaju vise od jedne role-->
-                        <li><a href="#">Roles</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Roles <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <!--dinamicki-->
+                                <li><a href="#">Action</a></li>
+                            </ul>
+                        </li>
                         <li><a href="#">Logout</a></li>
                     </ul>
                     <form class="navbar-form navbar-right">
