@@ -9,7 +9,7 @@
         <li class="sub-menu">
             <a href="javascript:;" class="">
                 <i class="icon_document_alt"></i>
-                <span>Company</span>
+                <span>Companies</span>
                 <span class="menu-arrow arrow_carrot-right"></span>
             </a>
             <ul class="sub">
@@ -20,7 +20,7 @@
         <li class="sub-menu">
             <a href="javascript:;" class="">
                 <i class="icon_document_alt"></i>
-                <span>Process</span>
+                <span>Processes</span>
                 <span class="menu-arrow arrow_carrot-right"></span>
             </a>
             <ul class="sub">

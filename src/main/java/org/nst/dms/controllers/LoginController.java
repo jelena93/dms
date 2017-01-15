@@ -32,11 +32,6 @@ public class LoginController {
         return "login";
     }
 
-//    @RequestMapping(path = "/add_document", method = RequestMethod.GET)
-//    public ModelAndView login() {
-//        return new ModelAndView("add_document");
-//    }
-
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String homePage(Authentication authentication) {
         SecurityUser user = (SecurityUser) authentication.getPrincipal();

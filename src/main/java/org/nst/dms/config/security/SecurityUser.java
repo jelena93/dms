@@ -24,7 +24,8 @@ public class SecurityUser implements UserDetails {
     private final String name;
     private final String surname;
     private final List<Role> roles;
-    private  Role activeRole;
+    private Role activeRole;
+    private List<String> breadcrumbs;
 
     public SecurityUser(String username, String password, String name, String surname, List<Role> roles, Role activeRole) {
         this.username = username;
@@ -33,9 +34,9 @@ public class SecurityUser implements UserDetails {
         this.surname = surname;
         this.roles = roles;
         this.activeRole = activeRole;
+        breadcrumbs = new ArrayList<>();
     }
-    
-    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -75,6 +76,14 @@ public class SecurityUser implements UserDetails {
         return activeRole;
     }
 
+    public void setBreadcrumbs(List<String> breadcrumbs) {
+        this.breadcrumbs = breadcrumbs;
+    }
+
+    public List<String> getBreadcrumbs() {
+        return breadcrumbs;
+    }
+
     @Override
     public boolean isAccountNonLocked() {
         return true;
@@ -100,5 +109,4 @@ public class SecurityUser implements UserDetails {
         return "SecurityUser{" + "username=" + username + ", password=" + password + ", name=" + name + ", surname=" + surname + ", roles=" + roles + ", activeRole=" + activeRole + '}';
     }
 
-   
 }

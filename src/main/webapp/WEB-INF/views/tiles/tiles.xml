@@ -6,7 +6,6 @@
     <definition name="default_layout" template="/WEB-INF/views/tiles/layouts/default_layout.jsp">  
         <put-attribute name="title" value="Document management system" />  
         <put-attribute name="site_name" value="dms" />  
-        <put-attribute name="page_name" value="Dashboard" />  
         <put-attribute name="header" value="/WEB-INF/views/tiles/template/default_header.jsp" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/tiles/template/default_left_side_menu.jsp" />  
         <put-attribute name="breadcrumbs" value="/WEB-INF/views/tiles/template/default_breadcrumbs.jsp" />  
@@ -23,7 +22,7 @@
     <!-- Home Page Admin-->
     <definition name="admin_home" extends="default_layout">  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
-        <put-attribute name="action_url_add_company" value="company/new" />  
+        <put-attribute name="action_url_add_company" value="companies/add" />  
     </definition>  
     
     <!-- Home Page User -->
@@ -37,7 +36,13 @@
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/uploader_left_side_menu.jsp" />  
         <put-attribute name="action_url_add_company" value="company/new" />  
     </definition>  
+    
+    <!-- Admin add company -->
+    <definition name="admin_add_company" extends="default_layout">  
+        <put-attribute name="title" value="Dashboard" />  
+        <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/add_company.jsp" />  
+    </definition>  
 
   
- 
 </tiles-definitions>
