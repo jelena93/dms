@@ -5,13 +5,18 @@
  */
 package org.nst.dms.controllers;
 
-import org.nst.dms.domain.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.nst.dms.config.security.SecurityUser;
+import org.nst.dms.domain.Role;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import org.nst.dms.service.UserService;
 
 /**
  *
@@ -20,17 +25,66 @@ import org.nst.dms.service.UserService;
 @Controller
 public class LoginController {
 
-    @Autowired
-    private UserService userService;
-
     @RequestMapping(path = "/login", method = RequestMethod.GET)
-    public ModelAndView login() {
-        return new ModelAndView("login");
+    public String login() {
+        return "login";
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ModelAndView login(String username, String password) {
-        User user = userService.login(username, password);
-        return new ModelAndView("menu", "user", user);
+    @RequestMapping(value = {"/"}, method = RequestMethod.GET)
+    public String homePage(Authentication authentication) {
+        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        switch (user.getActiveRole()) {
+            case ADMIN:
+                return "admin_home";
+            case USER:
+                return "user_home";
+            default:
+                return "uploader_home";
+        }
     }
+
+    @RequestMapping(value = {"/role/{role}"}, method = RequestMethod.GET)
+    public String changeUserRole(@PathVariable("role") String role, Authentication authentication) {
+        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        if (role.equals(Role.ADMIN.name())) {
+            user.setActiveRole(Role.ADMIN);
+        }
+        if (role.equals(Role.USER.name())) {
+            user.setActiveRole(Role.USER);
+        }
+        if (role.equals(Role.UPLOADER.name())) {
+            user.setActiveRole(Role.UPLOADER);
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(HttpServletRequest request, HttpServletResponse response
+    ) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/login";
+    }
+
+    @RequestMapping(value = {"/products"}, method = RequestMethod.GET)
+    public String productsPage(ModelMap model
+    ) {
+        return "products";
+    }
+
+    @RequestMapping(value = {"/contactus"}, method = RequestMethod.GET)
+    public String contactUsPage(ModelMap model
+    ) {
+        return "contactus";
+    }
+//     @RequestMapping(value = { "/contactus" }, method = RequestMethod.GET)
+//    public String contactusPage(Model model) {
+//        model.addAttribute("address", "Vietnam");
+//        model.addAttribute("phone", "...");
+//        model.addAttribute("email", "...");
+//        return "contactusPage";
+//    }
+
 }

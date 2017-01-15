@@ -1,0 +1,28 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<div class="toggle-nav">
+    <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
+</div>
+<a href="${pageContext.request.contextPath}" class="logo"><span class="lite">${site_name}</span></a>
+<div class="top-nav notification-row">                
+    <ul class="nav pull-right top-menu">
+        <li class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <span class="username">Logged in as ${user.username} - ${user.activeRole}</span>
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu extended logout">
+                <div class="log-arrow-up"></div>
+                <li class="eborder-top">
+                    <c:forEach var="role" items="${user.roles}">   
+                        <c:if test="${user.activeRole != role}">
+                            <a href="${pageContext.request.contextPath}/role/${role}"><i class="icon_profile"></i> Change role to ${role}</a>
+                        </c:if>
+                    </c:forEach>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/${action_logout_url}"><i class="icon_key_alt"></i> Log Out</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

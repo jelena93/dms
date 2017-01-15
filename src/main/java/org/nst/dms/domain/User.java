@@ -15,6 +15,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -46,7 +47,7 @@ public class User implements Serializable {
     @JoinColumn(name = "company_id")
     @OneToOne
     private Company company;
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name="user_roles", joinColumns = {@JoinColumn(name="user")})
     @Column(name = "user_role")
