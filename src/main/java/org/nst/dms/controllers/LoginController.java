@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  * @author Jelena
  */
-
-
 @Controller
 public class LoginController {
 

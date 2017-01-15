@@ -16,4 +16,5 @@ public interface CompanyService {
     List<Company> search(String name);
     List<Company> findAll();
     Company save(Company company);
+    Company findOne(long companyId);
 }

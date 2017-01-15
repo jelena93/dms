@@ -1,56 +1,68 @@
-<%-- 
-    Document   : add_process
-    Created on : Jan 2, 2017, 4:13:50 PM
-    Author     : ana
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Add Process</title>
-        <jsp:include page = "menu.jsp" />
-        <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-        <link href="resources/css/signin.css" rel="stylesheet">
-        <script src="resources/js/jquery.min.js"></script>
-        <script src="resources/js/bootstrap.min.js"></script>
-    </head>
-    <body>
-        <form class="form-signin" method="POST" action="/index.html">
-            <h2 class="form-signin-heading">Add New User</h2>
-            <br>
-            <input type="text" name = "username" class="form-control" placeholder="Username"  required autofocus>
-            <br>
-            <input type="password" name = "password" class="form-control" placeholder="Password"  required autofocus>
-            <br>
-            <input type="text" name = "name" class="form-control" placeholder="Name"  required autofocus>
-            <br>
-            <input type="text" name = "surname" class="form-control" placeholder="Surname"  required>
-            <br>
-            <div class="dropdown">
-                <button class="btn btn-default btn-lg dropdown-toggle form-control" type="button" data-toggle="dropdown">Choose Company...
-                    <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <!--dinamicki-->
-                    <li><a href="#">About Us</a></li>
-                </ul>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>            
+<div class="row">
+    <div class="col-lg-12">
+        <section class="panel">
+            <header class="panel-heading"> ${title}</header>
+            <div class="panel-body">
+                <div class="form">
+                    <form class="form-validate form-horizontal " id="register_form" method="get" action="${pageContext.request.contextPath}/${action_url_add_user}">
+                        <div class="form-group ">
+                            <label for="fullname" class="control-label col-lg-2">Name <span class="required">*</span></label>
+                            <div class="col-lg-10">
+                                <input class=" form-control" id="fullname" name="name" type="text" />
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="address" class="control-label col-lg-2">Surname <span class="required">*</span></label>
+                            <div class="col-lg-10">
+                                <input class=" form-control" id="address" name="surname" type="text" />
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="username" class="control-label col-lg-2">Username <span class="required">*</span></label>
+                            <div class="col-lg-10">
+                                <input class="form-control " id="username" name="username" type="text" />
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="password" class="control-label col-lg-2">Password <span class="required">*</span></label>
+                            <div class="col-lg-10">
+                                <input class="form-control " id="password" name="password" type="password" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="control-label col-lg-2">Roles <span class="required">*</span></label>
+                            <div class="col-lg-10">
+                                <select multiple class="form-control" name="roles" id="roles">
+                                    <c:forEach var="role" items="${roles}">
+                                        <option value="${role}">${role}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="username" class="control-label col-lg-2">Company</label>
+                            <div class="col-lg-10">
+                                <input class="typeahead-companies form-control" name="company" type="text" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-lg-10">
+                                <button class="btn btn-primary" type="submit">Add user</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <br>
-            <br>
-            <br>
-            <div class="dropdown">
-                <button class="btn btn-default btn-lg dropdown-toggle form-control" type="button" data-toggle="dropdown">Choose Role...
-                    <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <!--dinamicki-->
-                    <li><a href="#">About Us</a></li>
-                </ul>
-            </div>
-            <br>
-            <br>
-            <br>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Add User</button>
-        </form>
-    </body>
-</html>
+        </section>
+    </div>
+</div>
+</section>
+</div>
+</div>
+<!-- jquery validate js -->
+<script src="<c:url value="/resources/js/jquery.validate.min.js" />"></script>
+<script src="<c:url value="/resources/js/typeahead.js" />"></script>
+<script src="<c:url value="/resources/js/search.js" />"></script>
+<!-- custom form validation script for this page-->
+<script src="<c:url value="/resources/js/form-validation-script.js" />"></script>

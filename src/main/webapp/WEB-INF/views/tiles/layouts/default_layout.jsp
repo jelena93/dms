@@ -20,11 +20,16 @@
         <!-- Custom styles -->
         <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
         <link href="<c:url value="/resources/css/style-responsive.css" />" rel="stylesheet">
+        <script src="<c:url value="/resources/js/jquery.js" />"></script>
+       
         <tiles:importAttribute name="title" scope="request"/>
         <tiles:importAttribute name="site_name" scope="request" />
         <tiles:importAttribute name="action_logout_url" scope="request" />
         <tiles:importAttribute name="action_url_add_company" scope="request" ignore="true" />
+        <tiles:importAttribute name="action_url_search_companies" scope="request" ignore="true" />
+        <tiles:importAttribute name="action_url_add_user" scope="request" ignore="true" />
         <tiles:importAttribute name="action_url_add_process" scope="request" ignore="true"/>
+        <tiles:importAttribute name="action_url_add_document" scope="request" ignore="true"/>
         <sec:authentication var="user" property="principal" scope="request"/>
         <title>${title}</title>
     </head>
@@ -38,7 +43,6 @@
             <aside>
                 <tiles:insertAttribute name="left_side_menu" />
             </aside>
-
             <!--main content start-->
             <section id="main-content">
                 <section class="wrapper">            
@@ -50,8 +54,6 @@
         </section>
         <!-- container section start -->
 
-        <!-- javascripts -->
-        <script src="<c:url value="/resources/js/jquery.js" />"></script>
         <!-- bootstrap -->
         <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
         <!-- nice scroll -->

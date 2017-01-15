@@ -56,6 +56,14 @@ public class Company implements Serializable {
         this.headquarters = headquarters;
         this.processes = processes;
     }
+
+    public Company(String name, int pib, String identificationNumber, String headquarters) {
+        this.name = name;
+        this.pib = pib;
+        this.identificationNumber = identificationNumber;
+        this.headquarters = headquarters;
+    }
+    
     public Long getId() {
         return id;
     }

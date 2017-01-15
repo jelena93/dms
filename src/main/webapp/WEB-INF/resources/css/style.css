@@ -803,7 +803,7 @@ div[data-role="editor-toolbar"] {
 }
 .dropdown-menu.extended.logout > li > a {
     border-bottom: 1px solid #EBEBEB !important;
-    font-size: 14px;
+    font-size: 12px;
     list-style: none;
     padding: 15px 10px !important;
     width: 100%;

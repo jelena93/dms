@@ -1,4 +1,4 @@
-<div id="sidebar"  class="nav-collapse ">
+<div id="sidebar" class="nav-collapse ">
     <ul class="sidebar-menu">                
         <li>
             <a href="${pageContext.request.contextPath}">
@@ -9,11 +9,10 @@
         <li class="sub-menu">
             <a href="javascript:;" class="">
                 <i class="icon_document_alt"></i>
-                <span>Process</span>
+                <span>Processes</span>
                 <span class="menu-arrow arrow_carrot-right"></span>
             </a>
             <ul class="sub">
-                <li><a class="" href="#">Search processes</a></li>                          
                 <li><a class="" href="${pageContext.request.contextPath}/${action_url_add_process}">Add process</a></li>                          
             </ul>
         </li>  

@@ -29,6 +29,7 @@ public class InitializingBeanImpl implements InitializingBean {
         User user = new User("Pera", "Peric", "admin", "admin", null, roles);
         userService.save(user);
         roles.add(Role.USER);
+        roles.add(Role.UPLOADER);
         user = new User("Zika", "Zikic", "asd", "asd", null, roles);
         userService.save(user);
     }

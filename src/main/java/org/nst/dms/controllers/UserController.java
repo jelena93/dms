@@ -5,32 +5,64 @@
  */
 package org.nst.dms.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.nst.dms.config.security.SecurityUser;
+import org.nst.dms.domain.Company;
+import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
+import org.nst.dms.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.UserService;
+import org.springframework.security.core.Authentication;
 
 /**
  *
  * @author Jelena
  */
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private CompanyService companyService;
 
-    @RequestMapping(path = "/add_user", method = RequestMethod.GET)
-    public ModelAndView login() {
-        return new ModelAndView("add_user");
+    @RequestMapping(path = "/add", method = RequestMethod.GET)
+    public ModelAndView getAddUser(Authentication authentication) {
+        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        user.getBreadcrumbs().clear();
+        user.getBreadcrumbs().add("Users");
+        user.getBreadcrumbs().add("Add user");
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ADMIN);
+        roles.add(Role.USER);
+        roles.add(Role.UPLOADER);
+        return new ModelAndView("add_user", "roles", roles);
     }
 
-    @RequestMapping(path = "/save_user", method = RequestMethod.POST)
-    public ModelAndView save(User user) {
-        User u = userService.save(user);
-        return new ModelAndView("menu", "u", u);
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    public ModelAndView save(String username, String password, String name, String surname, int companyId, String[] rolesArr) {
+        Company c = companyService.findOne(companyId);
+        List<Role> roles = new ArrayList<>();
+        for (String role : rolesArr) {
+            if (role.equals(Role.ADMIN.name())) {
+                roles.add(Role.ADMIN);
+            }
+            if (role.equals(Role.USER.name())) {
+                roles.add(Role.USER);
+            }
+            if (role.equals(Role.UPLOADER.name())) {
+                roles.add(Role.UPLOADER);
+            }
+        }
+        User user = new User(name, surname, username, password, c, roles);
+        userService.save(user);
+        return new ModelAndView("add_user", "poruka", "Dodat user");
     }
 }

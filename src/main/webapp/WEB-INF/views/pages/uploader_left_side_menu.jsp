@@ -6,11 +6,15 @@
                 <span>Dashboard</span>
             </a>
         </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/${action_url_add_company}">
-                <i class="icon_documents_alt"></i>
-                <span>Add company</span>
+        <li class="sub-menu">
+            <a href="javascript:;" class="">
+                <i class="icon_document_alt"></i>
+                <span>Documents</span>
+                <span class="menu-arrow arrow_carrot-right"></span>
             </a>
-        </li>
+            <ul class="sub">
+                <li><a class="" href="${pageContext.request.contextPath}/${action_url_add_process}">Add documents</a></li>                          
+            </ul>
+        </li> 
     </ul>
 </div>

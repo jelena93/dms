@@ -23,26 +23,50 @@
     <definition name="admin_home" extends="default_layout">  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
         <put-attribute name="action_url_add_company" value="companies/add" />  
+        <put-attribute name="action_url_search_companies" value="companies/search" />  
+        <put-attribute name="action_url_add_user" value="users/add" />  
     </definition>  
     
     <!-- Home Page User -->
     <definition name="user_home" extends="default_layout">  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/user_left_side_menu.jsp" />  
-        <put-attribute name="action_url_add_process" value="process/new" />  
+        <put-attribute name="action_url_add_process" value="processes/add" />  
     </definition>  
     
     <!-- Home Page Uploader -->
     <definition name="uploader_home" extends="default_layout">  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/uploader_left_side_menu.jsp" />  
-        <put-attribute name="action_url_add_company" value="company/new" />  
+        <put-attribute name="action_url_add_document" value="documents/add" />  
     </definition>  
     
-    <!-- Admin add company -->
-    <definition name="admin_add_company" extends="default_layout">  
-        <put-attribute name="title" value="Dashboard" />  
+    <definition name="add_company" extends="default_layout">  
+        <put-attribute name="title" value="Add company" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_company.jsp" />  
     </definition>  
-
+    
+    <definition name="search_companies" extends="default_layout">  
+        <put-attribute name="title" value="Search companies" />  
+        <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/search_companies.jsp" />  
+    </definition>  
+    
+    <definition name="add_user" extends="default_layout">  
+        <put-attribute name="title" value="Add user" />  
+        <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/add_user.jsp" />  
+    </definition>  
+  
+    <definition name="add_process" extends="default_layout">  
+        <put-attribute name="title" value="Add process" />  
+        <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/user_left_side_menu.jsp" />  
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/add_process.jsp" />  
+    </definition>  
+    
+    <definition name="add_document" extends="default_layout">  
+        <put-attribute name="title" value="Add document" />  
+        <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/uploader_left_side_menu.jsp" />  
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/add_document.jsp" />  
+    </definition>  
   
 </tiles-definitions>

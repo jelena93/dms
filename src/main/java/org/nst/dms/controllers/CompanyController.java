@@ -34,27 +34,31 @@ public class CompanyController {
         user.getBreadcrumbs().clear();
         user.getBreadcrumbs().add("Companies");
         user.getBreadcrumbs().add("Add company");
-        return "admin_add_company";
+        return "add_company";
     }
 
-    @RequestMapping(path = "/save", method = RequestMethod.POST)
-    public ModelAndView save(Company company) {
-//        @TODO obrada greske ako je process null
-        Company c = companyService.save(company);
-        return new ModelAndView("menu", "c", c);
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    public String save(String name, int pib, String identificationNumber, String headquarters) {
+        Company c = new Company(name, pib, identificationNumber, headquarters);
+        companyService.save(c);
+        return "redirect:/companies/search";
     }
 
-    @RequestMapping(path = "/find_all_companies", method = RequestMethod.POST)
-    public ModelAndView findAll() {
+    @RequestMapping(path = "/search", method = RequestMethod.GET)
+    public ModelAndView findAll(Authentication authentication) {
+        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        user.getBreadcrumbs().clear();
+        user.getBreadcrumbs().add("Companies");
+        user.getBreadcrumbs().add("Search companies");
 //        @TODO obrada greske ako je null
         List<Company> companies = companyService.findAll();
-        return new ModelAndView("menu", "companies", companies);
+        return new ModelAndView("search_companies", "companies", companies);
     }
 
-    @RequestMapping(path = "/search_companies", method = RequestMethod.POST)
-    public ModelAndView search(String name) {
-//        @TODO obrada greske ako je null
-        List<Company> companies = companyService.search(name);
-        return new ModelAndView("menu", "companies", companies);
-    }
+//    @RequestMapping(path = "/search_companies", method = RequestMethod.POST)
+//    public ModelAndView search(String name) {
+////        @TODO obrada greske ako je null
+//        List<Company> companies = companyService.search(name);
+//        return new ModelAndView("menu", "companies", companies);
+//    }
 }
