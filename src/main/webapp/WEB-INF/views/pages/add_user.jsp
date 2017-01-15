@@ -43,7 +43,34 @@
                         <div class="form-group ">
                             <label for="username" class="control-label col-lg-2">Company</label>
                             <div class="col-lg-10">
-                                <input class="typeahead-companies form-control" name="company" type="text" />
+                                <input class="form-control" name="company" id="company"type="text" onkeyup="search(this.value)" />
+                                <br/>
+                                <section class="panel">
+                                    <table class="table table-striped table-advance table-hover" id="table-companies">
+                                        <tbody>
+                                            <tr>
+                                                <th><i class="icon_profile"></i> Name</th>
+                                                <th><i class="icon_calendar"></i> Pib</th>
+                                                <th><i class="icon_mail_alt"></i> Identification number</th>
+                                                <th><i class="icon_pin_alt"></i> Headquarters</th>
+                                                <th><i class="icon_cogs"></i> Action</th>
+                                            </tr>
+                                            <c:forEach var="c" items="${companies}">
+                                                <tr>
+                                                    <td>${c.name}</td>
+                                                    <td>${c.pib}</td>
+                                                    <td>${c.identificationNumber}</td>
+                                                    <td>${c.headquarters}</td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-success"><i class="icon_check_alt2"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </section>
                             </div>
                         </div>
                         <div class="form-group">
@@ -63,6 +90,6 @@
 <!-- jquery validate js -->
 <script src="<c:url value="/resources/js/jquery.validate.min.js" />"></script>
 <script src="<c:url value="/resources/js/typeahead.js" />"></script>
-<script src="<c:url value="/resources/js/search.js" />"></script>
+<script src="<c:url value="/resources/js/searchCompanies.js" />"></script>
 <!-- custom form validation script for this page-->
 <script src="<c:url value="/resources/js/form-validation-script.js" />"></script>

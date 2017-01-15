@@ -43,7 +43,11 @@ public class UserController {
         roles.add(Role.ADMIN);
         roles.add(Role.USER);
         roles.add(Role.UPLOADER);
-        return new ModelAndView("add_user", "roles", roles);
+        List<Company> companies = companyService.findAll();
+        ModelAndView mv = new ModelAndView("add_user");
+        mv.addObject("roles", roles);
+        mv.addObject("companies", companies);
+        return mv;
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
