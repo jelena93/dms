@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  * @author Jelena
  */
+
+
 @Controller
 public class LoginController {
 
@@ -29,6 +31,11 @@ public class LoginController {
     public String login() {
         return "login";
     }
+
+//    @RequestMapping(path = "/add_document", method = RequestMethod.GET)
+//    public ModelAndView login() {
+//        return new ModelAndView("add_document");
+//    }
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String homePage(Authentication authentication) {
@@ -59,32 +66,12 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout(HttpServletRequest request, HttpServletResponse response
-    ) {
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return "redirect:/login";
     }
-
-    @RequestMapping(value = {"/products"}, method = RequestMethod.GET)
-    public String productsPage(ModelMap model
-    ) {
-        return "products";
-    }
-
-    @RequestMapping(value = {"/contactus"}, method = RequestMethod.GET)
-    public String contactUsPage(ModelMap model
-    ) {
-        return "contactus";
-    }
-//     @RequestMapping(value = { "/contactus" }, method = RequestMethod.GET)
-//    public String contactusPage(Model model) {
-//        model.addAttribute("address", "Vietnam");
-//        model.addAttribute("phone", "...");
-//        model.addAttribute("email", "...");
-//        return "contactusPage";
-//    }
 
 }
