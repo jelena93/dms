@@ -32,5 +32,9 @@ public class ProcessServiceImpl implements ProcessService {
     public Process save(Process process) {
         return processRepository.save(process);
     }
+    @Override
+    public Process find(long id) {
+        return processRepository.findOne(id);
+    }
 
 }

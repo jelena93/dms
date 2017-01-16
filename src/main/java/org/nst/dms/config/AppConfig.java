@@ -5,7 +5,6 @@
  */
 package org.nst.dms.config;
 
-import java.nio.charset.Charset;
 import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -13,25 +12,21 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.nst.dms.config.security.SecurityConfig;
-import org.nst.dms.service.impl.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.nst.dms.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
@@ -59,11 +54,10 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         registry.viewResolver(viewResolver);
     }
 
-    @Bean
-    public StringHttpMessageConverter stringHttpMessageConverter() {
-        return new StringHttpMessageConverter(Charset.forName("UTF-8"));
-    }
-
+//    @Bean
+//    public StringHttpMessageConverter stringHttpMessageConverter() {
+//        return new StringHttpMessageConverter(Charset.forName("UTF-8"));
+//    }
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -72,11 +66,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         em.setPackagesToScan("org.nst.*");
         em.setJpaProperties(jpaProperties());
         return em;
-    }
-
-    @Bean
-    public LoadTimeWeaver loadTimeWeaver() {
-        return new org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver();
     }
 
     @Bean
@@ -113,12 +102,12 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public Properties jpaProperties() {
         Properties properties = new Properties();
         properties.put(PersistenceUnitProperties.WEAVING, "static");
-        properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
-        properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
-        properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");
-        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
-        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_SOURCE, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
-        properties.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
+//        properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
+//        properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
+//        properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");
+//        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
+//        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_SOURCE, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
+//        properties.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
 //        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_DROP_SOURCE, "META-INF/sql/data.sql");
 //        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SQL_LOAD_SCRIPT_SOURCE, "META-INF/sql/data.sql");
 //        properties.put("eclipselink.logging.level.sql", "FINE");
@@ -130,10 +119,12 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return new InitializingBeanImpl();
     }
 
-    @Autowired
-    @Bean(name = "userService")
-    public UserService getUserService() {
-        return new UserServiceImpl();
+    @Bean
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+//        resolver.setMaxUploadSize(20000000);
+        resolver.setDefaultEncoding("utf-8");
+        return resolver;
     }
 
 }

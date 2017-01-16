@@ -37,35 +37,35 @@ public class SearchController {
     private DocumentTypeService documentTypeService;
 
     @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> search(String name) {
+    public ResponseEntity<List<Company>> search(String name) {
         List<Company> companies = companyService.search(name);
-        JSONObject jSONObject = new JSONObject();
-        jSONObject.put("companies", companies);
-        String message;
-        if (companies.isEmpty()) {
-            message = "No companies found";
-            jSONObject.put("message", message);
-        }
-        return new ResponseEntity<>(jSONObject, HttpStatus.OK);
+//        JSONObject jSONObject = new JSONObject();
+//        jSONObject.put("companies", companies);
+//        String message;
+//        if (companies.isEmpty()) {
+//            message = "No companies found";
+//            jSONObject.put("message", message);
+//        }
+        return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/api/document-type", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> getDocumentTypeDescriptors(Long id) {
+    public ResponseEntity<List<Descriptor>> getDocumentTypeDescriptors(Long id) {
         DocumentType documentType = documentTypeService.find(id);
-        System.out.println("documentType" + documentType);
-        JSONObject jSONObject = new JSONObject();
-        String message;
-        if (documentType == null) {
-            message = "No document type with given name found";
-            jSONObject.put("message", message);
-        } else {
-            jSONObject.put("descriptors", documentType.getDescriptors());
-            if (documentType.getDescriptors().isEmpty()) {
-                message = "No descriptors found";
-                jSONObject.put("message", message);
-            }
-        }
-        return new ResponseEntity<>(jSONObject, HttpStatus.OK);
+//        System.out.println("documentType" + documentType);
+//        JSONObject jSONObject = new JSONObject();
+//        String message;
+//        if (documentType == null) {
+//            message = "No document type with given name found";
+//            jSONObject.put("message", message);
+//        } else {
+//            jSONObject.put("descriptors", documentType.getDescriptors());
+//            if (documentType.getDescriptors().isEmpty()) {
+//                message = "No descriptors found";
+//                jSONObject.put("message", message);
+//            }
+//        }
+        return new ResponseEntity<>(documentType.getDescriptors(), HttpStatus.OK);
     }
 
     @ExceptionHandler(Exception.class)

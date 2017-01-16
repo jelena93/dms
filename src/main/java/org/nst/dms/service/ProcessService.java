@@ -16,4 +16,5 @@ public interface ProcessService {
     List<Process> search(String name);
     List<Process> findAll();
     Process save(Process process);
+    Process find(long id);
 }

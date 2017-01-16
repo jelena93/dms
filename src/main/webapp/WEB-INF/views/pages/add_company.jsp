@@ -17,13 +17,13 @@
                         <div class="form-group ">
                             <label for="address" class="control-label col-lg-2">Pib <span class="required">*</span></label>
                             <div class="col-lg-10">
-                                <input class=" form-control" id="pib" name="pib" type="text" />
+                                <input class=" form-control" id="pib" name="pib" type="number"  minlength="9" maxlength="9" />
                             </div>
                         </div>
                         <div class="form-group ">
                             <label for="username" class="control-label col-lg-2">Identification number <span class="required">*</span></label>
                             <div class="col-lg-10">
-                                <input class="form-control " id="identificationNumber" name="identificationNumber" type="text" />
+                                <input class="form-control " id="identificationNumber" name="identificationNumber" type="number"  minlength="8" maxlength="8" />
                             </div>
                         </div>
                         <div class="form-group ">
