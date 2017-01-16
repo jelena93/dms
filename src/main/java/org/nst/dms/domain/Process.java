@@ -11,6 +11,7 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -42,10 +43,10 @@ public class Process implements Serializable {
     private Process parent;
     @Column(name = "primitive")
     private boolean primitive;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "process_inputs", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "document"))
     private List<Document> inputList;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "process_outputs", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "document"))
     private List<Document> outputList;
 

@@ -47,7 +47,7 @@ public class User implements Serializable {
     @JoinColumn(name = "company_id")
     @OneToOne
     private Company company;
-    @ElementCollection(targetClass = Role.class,fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name="user_roles", joinColumns = {@JoinColumn(name="user")})
     @Column(name = "user_role")

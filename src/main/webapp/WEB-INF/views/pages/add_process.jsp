@@ -1,29 +1,41 @@
-<%-- 
-    Document   : add_process
-    Created on : Jan 2, 2017, 4:13:50 PM
-    Author     : ana
---%>
-
-<form class="form-signin" method="POST" action="${pageContext.request.contextPath}/${action_url_add_process}">
-    <h2 class="form-signin-heading">${title}/h2>
-    <br>
-    <input type="text" name = "processName" class="form-control" placeholder="Process name"  required autofocus>
-    <br>
-    <div class="dropdown">
-        <button class="btn btn-default btn-lg dropdown-toggle form-control" type="button" data-toggle="dropdown">Choose parent...
-            <span class="caret"></span></button>
-        <ul class="dropdown-menu">
-            <!--dinamicki-->
-            <li><a href="#">About Us</a></li>
-        </ul>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>            
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<div class="row">
+    <div class="col-lg-12">
+        ${poruka}
+        <section class="panel">
+            <header class="panel-heading"> ${title}</header>
+            <div class="panel-body">
+                <div class="form">
+                    <form class="form-validate form-horizontal " id="register_form" method="POST" action="${pageContext.request.contextPath}/${action_url_add_process}">
+                        <div class="form-group ">
+                            <label for="name" class="control-label col-lg-2">Name <span class="required">*</span></label>
+                            <div class="col-lg-10">
+                                <input class=" form-control" id="name" name="name" type="text" />
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="password" class="control-label col-lg-2">Primitive <span class="required">*</span></label>
+                            <div class="col-lg-10">
+                                <input  type="checkbox" style="width: 20px" class="checkbox form-control" id="primitive" name="primitive" />
+                            </div>
+                        </div>
+                        <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-lg-10">
+                                <button class="btn btn-primary" type="submit">${title}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
     </div>
-    <div class="checkbox primitive">
-        <label>
-            <input type="checkbox" value="primitive"> Primitive
-        </label>
-    </div>
-    <br>
-    <br>
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Add Process</button>
-</form>
+</div>
+</section>
+</div>
+</div>
+<!-- jquery validate js -->
+<script src="<c:url value="/resources/js/jquery.validate.min.js" />"></script>
+<!-- custom form validation script for this page-->
+<script src="<c:url value="/resources/js/form-validation-script.js" />"></script>

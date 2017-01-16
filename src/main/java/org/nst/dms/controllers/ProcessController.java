@@ -29,12 +29,12 @@ public class ProcessController {
 
     //ovako? gde se definise? svi get process zahtevi ovde?
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public ModelAndView addProcess(Authentication authentication) {
+    public String addProcess(Authentication authentication) {
         SecurityUser user = (SecurityUser) authentication.getPrincipal();
         user.getBreadcrumbs().clear();
         user.getBreadcrumbs().add("Processes");
         user.getBreadcrumbs().add("Add process");
-        return new ModelAndView("add_process");
+        return "add_process";
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)

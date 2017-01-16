@@ -4,28 +4,30 @@ function search(name) {
     $.ajax({
         type: "GET",
         contentType: "application/json",
-        url: "/api/companies/search",
-        data: {query: kriterijumPretrage},
+        url: "/dms/api/companies/search",
+        data: {name: name},
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
         dataType: 'json',
         success: function (data) {
-            var clanovi = JSON.parse(JSON.stringify(data.clanovi));
+            var companies = JSON.parse(JSON.stringify(data.clanovi));
             $("#table-companies tbody").remove();
-            for (var i = 0; i < clanovi.length; i++) {
-                $('#clanovi').
-                        append('<tr><td>' + clanovi[i].brojClana + '</td><td>' +
-                                clanovi[i].ime + '</td><td>'
-                                + clanovi[i].prezime + '</td><td>' +
-                                clanovi[i].email + '</td><td>' +
-                                clanovi[i].kontakt + '</td><td>' + clanovi[i].adresa
-                                + '</td><td><a href="/karateklub/trener/clan/' +
-                                clanovi[i].brojClana + '">Detalji</a></td></tr>');
+            for (var i = 0; i < companies.length; i++) {
+                $('#table-companies').
+                        append('<tr><td>' + companies[i].id + '</td><td>' + companies[i].name + '</td><td>' +
+                                companies[i].pib + '</td><td>'
+                                + companies[i].identificationNumber + '</td><td>' +
+                                companies[i].headquarters 
+                                + '</td><td> <div class="btn-group" <a class="btn btn-success"'
+                                +'<i class="icon_check_alt2"></i></a></div></td></tr>');
             }
         },
         error: function (e) {
             console.log("ERROR: ", e);
         }
     });
+}
+function setCompany(id) {
+    $("#company").val(id);
 }

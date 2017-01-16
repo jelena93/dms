@@ -27,7 +27,6 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
-    //ovako? gde se definise? svi get process zahtevi ovde?
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public String addProcess(Authentication authentication) {
         SecurityUser user = (SecurityUser) authentication.getPrincipal();

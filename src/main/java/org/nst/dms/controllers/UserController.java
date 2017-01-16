@@ -51,21 +51,21 @@ public class UserController {
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(String username, String password, String name, String surname, int companyId, String[] rolesArr) {
+    public ModelAndView save(String username, String password, String name, String surname, int companyId, String[] roles) {
         Company c = companyService.findOne(companyId);
-        List<Role> roles = new ArrayList<>();
-        for (String role : rolesArr) {
+        List<Role> rolesArr = new ArrayList<>();
+        for (String role : roles) {
             if (role.equals(Role.ADMIN.name())) {
-                roles.add(Role.ADMIN);
+                rolesArr.add(Role.ADMIN);
             }
             if (role.equals(Role.USER.name())) {
-                roles.add(Role.USER);
+                rolesArr.add(Role.USER);
             }
             if (role.equals(Role.UPLOADER.name())) {
-                roles.add(Role.UPLOADER);
+                rolesArr.add(Role.UPLOADER);
             }
         }
-        User user = new User(name, surname, username, password, c, roles);
+        User user = new User(name, surname, username, password, c, rolesArr);
         userService.save(user);
         return new ModelAndView("add_user", "poruka", "Dodat user");
     }

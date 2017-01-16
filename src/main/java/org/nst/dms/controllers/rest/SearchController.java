@@ -33,7 +33,7 @@ public class SearchController {
     @Autowired
     private CompanyService companyService;
 
-    @RequestMapping(value = "/api/company/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JSONObject> search(String name) {
         List<Company> companies = companyService.search(name);
         JSONObject jSONObject = new JSONObject();

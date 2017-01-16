@@ -7,6 +7,8 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="_csrf" content="${_csrf.token}"/>
+        <meta name="_csrf_header" content="${_csrf.headerName}"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="<c:url value="/resources/img/favicon.png" />">
         <!-- Bootstrap CSS -->    
@@ -21,7 +23,7 @@
         <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
         <link href="<c:url value="/resources/css/style-responsive.css" />" rel="stylesheet">
         <script src="<c:url value="/resources/js/jquery.js" />"></script>
-       
+
         <tiles:importAttribute name="title" scope="request"/>
         <tiles:importAttribute name="site_name" scope="request" />
         <tiles:importAttribute name="action_logout_url" scope="request" />

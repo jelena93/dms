@@ -1,11 +1,5 @@
 var Script = function () {
 
-    $.validator.setDefaults({
-        submitHandler: function () {
-            alert("submitted!");
-        }
-    });
-
     $().ready(function () {
         // validate the comment form when it is submitted
         $("#feedback_form").validate();
@@ -14,20 +8,28 @@ var Script = function () {
         $("#register_form").validate({
             rules: {
                 name: {
-                    required: true,
-                    minlength: 6
+                    required: true
                 },
                 surname: {
-                    required: true,
-                    minlength: 10
+                    required: true
                 },
                 username: {
-                    required: true,
-                    minlength: 5
+                    required: true
                 },
                 password: {
-                    required: true,
-                    minlength: 5
+                    required: true
+                },
+                pib: {
+                    required: true
+                },
+                identificationNumber: {
+                    required: true
+                },
+                headquarters: {
+                    required: true
+                },
+                document: {
+                    required: true
                 },
                 roles: "required"
             },
@@ -46,6 +48,18 @@ var Script = function () {
                 },
                 roles: {
                     required: "Please select a role."
+                },
+                pib: {
+                    required: "Please provide a pib."
+                },
+                identificationNumber: {
+                    required: "Please provide an identification number."
+                },
+                headquarters: {
+                    required: "Please provide headquarters."
+                },
+                document: {
+                    required: "Please provide document."
                 }
             }
         });

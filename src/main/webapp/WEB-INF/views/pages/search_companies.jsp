@@ -1,19 +1,33 @@
-<%-- 
-    Document   : add_process
-    Created on : Jan 2, 2017, 4:13:50 PM
-    Author     : ana
---%>
-
-<form class="form-signin" method="POST" action="${pageContext.request.contextPath}/${action_url_add_company}">
-    <h2 class="form-signin-heading">${title}</h2>
-    <br>
-    <input type="text" name = "name" class="form-control" placeholder="Company name"  required autofocus>
-    <br>
-    <input type="number" name = "pib" class="form-control" placeholder="PIB"  required>
-    <br>
-    <input type="number" name = "identificationNumber" class="form-control" placeholder="Identification Number"  required>
-    <br>
-    <input type="text" name = "headquarters" class="form-control" placeholder="Headquarters"  required>
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Add Company</button>
-</form>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>            
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<input class="form-control" name="companyId" id="company" type="text" onkeyup="search(this.value)" />
+<br/>
+<section class="panel">
+    <table class="table table-striped table-advance table-hover" id="table-companies">
+        <tbody>
+            <tr>
+                <th><i class="icon_profile"></i> Id</th>
+                <th><i class="icon_profile"></i> Name</th>
+                <th><i class="icon_calendar"></i> Pib</th>
+                <th><i class="icon_mail_alt"></i> Identification number</th>
+                <th><i class="icon_pin_alt"></i> Headquarters</th>
+                <th><i class="icon_cogs"></i> Action</th>
+            </tr>
+        <c:forEach var="c" items="${companies}">
+            <tr>
+                <td>${c.id}</td>
+                <td>${c.name}</td>
+                <td>${c.pib}</td>
+                <td>${c.identificationNumber}</td>
+                <td>${c.headquarters}</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-success" onclick="setCompany(${c.id})"><i class="icon_check_alt2"></i></a>
+                    </div>
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+</section>
+<script src="<c:url value="/resources/js/searchCompanies.js" />"></script>

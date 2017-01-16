@@ -13,7 +13,7 @@
                 <span class="menu-arrow arrow_carrot-right"></span>
             </a>
             <ul class="sub">
-                <li><a class="" href="${pageContext.request.contextPath}/${action_url_add_process}">Add documents</a></li>                          
+                <li><a class="" href="${pageContext.request.contextPath}/${action_url_add_document}">Add document</a></li>                          
             </ul>
         </li> 
     </ul>

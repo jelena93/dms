@@ -26,10 +26,10 @@ public class Descriptor implements Serializable {
     @Column(name = "descriptor_id")
     @NotNull
     private Long id;
-    @Column(name = "key")
+    @Column(name = "descriptorKey")
     @NotNull
     private String key;
-    @Column(name = "value")
+    @Column(name = "descriptorValue")
     @NotNull
     private String value;
 

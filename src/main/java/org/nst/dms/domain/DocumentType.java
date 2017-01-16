@@ -11,6 +11,7 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -33,8 +34,8 @@ public class DocumentType implements Serializable {
     @Column(name = "name")
     @NotNull
     private String name;
-    @OneToMany
-    @JoinTable(name = "company_descriptors", joinColumns = @JoinColumn(name = "document_type"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "document_type_descriptors", joinColumns = @JoinColumn(name = "document_type"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
     private List<Descriptor> descriptors;
 
     public DocumentType() { }
