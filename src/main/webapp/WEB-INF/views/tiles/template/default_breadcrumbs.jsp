@@ -4,12 +4,16 @@
         <h3 class="page-header">${title}</h3>
         <ol class="breadcrumb">
             <li><a href="${pageContext.request.contextPath}">Home</a></li>
-                <c:if test="${empty myObject.featuresList}">
-                <li>Dashboard</li>	
-            </c:if>
-            <c:forEach var="b" items="${user.breadcrumbs}">
-                <li>${b}</li>	
-                </c:forEach>
+                <c:choose>
+                    <c:when test="">
+                    <li>Dashboard</li>	
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="b" items="${user.breadcrumbs}">
+                        <li>${b}</li>	
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>    
         </ol>
     </div>
 </div>

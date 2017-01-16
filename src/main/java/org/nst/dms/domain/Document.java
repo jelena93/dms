@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -26,6 +27,7 @@ public class Document implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "document_id")
+    @GeneratedValue
     @NotNull
     private Long id;
     @NotNull
@@ -38,8 +40,7 @@ public class Document implements Serializable {
 
     public Document() { }
     
-    public Document(Long id, DocumentType documentType, String url) {
-        this.id = id;
+    public Document(DocumentType documentType, String url) {
         this.documentType = documentType;
         this.url = url;
     }

@@ -10,6 +10,7 @@ import org.nst.dms.domain.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -17,6 +18,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    @Query("SELECT c FROM Company c WHERE c.name LIKE '%name%' OR c.pib LIKE '%name%' ")
-    List<Company> search(String name);
+    @Query("SELECT c FROM Company c WHERE c.name=?1")
+    List<Company> search(@RequestParam("name")String name);
 }

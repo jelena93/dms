@@ -50,15 +50,9 @@ public class Process implements Serializable {
     @JoinTable(name = "process_outputs", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "document"))
     private List<Document> outputList;
 
-    public Process() {
-    }
+    public Process() { }
 
-    public Process(Long id) {
-        this.id = id;
-    }
-
-    public Process(Long id, String name, Process parent, boolean primitive, List<Document> inputList, List<Document> outputList) {
-        this.id = id;
+    public Process(String name, Process parent, boolean primitive, List<Document> inputList, List<Document> outputList) {
         this.name = name;
         this.parent = parent;
         this.primitive = primitive;

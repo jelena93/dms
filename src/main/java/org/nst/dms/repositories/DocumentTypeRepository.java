@@ -14,5 +14,4 @@ import org.springframework.stereotype.Repository;
  * @author Jelena
  */
 @Repository
-public interface DocumentTypeRepository extends JpaRepository<DocumentType, Long> {
-}
+public interface DocumentTypeRepository extends JpaRepository<DocumentType, Long> { }

@@ -12,6 +12,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -28,6 +29,7 @@ import javax.validation.constraints.NotNull;
 public class Company implements Serializable {
     @Id
     @Basic(optional = false)
+    @GeneratedValue
     @Column(name = "company_id")
     @NotNull
     private Long id;
@@ -36,7 +38,7 @@ public class Company implements Serializable {
     private String name;
     @Column(name = "pib")
     @NotNull
-    private int pib;
+    private String pib;
     @Column(name = "identification_number")
     @NotNull
     private String identificationNumber;
@@ -49,8 +51,7 @@ public class Company implements Serializable {
 
     public Company() { }
 
-    public Company(Long id, String name, int pib, String identificationNumber, String headquarters, List<Process> processes) {
-        this.id = id;
+    public Company(String name, String pib, String identificationNumber, String headquarters, List<Process> processes) {
         this.name = name;
         this.pib = pib;
         this.identificationNumber = identificationNumber;
@@ -58,7 +59,7 @@ public class Company implements Serializable {
         this.processes = processes;
     }
 
-    public Company(String name, int pib, String identificationNumber, String headquarters) {
+    public Company(String name, String pib, String identificationNumber, String headquarters) {
         this.name = name;
         this.pib = pib;
         this.identificationNumber = identificationNumber;
@@ -77,10 +78,10 @@ public class Company implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public int getPib() {
+    public String getPib() {
         return pib;
     }
-    public void setPib(int pib) {
+    public void setPib(String pib) {
         this.pib = pib;
     }
     public String getIdentificationNumber() {

@@ -7,7 +7,7 @@ package org.nst.dms.controllers.rest;
 
 import org.nst.dms.service.CompanyService;
 import java.util.List;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.nst.dms.domain.Company;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -33,7 +33,7 @@ public class SearchController {
     @Autowired
     private CompanyService companyService;
 
-    @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
     public ResponseEntity<JSONObject> search(String name) {
         List<Company> companies = companyService.search(name);
         JSONObject jSONObject = new JSONObject();

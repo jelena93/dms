@@ -32,6 +32,7 @@ public class LoginController {
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String homePage(Authentication authentication) {
         SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        user.getBreadcrumbs().clear();
         switch (user.getActiveRole()) {
             case ADMIN:
                 return "admin_home";

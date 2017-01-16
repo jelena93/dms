@@ -7,8 +7,14 @@ package org.nst.dms.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.nst.dms.domain.Company;
+import org.nst.dms.domain.Descriptor;
+import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
+import org.nst.dms.repositories.DocumentTypeRepository;
+import org.nst.dms.service.CompanyService;
+import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +27,11 @@ public class InitializingBeanImpl implements InitializingBean {
 
     @Autowired
     UserService userService;
-
+    @Autowired 
+    CompanyService companyService;
+    @Autowired
+    DocumentTypeService documentTypeService;
+    
     @Override
     public void afterPropertiesSet() throws Exception {
         List<Role> roles = new ArrayList<>();
@@ -32,5 +42,13 @@ public class InitializingBeanImpl implements InitializingBean {
         roles.add(Role.UPLOADER);
         user = new User("Zika", "Zikic", "asd", "asd", null, roles);
         userService.save(user);
+        
+        Company company = new Company("Soko Stark d.o.o", "011111111", "01111111", "Vozdovac, Beograd");
+        companyService.save(company);
+        
+        List<Descriptor> descriptors = new ArrayList<>();
+        descriptors.add(new Descriptor("broj racuna", "11111111111"));
+        DocumentType documentType = new DocumentType("Racun", descriptors);
+        documentTypeService.save(documentType);
     }
 }

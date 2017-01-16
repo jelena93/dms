@@ -37,7 +37,7 @@ public class CompanyController {
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public String save(String name, int pib, String identificationNumber, String headquarters) {
+    public String save(String name, String pib, String identificationNumber, String headquarters) {
         Company c = new Company(name, pib, identificationNumber, headquarters);
         companyService.save(c);
         return "redirect:/companies/search";

@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class Descriptor implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "descriptor_id")
+    @GeneratedValue
     @NotNull
     private Long id;
     @Column(name = "descriptorKey")
@@ -35,8 +37,7 @@ public class Descriptor implements Serializable {
 
     public Descriptor() { }
 
-    public Descriptor(Long id, String key, String value) {
-        this.id = id;
+    public Descriptor(String key, String value) {
         this.key = key;
         this.value = value;
     }

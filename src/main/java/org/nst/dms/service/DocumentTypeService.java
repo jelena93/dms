@@ -15,4 +15,5 @@ import org.nst.dms.domain.DocumentType;
 public interface DocumentTypeService {
 
     List<DocumentType> findAll();
+    DocumentType save(DocumentType documentType);
 }
