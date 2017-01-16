@@ -28,5 +28,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     public DocumentType save(DocumentType documentType) {
         return documentRepository.save(documentType);
     }
+    @Override
+    public DocumentType find(Long id) {
+        return documentRepository.findOne(id);
+    }
 
 }

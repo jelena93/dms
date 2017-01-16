@@ -13,7 +13,7 @@ import org.nst.dms.domain.DocumentType;
  * @author Hachiko
  */
 public interface DocumentTypeService {
-
     List<DocumentType> findAll();
     DocumentType save(DocumentType documentType);
+    DocumentType find(Long id);
 }

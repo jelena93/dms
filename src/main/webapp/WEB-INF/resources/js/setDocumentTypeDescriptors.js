@@ -5,8 +5,8 @@ function showDescriptors() {
     $.ajax({
         type: "GET",
         contentType: "application/json",
-        url: "/dms/api/document-type/name",
-        data: {name: docType},
+        url: "/dms/api/document-type",
+        data: {id: docType},
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },

@@ -50,5 +50,9 @@ public class InitializingBeanImpl implements InitializingBean {
         descriptors.add(new Descriptor("broj racuna", "11111111111"));
         DocumentType documentType = new DocumentType("Racun", descriptors);
         documentTypeService.save(documentType);
+        descriptors.clear();
+        descriptors.add(new Descriptor("broj porudzbenice", "11111111111"));
+        documentType = new DocumentType("Porudzbenica", descriptors);
+        documentTypeService.save(documentType);
     }
 }
