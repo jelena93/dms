@@ -10,7 +10,7 @@
         <meta name="_csrf" content="${_csrf.token}"/>
         <meta name="_csrf_header" content="${_csrf.headerName}"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="<c:url value="/resources/img/favicon.png" />">
+        <link rel="shortcut icon" href="<c:url value="/resources/img/favicon.jpg" />" />
         <!-- Bootstrap CSS -->    
         <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
         <!-- bootstrap theme -->
