@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>            
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
-<input class="form-control" name="companyId" id="company" type="text" onkeyup="search(this.value)" />
+<input class="form-control" name="company" id="company" type="text" onkeyup="search(this.value)" placeholder="Enter company name" />
 <br/>
 <script language=javascript>
     var action_url_show_company = "${pageContext.request.contextPath}/${action_url_show_company}";

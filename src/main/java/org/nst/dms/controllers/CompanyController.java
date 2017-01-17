@@ -39,10 +39,10 @@ public class CompanyController {
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public String save(String name, String pib, String identificationNumber, String headquarters) {
+    public ModelAndView save(String name, String pib, String identificationNumber, String headquarters) {
         Company c = new Company(name, pib, identificationNumber, headquarters);
         companyService.save(c);
-        return "redirect:/companies/search";
+        return new ModelAndView("add_company", "success_message", "Company successfully added");
     }
 
     @RequestMapping(path = "/search", method = RequestMethod.GET)

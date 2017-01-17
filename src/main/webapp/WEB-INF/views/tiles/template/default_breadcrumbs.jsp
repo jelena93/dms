@@ -5,7 +5,7 @@
         <ol class="breadcrumb">
             <li><a href="${pageContext.request.contextPath}">Home</a></li>
                 <c:choose>
-                    <c:when test="">
+                    <c:when test="${empty user.breadcrumbs}">
                     <li>Dashboard</li>	
                     </c:when>
                     <c:otherwise>

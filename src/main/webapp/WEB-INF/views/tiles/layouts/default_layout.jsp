@@ -55,6 +55,9 @@
             <section id="main-content">
                 <section class="wrapper">            
                     <tiles:insertAttribute name="breadcrumbs" />
+                    <c:if test="${not empty success_message}">
+                        <tiles:insertAttribute name="success_message" />
+                    </c:if>
                     <tiles:insertAttribute name="site_content" />
                 </section>
             </section>

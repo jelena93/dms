@@ -38,11 +38,11 @@ function search(name) {
 }
 function setCompany(id) {
     $("#company").val(id);
-    $("#company").attr("disabled", "disabled");
+    $("#company").attr("readonly", "readonly");
     $("#btn-remove").show();
 }
 function removeCompany() {
     $("#company").val('');
-    $("#company").removeAttr("disabled");
+    $("#company").removeAttr("readonly");
     $("#btn-remove").hide();
 }

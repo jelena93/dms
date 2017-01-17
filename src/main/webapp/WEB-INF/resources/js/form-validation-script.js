@@ -31,6 +31,9 @@ var Script = function () {
                 document: {
                     required: true
                 },
+                company: {
+                    required: true
+                },
                 roles: "required"
             },
             messages: {
@@ -60,6 +63,9 @@ var Script = function () {
                 },
                 document: {
                     required: "Please provide document."
+                },
+                company: {
+                    required: "Please provide a company."
                 }
             }
         });

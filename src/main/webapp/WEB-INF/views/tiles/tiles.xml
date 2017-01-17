@@ -20,6 +20,7 @@
         <put-attribute name="action_companies_search_name" value="" />  
         <put-attribute name="action_type_companies_search" value="" />  
         <put-attribute name="action_url_show_company" value="" />  
+        <put-attribute name="success_message" value="/WEB-INF/views/pages/success_message.jsp" />  
     </definition>  
  
     <!-- Login Page -->
@@ -87,5 +88,5 @@
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/company.jsp" />  
     </definition>  
-  
+    
 </tiles-definitions>

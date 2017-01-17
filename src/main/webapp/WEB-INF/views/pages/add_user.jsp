@@ -3,7 +3,14 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <div class="row">
     <div class="col-lg-12">
-        ${poruka}
+        <c:if test="${not empty poruka}">
+            <div class="alert alert-success fade in">
+                <button data-dismiss="alert" class="close close-sm" type="button">
+                    <i class="icon-remove"></i>
+                </button>
+                <strong>${poruka}</strong> 
+            </div>  
+        </c:if>
         <section class="panel">
             <header class="panel-heading"> ${title}</header>
             <div class="panel-body">
@@ -44,7 +51,7 @@
                             </div>
                         </div>
                         <div class="form-group ">
-                            <label for="company" class="control-label col-lg-2">Company</label>
+                            <label for="company" class="control-label col-lg-2">Company <span class="required">*</span></label>
                             <div class="col-lg-8">
                                 <jsp:include page="search_companies.jsp"/>
                             </div>
