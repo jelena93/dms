@@ -32,11 +32,17 @@
         <tiles:importAttribute name="action_url_add_user" scope="request" ignore="true" />
         <tiles:importAttribute name="action_url_add_process" scope="request" ignore="true"/>
         <tiles:importAttribute name="action_url_add_document" scope="request" ignore="true"/>
+        <tiles:importAttribute name="action_companies_search_name" scope="request" ignore="true"/>
+        <tiles:importAttribute name="action_type_companies_search" scope="request" ignore="true"/>
+        <tiles:importAttribute name="action_url_show_company" scope="request" ignore="true"/>
         <sec:authentication var="user" property="principal" scope="request"/>
         <title>${title}</title>
     </head>
 
     <body>
+        <script language=javascript>
+            var action_type_companies_search = "${action_type_companies_search}";
+        </script>
         <!-- container section start -->
         <section id="container" class="">
             <header class="header dark-bg">

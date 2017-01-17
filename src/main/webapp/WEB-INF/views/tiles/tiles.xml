@@ -17,6 +17,9 @@
         <put-attribute name="action_url_add_user" value="users/add" />  
         <put-attribute name="action_url_add_process" value="processes/add" />  
         <put-attribute name="action_url_add_document" value="documents/add" />  
+        <put-attribute name="action_companies_search_name" value="" />  
+        <put-attribute name="action_type_companies_search" value="" />  
+        <put-attribute name="action_url_show_company" value="" />  
     </definition>  
  
     <!-- Login Page -->
@@ -54,6 +57,9 @@
         <put-attribute name="title" value="Search companies" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/search_companies.jsp" />  
+        <put-attribute name="action_companies_search_name" value="Show company" />  
+        <put-attribute name="action_type_companies_search" value="show" />  
+        <put-attribute name="action_url_show_company" value="companies/company" />  
     </definition>  
     
     <definition name="add_user" extends="default_layout">  
@@ -61,6 +67,7 @@
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_user.jsp" />  
         <put-attribute name="search_companies" value="/WEB-INF/views/pages/search_companies.jsp" />  
+        <put-attribute name="action_type_companies_search" value="set" />  
     </definition>  
   
     <definition name="add_process" extends="default_layout">  
@@ -73,6 +80,12 @@
         <put-attribute name="title" value="Add document" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/uploader_left_side_menu.jsp" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_document.jsp" />  
+    </definition>  
+    
+    <definition name="company" extends="default_layout">  
+        <put-attribute name="title" value="Company" />  
+        <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/company.jsp" />  
     </definition>  
   
 </tiles-definitions>
