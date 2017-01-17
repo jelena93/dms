@@ -8,17 +8,18 @@ function search(name) {
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
-         dataType: 'json',
+        dataType: 'json',
         success: function (data) {
-            $("#table-companies tbody").remove();
+            console.log(data)
+            $("#table-companies tbody").html('');
             for (var i = 0; i < data.length; i++) {
                 $('#table-companies tbody').
                         append('<tr><td>' + data[i].id + '</td><td>' + data[i].name + '</td><td>' +
                                 data[i].pib + '</td><td>'
                                 + data[i].identificationNumber + '</td><td>' +
-                                data[i].headquarters 
-                                + '</td><td> <div class="btn-group" <a class="btn btn-success"'
-                                +'<i class="icon_check_alt2"></i></a></div></td></tr>');
+                                data[i].headquarters
+                                + '</td><td> <div class="btn-group"><a class="btn btn-success" onclick="setCompany('
+                                + data[i].id + ')"><i class="icon_check_alt2"></i></a></div></td></tr>');
             }
         },
         error: function (e) {
