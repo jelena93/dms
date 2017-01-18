@@ -26,8 +26,6 @@ import org.nst.dms.service.DocumentService;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -38,8 +36,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/documents")
 public class DocumentController {
 
-    @Autowired
-    private DocumentService documentService;
     @Autowired
     private DocumentTypeService documentTypeService;
     @Autowired
