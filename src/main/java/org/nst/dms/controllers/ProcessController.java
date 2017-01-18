@@ -38,10 +38,10 @@ public class ProcessController {
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public String save(String name, int processId, boolean primitive) {
-        
+    public ModelAndView save(String name, boolean primitive) {
+
 //        Process p = processService.save(process);
-        return "";
+        return new ModelAndView("add_process", "success_message", "Process successfully added");
     }
 
     @RequestMapping(path = "/search", method = RequestMethod.POST)

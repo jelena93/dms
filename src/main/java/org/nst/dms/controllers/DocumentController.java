@@ -17,6 +17,7 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
+import org.nst.dms.exceptions.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,7 +78,7 @@ public class DocumentController {
             documentTypeService.save(documentType);
             processService.save(process);
         }
-        return new ModelAndView("add_document", "poruka", "Dodat dokument");
+        return new ModelAndView("add_document", "success_message", "Document successfully added");
     }
 
     private String saveFile(MultipartFile file) {
@@ -97,8 +98,7 @@ public class DocumentController {
             }
             return url;
         } catch (IOException e) {
-            System.out.println("You failed to upload " + file.getOriginalFilename() + " => " + e.getMessage());
+            throw new CustomException("Failed to upload " + file.getOriginalFilename() + "\n" + e.getMessage(), "500");
         }
-        return "You failed to upload " + file.getOriginalFilename() + " => ";
     }
 }

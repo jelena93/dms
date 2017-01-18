@@ -8,7 +8,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="<c:url value="/resources/img/favicon.png" />">
+        <link rel="shortcut icon" href="<c:url value="/resources/img/favicon.jpg" />" />
         <!-- Bootstrap CSS -->    
         <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
         <!-- bootstrap theme -->
@@ -22,16 +22,14 @@
         <link href="<c:url value="/resources/css/style-responsive.css" />" rel="stylesheet">
         <script src="<c:url value="/resources/js/jquery.js" />"></script>
 
-        <tiles:importAttribute name="action_url_back" />
         <sec:authentication var="user" property="principal" scope="request"/>
-        <title>${title}</title>
+        <title>${title} ${error.errorCode}</title>
     </head>
     <body>
         <div class="page-404">
-            <p class="text-404">404</p>
-
+            <p class="text-404">${error.errorCode}</p>
             <h2>Aww Snap!</h2>
-            <p>${error} <br><a href="${pageContext.request.contextPath}">Return Home</a></p>
+            <p>${error.errorMessage} <br><a href="${pageContext.request.contextPath}">Return Home</a></p>
         </div>
     </body>
 </html>

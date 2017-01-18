@@ -10,7 +10,7 @@
         <meta name="_csrf" content="${_csrf.token}"/>
         <meta name="_csrf_header" content="${_csrf.headerName}"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="<c:url value="/resources/img/favicon.png" />">
+        <link rel="shortcut icon" href="<c:url value="/resources/img/favicon.jpg" />" />
         <!-- Bootstrap CSS -->    
         <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
         <!-- bootstrap theme -->
@@ -32,11 +32,17 @@
         <tiles:importAttribute name="action_url_add_user" scope="request" ignore="true" />
         <tiles:importAttribute name="action_url_add_process" scope="request" ignore="true"/>
         <tiles:importAttribute name="action_url_add_document" scope="request" ignore="true"/>
+        <tiles:importAttribute name="action_companies_search_name" scope="request" ignore="true"/>
+        <tiles:importAttribute name="action_type_companies_search" scope="request" ignore="true"/>
+        <tiles:importAttribute name="action_url_show_company" scope="request" ignore="true"/>
         <sec:authentication var="user" property="principal" scope="request"/>
         <title>${title}</title>
     </head>
 
     <body>
+        <script language=javascript>
+            var action_type_companies_search = "${action_type_companies_search}";
+        </script>
         <!-- container section start -->
         <section id="container" class="">
             <header class="header dark-bg">
@@ -49,6 +55,9 @@
             <section id="main-content">
                 <section class="wrapper">            
                     <tiles:insertAttribute name="breadcrumbs" />
+                    <c:if test="${not empty success_message}">
+                        <tiles:insertAttribute name="success_message" />
+                    </c:if>
                     <tiles:insertAttribute name="site_content" />
                 </section>
             </section>
