@@ -47,19 +47,19 @@ public class UserRepositoryTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        try {
-            System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-                    "org.apache.naming.java.javaURLContextFactory");
-            System.setProperty(Context.URL_PKG_PREFIXES,
-                    "org.apache.naming");
-            Context initCtx = new InitialContext();
-        Context envCtx = (Context) initCtx.lookup("java:comp/env");
-        DataSource ds = (DataSource) envCtx.lookup("jdbc/dms");
-
-            initCtx.bind("java:comp/env/jdbc/dms", ds);
-        } catch (NamingException ex) {
-            Logger.getLogger(UserRepositoryTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+//                    "org.apache.naming.java.javaURLContextFactory");
+//            System.setProperty(Context.URL_PKG_PREFIXES,
+//                    "org.apache.naming");
+//            Context initCtx = new InitialContext();
+//        Context envCtx = (Context) initCtx.lookup("java:comp/env");
+//        DataSource ds = (DataSource) envCtx.lookup("jdbc/dms");
+//
+//            initCtx.bind("java:comp/env/jdbc/dms", ds);
+//        } catch (NamingException ex) {
+//            Logger.getLogger(UserRepositoryTest.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     @After

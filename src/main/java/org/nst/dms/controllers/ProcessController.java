@@ -27,7 +27,6 @@ public class ProcessController {
     @Autowired
     private ProcessService processService;
 
-    //ovako? gde se definise? svi get process zahtevi ovde?
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public String addProcess(Authentication authentication) {
         SecurityUser user = (SecurityUser) authentication.getPrincipal();
@@ -50,7 +49,6 @@ public class ProcessController {
         user.getBreadcrumbs().clear();
         user.getBreadcrumbs().add("Processes");
         user.getBreadcrumbs().add("Search process");
-//        @TODO obrada greske ako je null
         List<Process> processes = processService.findAll();
         return new ModelAndView("search_processes", "processes", processes);
     }

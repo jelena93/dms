@@ -51,7 +51,6 @@ public class CompanyController {
         user.getBreadcrumbs().clear();
         user.getBreadcrumbs().add("Companies");
         user.getBreadcrumbs().add("Search companies");
-//        @TODO obrada greske ako je null
         List<Company> companies = companyService.findAll();
         return new ModelAndView("search_companies", "companies", companies);
     }
