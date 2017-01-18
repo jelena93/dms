@@ -51,34 +51,36 @@ public class DocumentController {
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
+        mv.addObject("action_type_processes_search", "add_document");
         return mv;
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long processId) {
-        String url = saveFile(file);
         Process process = processService.find(processId);
-        if (process.isPrimitive()) {
-            DocumentType documentType = documentTypeService.find(docType);
-            List<Descriptor> descriptors = documentType.getDescriptors();
-            List<Descriptor> newDescriptors = new ArrayList<>();
-            for (Descriptor descriptor : descriptors) {
-                String key = descriptor.getKey();
-                String value = request.getParameter(key);
-                Descriptor newDescriptor = new Descriptor(key, value,docType);
-                newDescriptors.add(newDescriptor);
-            }
-//            descriptors.addAll(newDescriptors);
-            Document document = new Document(url);
-            document.setDescriptors(newDescriptors);
-            if (inputOutput.equals("input")) {
-                process.getInputList().add(document);
-            } else {
-                process.getOutputList().add(document);
-            }
-            documentTypeService.save(documentType);
-            processService.save(process);
+        if (!process.isPrimitive()) {
+            throw new CustomException("Can't add document to a non primitive process", "500");
         }
+        String url = saveFile(file);
+        DocumentType documentType = documentTypeService.find(docType);
+        List<Descriptor> descriptors = documentType.getDescriptors();
+        List<Descriptor> newDescriptors = new ArrayList<>();
+        for (Descriptor descriptor : descriptors) {
+            String key = descriptor.getKey();
+            String value = request.getParameter(key);
+            Descriptor newDescriptor = new Descriptor(key, value, docType);
+            newDescriptors.add(newDescriptor);
+        }
+//            descriptors.addAll(newDescriptors);
+        Document document = new Document(url);
+        document.setDescriptors(newDescriptors);
+        if (inputOutput.equals("input")) {
+            process.getInputList().add(document);
+        } else {
+            process.getOutputList().add(document);
+        }
+        documentTypeService.save(documentType);
+        processService.save(process);
         return new ModelAndView("add_document", "success_message", "Document successfully added");
     }
 

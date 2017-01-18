@@ -45,7 +45,7 @@ public class ProcessContollerTest {
 
     @Before
     public void setup() throws Exception {
-        process = new Process("Proces 1", null, true, null, null);
+        process = new Process("Proces 1", null, true);
         List<Process> processes = new ArrayList<>();
         processes.add(process);
         Mockito.when(processService.search("Proces 1")).thenReturn(processes);

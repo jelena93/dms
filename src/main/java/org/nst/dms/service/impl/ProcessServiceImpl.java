@@ -36,5 +36,9 @@ public class ProcessServiceImpl implements ProcessService {
     public Process find(long id) {
         return processRepository.findOne(id);
     }
+    @Override
+    public List<Process> getRootProcesses() {
+        return processRepository.getRootProcesses();
+    }
 
 }

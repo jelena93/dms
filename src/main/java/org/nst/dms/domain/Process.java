@@ -53,7 +53,7 @@ public class Process implements Serializable {
 
     public Process() { }
 
-    public Process(String name, Process parent, boolean primitive, List<Document> inputList, List<Document> outputList) {
+    public Process(String name, Process parent, boolean primitive) {
         this.name = name;
         this.parent = parent;
         this.primitive = primitive;

@@ -17,4 +17,5 @@ public interface ProcessService {
     List<Process> findAll();
     Process save(Process process);
     Process find(long id);
+    List<Process> getRootProcesses();
 }

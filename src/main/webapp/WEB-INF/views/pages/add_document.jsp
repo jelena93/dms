@@ -26,11 +26,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="file" class="control-label col-lg-2">Document <span class="required">*</span></label>
-                            <input type="file" id="file" name="file">
-                            <input type="text" id="asd" name="processId" value="1">
-                        </div>
-                        <div class="form-group">
                             <label for="docType" class="control-label col-lg-2">Document type </label>
                             <div class="col-lg-10">
                                 <select class="form-control" name="docType" id="docType" onchange="showDescriptors()">
@@ -55,6 +50,22 @@
                                         </c:forEach>
                                     </div>
                                 </section>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="file" class="control-label col-lg-2">Document <span class="required">*</span></label>
+                            <input type="file" id="file" name="file">
+                        </div>
+                        <div class="form-group ">
+                            <label for="processId" class="control-label col-lg-2">Process </label>
+                            <div class="col-lg-10">
+                                <input class="form-control" id="processId" name="processId" type="text" onkeyup="searchProcesses(this.value)" placeholder="Search processes"/>
+                                <br/>
+                                <div class="well">
+                                    <h5>Choose a primitive process</h5>
+                                    <div id="processes">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">

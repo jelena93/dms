@@ -36,7 +36,7 @@ public class ProcessServiceTest {
     private ProcessRepository processRepository;
     @Before
     public void setup() {
-        Process process = new Process("Proces 1", null, true, null, null);
+        Process process = new Process("Proces 1", null, true);
         List<Process> processes = new ArrayList<>();
         processes.add(process);
         

@@ -5,12 +5,16 @@
  */
 package org.nst.dms.controllers.rest;
 
+import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
+import org.nst.dms.domain.Process;
+import org.nst.dms.domain.dto.ProcessDto;
 import org.nst.dms.service.DocumentTypeService;
+import org.nst.dms.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.repository.query.Param;
@@ -35,6 +39,8 @@ public class SearchController {
     private CompanyService companyService;
     @Autowired
     private DocumentTypeService documentTypeService;
+    @Autowired
+    private ProcessService processService;
 
     @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
     public ResponseEntity<List<Company>> search(@Param("name")String name) {
@@ -49,6 +55,33 @@ public class SearchController {
     public ResponseEntity<List<Descriptor>> getDocumentTypeDescriptors(Long id) {
         DocumentType documentType = documentTypeService.find(id);
         return new ResponseEntity<>(documentType.getDescriptors(), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/processes/search", method = RequestMethod.GET)
+    public ResponseEntity<List<ProcessDto>> getProcesses(@Param("name") String name) {
+        List<Process> processes;
+        if (name == null || name.isEmpty()) {
+            processes = processService.findAll();
+        } else {
+            processes = processService.search(name);
+        }
+        List<ProcessDto> data = new ArrayList<>();
+        for (Process process : processes) {
+            ProcessDto p;
+            String icon;
+            if (process.isPrimitive()) {
+                icon = "glyphicon glyphicon-ok";
+            } else {
+                icon = "glyphicon glyphicon-folder-open";
+            }
+            if (process.getParent() == null) {
+                p = new ProcessDto(process.getId(), "#", process.getName(), icon, process.isPrimitive());
+            } else {
+                p = new ProcessDto(process.getId(), process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
+            }
+            data.add(p);
+        }
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @ExceptionHandler(Exception.class)

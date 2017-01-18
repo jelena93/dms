@@ -22,7 +22,17 @@
         <!-- Custom styles -->
         <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
         <link href="<c:url value="/resources/css/style-responsive.css" />" rel="stylesheet">
-        <script src="<c:url value="/resources/js/jquery.js" />"></script>
+        <!--jstree-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+        <c:if test="${action_type_processes_search=='add_parent'}">
+            <script src="<c:url value="/resources/js/processes-tree-add-parent.js" />"></script>
+        </c:if>
+        <c:if test="${action_type_processes_search=='add_document'}">
+            <script src="<c:url value="/resources/js/processes-tree-add-document.js" />"></script>
+        </c:if>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet">
 
         <tiles:importAttribute name="title" scope="request"/>
         <tiles:importAttribute name="site_name" scope="request" />
