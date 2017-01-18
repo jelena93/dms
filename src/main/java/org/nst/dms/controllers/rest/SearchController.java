@@ -7,13 +7,13 @@ package org.nst.dms.controllers.rest;
 
 import org.nst.dms.service.CompanyService;
 import java.util.List;
-import org.json.JSONObject;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.service.DocumentTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +37,10 @@ public class SearchController {
     private DocumentTypeService documentTypeService;
 
     @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
-    public ResponseEntity<List<Company>> search(String name) {
+    public ResponseEntity<List<Company>> search(@Param("name")String name) {
+        System.out.println("@@@@@@@@@@@" + name);
         List<Company> companies;
-        if(name.isEmpty()) companies = companyService.findAll();
+        if(name == null || name.isEmpty()) companies = companyService.findAll();
         else companies = companyService.search(name);
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }

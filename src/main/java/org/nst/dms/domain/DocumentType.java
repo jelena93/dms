@@ -6,6 +6,7 @@
 package org.nst.dms.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
@@ -16,7 +17,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -38,16 +38,17 @@ public class DocumentType implements Serializable {
     @NotNull
     private String name;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "document_type_descriptors", joinColumns = @JoinColumn(name = "document_type"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
+    @JoinColumn(name = "document_type")
     private List<Descriptor> descriptors;
 
-    public DocumentType() { }
-
-    public DocumentType(String name, List<Descriptor> descriptors) {
-        this.name = name;
-        this.descriptors = descriptors;
+    public DocumentType() {
+        descriptors = new ArrayList<>();
     }
 
+    public DocumentType(String name) {
+        this.name = name;
+        descriptors = new ArrayList<>();
+    }
     public Long getId() {
         return id;
     }

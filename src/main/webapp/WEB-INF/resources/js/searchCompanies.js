@@ -3,6 +3,7 @@ var header = $("meta[name='_csrf_header']").attr("content");
 var action_type_companies_search;
 var action_url_show_company;
 function search(name) {
+    console.log(name);
     $.ajax({
         type: "GET",
         url: "/dms/api/companies/search",

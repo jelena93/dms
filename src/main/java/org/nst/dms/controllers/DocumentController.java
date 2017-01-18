@@ -65,11 +65,12 @@ public class DocumentController {
             for (Descriptor descriptor : descriptors) {
                 String key = descriptor.getKey();
                 String value = request.getParameter(key);
-                Descriptor newDescriptor = new Descriptor(key, value);
+                Descriptor newDescriptor = new Descriptor(key, value,docType);
                 newDescriptors.add(newDescriptor);
             }
-            descriptors.addAll(newDescriptors);
-            Document document = new Document(documentType, url);
+//            descriptors.addAll(newDescriptors);
+            Document document = new Document(url);
+            document.setDescriptors(newDescriptors);
             if (inputOutput.equals("input")) {
                 process.getInputList().add(document);
             } else {

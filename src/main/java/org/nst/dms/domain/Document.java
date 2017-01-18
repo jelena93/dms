@@ -6,13 +6,18 @@
 package org.nst.dms.domain;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -30,18 +35,16 @@ public class Document implements Serializable {
     @GeneratedValue
     @NotNull
     private Long id;
-    @NotNull
-    @JoinColumn(name = "document_type_id")
-    @OneToOne
-    private DocumentType documentType;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "document_descriptors", joinColumns = @JoinColumn(name = "document"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
+    private List<Descriptor> descriptors;
     @Column(name = "url")
     @NotNull
     private String url;
 
     public Document() { }
     
-    public Document(DocumentType documentType, String url) {
-        this.documentType = documentType;
+    public Document(String url) {
         this.url = url;
     }
     public Long getId() {
@@ -50,17 +53,17 @@ public class Document implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    public DocumentType getDocumentType() {
-        return documentType;
-    }
-    public void setDocumentType(DocumentType documentType) {
-        this.documentType = documentType;
-    }
     public String getUrl() {
         return url;
     }
     public void setUrl(String url) {
         this.url = url;
+    }
+    public List<Descriptor> getDescriptors() {
+        return descriptors;
+    }
+    public void setDescriptors(List<Descriptor> descriptors) {
+        this.descriptors = descriptors;
     }
     @Override
     public int hashCode() {

@@ -9,13 +9,21 @@ import java.util.ArrayList;
 import static junit.framework.Assert.assertEquals;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nst.dms.config.AppConfig;
+import org.nst.dms.config.WebConfig;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
@@ -29,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Hachiko
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class})
+@ContextConfiguration(classes = {AppConfig.class, WebConfig.class})
 @Transactional
 public class UserRepositoryTest {
 
@@ -37,12 +45,21 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
     private User user;
 
-    @Before
-    public void setupData() {
-        Company company = new Company("Soko Štark d.o.o. Beograd", "100002799", "07026447", "Bulevar Peka Dapčevića 29, Voždovac, Beograd", null);
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.ADMIN);
-        user = new User("Ana", "Licina", "hachiko93", "hachiko93", company, roles);
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        try {
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                    "org.apache.naming.java.javaURLContextFactory");
+            System.setProperty(Context.URL_PKG_PREFIXES,
+                    "org.apache.naming");
+            Context initCtx = new InitialContext();
+        Context envCtx = (Context) initCtx.lookup("java:comp/env");
+        DataSource ds = (DataSource) envCtx.lookup("jdbc/dms");
+
+            initCtx.bind("java:comp/env/jdbc/dms", ds);
+        } catch (NamingException ex) {
+            Logger.getLogger(UserRepositoryTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @After

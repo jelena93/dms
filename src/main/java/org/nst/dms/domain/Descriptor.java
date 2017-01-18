@@ -28,6 +28,9 @@ public class Descriptor implements Serializable {
     @GeneratedValue
     @NotNull
     private Long id;
+    @Column(name = "document_type")
+    @NotNull
+    private Long documentType;
     @Column(name = "descriptorKey")
     @NotNull
     private String key;
@@ -37,11 +40,11 @@ public class Descriptor implements Serializable {
 
     public Descriptor() { }
 
-    public Descriptor(String key, String value) {
+    public Descriptor(String key, String value, Long documentType) {
         this.key = key;
         this.value = value;
+        this.documentType = documentType;
     }
-
     public Long getId() {
         return id;
     }
@@ -59,6 +62,12 @@ public class Descriptor implements Serializable {
     }
     public void setValue(String value) {
         this.value = value;
+    }
+    public Long getDocumentType() {
+        return documentType;
+    }
+    public void setDocumentType(Long documentType) {
+        this.documentType = documentType;
     }
     @Override
     public int hashCode() {
