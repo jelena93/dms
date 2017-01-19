@@ -21,18 +21,7 @@
                             </div>
                         </div>
                         <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <div class="form-group ">
-                            <label for="parent" class="control-label col-lg-2">Parent </label>
-                            <div class="col-lg-10">
-                                <input class="form-control" id="parent" name="parent" type="text" onkeyup="searchProcesses(this.value)" placeholder="Search processes"/>
-                                <br/>
-                                <div class="well">
-                                    <h5>Choose a non primitive process for a parent</h5>
-                                    <div id="processes">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <%@include file="process.jsp" %>
                         <div class="form-group">
                             <div class="col-lg-offset-10 col-lg-2">
                                 <button class="btn btn-primary" type="submit">${title}</button>

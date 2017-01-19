@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.io.FileUtils;
 import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
@@ -56,8 +57,8 @@ public class DocumentController {
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long processId) {
-        Process process = processService.find(processId);
+    public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long parent) {
+        Process process = processService.find(parent);
         if (!process.isPrimitive()) {
             throw new CustomException("Can't add document to a non primitive process", "500");
         }
@@ -87,13 +88,11 @@ public class DocumentController {
     private String saveFile(MultipartFile file) {
         try {
             byte[] bytes = file.getBytes();
-            // Creating the directory to store file
             String rootPath = System.getProperty("catalina.home");
             File dir = new File(rootPath + File.separator + "dms-documents");
             if (!dir.exists()) {
-                dir.mkdirs();
+                dir.mkdir();
             }
-            // Create the file on server
             String url = dir.getAbsolutePath() + File.separator + file.getOriginalFilename();
             File serverFile = new File(url);
             try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile))) {

@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.domain.Process;
 import org.nst.dms.exceptions.CustomException;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -64,11 +65,4 @@ public class ProcessController {
         List<Process> processes = processService.findAll();
         return new ModelAndView("search_processes", "processes", processes);
     }
-
-//    @RequestMapping(path = "/search", method = RequestMethod.POST)
-//    public ModelAndView search(String name) {
-////        @TODO obrada greske ako je null
-//        List<Process> processes = processService.search(name);
-//        return new ModelAndView("search_processes", "processes", processes);
-//    }
 }

@@ -13,6 +13,7 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.dto.ProcessDto;
+import org.nst.dms.exceptions.CustomException;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +37,7 @@ import org.springframework.web.context.request.WebRequest;
  */
 @RestController
 public class SearchController {
+
     @Autowired
     private CompanyService companyService;
     @Autowired
@@ -43,11 +46,13 @@ public class SearchController {
     private ProcessService processService;
 
     @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
-    public ResponseEntity<List<Company>> search(@Param("name")String name) {
-        System.out.println("@@@@@@@@@@@" + name);
+    public ResponseEntity<List<Company>> search(@Param("name") String name) {
         List<Company> companies;
-        if(name == null || name.isEmpty()) companies = companyService.findAll();
-        else companies = companyService.search(name);
+        if (name == null || name.isEmpty()) {
+            companies = companyService.findAll();
+        } else {
+            companies = companyService.search(name);
+        }
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 
@@ -56,7 +61,7 @@ public class SearchController {
         DocumentType documentType = documentTypeService.find(id);
         return new ResponseEntity<>(documentType.getDescriptors(), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/api/processes", method = RequestMethod.GET)
     public ResponseEntity<List<ProcessDto>> getProcesses() {
         List<Process> processes = processService.findAll();
@@ -108,12 +113,21 @@ public class SearchController {
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
+    @RequestMapping(path = "/api/process/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Process> showCompany(@PathVariable("id") long id) {
+        Process process = processService.find(id);
+        if (process == null) {
+            throw new CustomException("There is no process with id " + id, "404");
+        }
+        return new ResponseEntity<>(process, HttpStatus.OK);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleError(Exception ex, WebRequest request) {
         return new ResponseEntity<Object>(
-            ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+                ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
-    
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));

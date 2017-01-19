@@ -12,7 +12,6 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
-import org.nst.dms.repositories.DocumentTypeRepository;
 import org.nst.dms.service.CompanyService;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.UserService;
