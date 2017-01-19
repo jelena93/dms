@@ -5,7 +5,7 @@ $(function () {
     $('#processes').jstree({
         'core': {
             'data': {
-                'url': '/dms/api/processes/search',
+                'url': '/dms/api/processes',
                 'data': function (node) {
                     return {'id': node.id};
                 }
@@ -22,7 +22,7 @@ $(function () {
         } else {
             selectedProcessId = data.node.id;
         }
-        console.log(data.node.original.primitive)
+        console.log(data.node.original.primitive);
     });
 });
 function searchProcesses(name) {

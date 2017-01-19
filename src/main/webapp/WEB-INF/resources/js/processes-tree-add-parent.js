@@ -5,7 +5,7 @@ $(function () {
     $('#processes').jstree({
         'core': {
             'data': {
-                'url': '/dms/api/processes/search',
+                'url': '/dms/api/processes',
                 'data': function (node) {
                     return {'id': node.id};
                 }

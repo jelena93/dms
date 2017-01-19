@@ -57,14 +57,9 @@ public class SearchController {
         return new ResponseEntity<>(documentType.getDescriptors(), HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/api/processes/search", method = RequestMethod.GET)
-    public ResponseEntity<List<ProcessDto>> getProcesses(@Param("name") String name) {
-        List<Process> processes;
-        if (name == null || name.isEmpty()) {
-            processes = processService.findAll();
-        } else {
-            processes = processService.search(name);
-        }
+    @RequestMapping(value = "/api/processes", method = RequestMethod.GET)
+    public ResponseEntity<List<ProcessDto>> getProcesses() {
+        List<Process> processes = processService.findAll();
         List<ProcessDto> data = new ArrayList<>();
         for (Process process : processes) {
             ProcessDto p;
@@ -80,6 +75,35 @@ public class SearchController {
                 p = new ProcessDto(process.getId(), process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
             }
             data.add(p);
+        }
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/api/processes/search", method = RequestMethod.GET)
+    public ResponseEntity<List<ProcessDto>> searchProcesses(@Param("name") String name) {
+        if (name == null || name.isEmpty()) {
+            return getProcesses();
+        }
+        List<Process> processesAll = processService.findAll();
+        List<Process> processesName = processService.search(name);
+        List<ProcessDto> data = new ArrayList<>();
+        for (Process process : processesAll) {
+            ProcessDto p;
+            String icon;
+            if (process.isPrimitive()) {
+                icon = "glyphicon glyphicon-ok";
+            } else {
+                icon = "glyphicon glyphicon-folder-open";
+            }
+            if (processesName.contains(process)) {
+                p = new ProcessDto(process.getId(), "#", process.getName(), icon, process.isPrimitive());
+                data.add(p);
+            } else {
+                if (processesName.contains(process.getParent())) {
+                    p = new ProcessDto(process.getId(), process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
+                    data.add(p);
+                }
+            }
         }
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
