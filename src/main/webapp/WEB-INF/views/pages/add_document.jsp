@@ -7,7 +7,7 @@
             <header class="panel-heading"> ${title}</header>
             <div class="panel-body">
                 <div class="form">
-                    <form class="form-validate form-horizontal " id="register_form" method="POST" onsubmit="return onSubmitForm()" action="${pageContext.request.contextPath}/${action_url_add_document}?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
+                    <form class="form-validate form-horizontal " id="register_form" method="POST" onsubmit="return onSubmitForm()" action="${pageContext.request.contextPath}/${action_url_add_document}" enctype="multipart/form-data">
                         <div class="form-group">
                             <label class="control-label col-lg-2" for="inputSuccess">Input or output</label>
                             <div class="col-lg-10">
@@ -57,6 +57,7 @@
                             <input type="file" id="file" name="file">
                         </div>
                         <%@include file="process.jsp" %>
+                        <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-lg-10">
                                 <button class="btn btn-primary" type="submit">${title}</button>
