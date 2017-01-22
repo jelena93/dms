@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.io.FileUtils;
 import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.nst.dms.service.DocumentService;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
 import org.springframework.security.core.Authentication;
@@ -45,20 +43,16 @@ public class DocumentController {
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
-        user.getBreadcrumbs().clear();
-        user.getBreadcrumbs().add("Documents");
-        user.getBreadcrumbs().add("Add document");
         ModelAndView mv = new ModelAndView("add_document");
+        setBreadcrumbs(authentication);
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
-        mv.addObject("action_type_processes_search", "add_document");
         return mv;
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long parent) {
-        Process process = processService.find(parent);
+    public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long processId) {
+        Process process = processService.find(processId);
         if (!process.isPrimitive()) {
             throw new CustomException("Can't add document to a non primitive process", "500");
         }
@@ -82,7 +76,11 @@ public class DocumentController {
         }
         documentTypeService.save(documentType);
         processService.save(process);
-        return new ModelAndView("add_document", "success_message", "Document successfully added");
+        List<DocumentType> documentTypes = documentTypeService.findAll();
+        ModelAndView mv = new ModelAndView("add_document");
+        mv.addObject("documentTypes", documentTypes);
+        mv.addObject("success_message", "Document successfully added");
+        return mv;
     }
 
     private String saveFile(MultipartFile file) {
@@ -102,5 +100,12 @@ public class DocumentController {
         } catch (IOException e) {
             throw new CustomException("Failed to upload " + file.getOriginalFilename() + "\n" + e.getMessage(), "500");
         }
+    }
+
+    private void setBreadcrumbs(Authentication authentication) {
+        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        user.getBreadcrumbs().clear();
+        user.getBreadcrumbs().add("Documents");
+        user.getBreadcrumbs().add("Add document");
     }
 }

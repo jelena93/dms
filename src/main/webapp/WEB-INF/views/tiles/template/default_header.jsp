@@ -1,4 +1,8 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<tiles:importAttribute name="site_name"/>
+<tiles:importAttribute name="action_logout_url"/>
 <div class="toggle-nav">
     <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
 </div>

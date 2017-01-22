@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>            
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <div class="row">
     <div class="col-lg-12">
         ${poruka}
@@ -44,10 +43,3 @@
         </section>
     </div>
 </div>
-</section>
-</div>
-</div>
-<!-- jquery validate js -->
-<script src="<c:url value="/resources/js/jquery.validate.min.js" />"></script>
-<!-- custom form validation script for this page-->
-<script src="<c:url value="/resources/js/form-validation-script.js" />"></script>

@@ -11,7 +11,6 @@ function showDescriptors() {
         },
         dataType: 'json',
         success: function (data) {
-            console.log(data)
             for (var i = 0; i < data.length; i++) {
                 var descriptors = '<div class="form-group"> <label for="' + data[i].id
                         + '" class="control-label col-lg-2">' + data[i].key

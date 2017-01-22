@@ -1,10 +1,5 @@
 var Script = function () {
-
     $().ready(function () {
-        // validate the comment form when it is submitted
-        $("#feedback_form").validate();
-
-        // validate signup form on keyup and submit
         $("#register_form").validate({
             rules: {
                 name: {
@@ -32,6 +27,9 @@ var Script = function () {
                     required: true
                 },
                 company: {
+                    required: true
+                },
+                processId: {
                     required: true
                 },
                 roles: "required"
@@ -66,22 +64,11 @@ var Script = function () {
                 },
                 company: {
                     required: "Please provide a company."
+                },
+                processId: {
+                    required: "Please provide a primitive process."
                 }
             }
         });
-
-        //code to hide topic selection, disable for demo
-        var newsletter = $("#newsletter");
-        // newsletter topics are optional, hide at first
-        var inital = newsletter.is(":checked");
-        var topics = $("#newsletter_topics")[inital ? "removeClass" : "addClass"]("gray");
-        var topicInputs = topics.find("input").attr("disabled", !inital);
-        // show when newsletter is checked
-        newsletter.click(function () {
-            topics[this.checked ? "removeClass" : "addClass"]("gray");
-            topicInputs.attr("disabled", !this.checked);
-        });
     });
-
-
 }();
