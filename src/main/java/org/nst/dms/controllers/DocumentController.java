@@ -18,6 +18,7 @@ import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.controllers.exceptions.CustomException;
+import org.nst.dms.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
+import org.nst.dms.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,11 +42,16 @@ public class DocumentController {
     private DocumentTypeService documentTypeService;
     @Autowired
     private ProcessService processService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save(Authentication authentication) {
         ModelAndView mv = new ModelAndView("add_document");
-        setBreadcrumbs(authentication);
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        setBreadcrumbs(securityUser);
+        User user = userService.findOne(securityUser.getUsername());
+        mv.addObject("company", user.getCompany());
         mv.addObject("documentTypes", getDocs());
         return mv;
     }
@@ -100,8 +107,7 @@ public class DocumentController {
         }
     }
 
-    private void setBreadcrumbs(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+    private void setBreadcrumbs(SecurityUser user) {
         user.getBreadcrumbs().clear();
         user.getBreadcrumbs().add("Documents");
         user.getBreadcrumbs().add("Add document");

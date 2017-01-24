@@ -8,20 +8,24 @@ package org.nst.dms.controllers.rest;
 import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
+import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.dto.ProcessDto;
 import org.nst.dms.controllers.exceptions.CustomException;
+import org.nst.dms.domain.User;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
+import org.nst.dms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -44,6 +48,8 @@ public class SearchController {
     private DocumentTypeService documentTypeService;
     @Autowired
     private ProcessService processService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
     public ResponseEntity<List<Company>> search(@Param("name") String name) {
@@ -63,8 +69,10 @@ public class SearchController {
     }
 
     @RequestMapping(value = "/api/processes", method = RequestMethod.GET)
-    public ResponseEntity<List<ProcessDto>> getProcesses() {
-        List<Process> processes = processService.findAll();
+    public ResponseEntity<List<ProcessDto>> getProcesses(Authentication authentication) {
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        User user = userService.findOne(securityUser.getUsername());
+        List<Process> processes = user.getCompany().getProcesses();
         List<ProcessDto> data = new ArrayList<>();
         for (Process process : processes) {
             ProcessDto p;
@@ -85,10 +93,12 @@ public class SearchController {
     }
 
     @RequestMapping(value = "/api/processes/search", method = RequestMethod.GET)
-    public ResponseEntity<List<ProcessDto>> searchProcesses(@Param("name") String name) {
+    public ResponseEntity<List<ProcessDto>> searchProcesses(Authentication authentication, @Param("name") String name) {
         if (name == null || name.isEmpty()) {
-            return getProcesses();
+            return getProcesses(authentication);
         }
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        //pronaci procese kompanije ulogovanog usera
         List<Process> processesAll = processService.findAll();
         List<Process> processesName = processService.search(name);
         List<ProcessDto> data = new ArrayList<>();
@@ -114,7 +124,7 @@ public class SearchController {
     }
 
     @RequestMapping(path = "/api/process/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Process> showCompany(@PathVariable("id") long id) {
+    public ResponseEntity<Process> showProcess(@PathVariable("id") long id) {
         Process process = processService.find(id);
         if (process == null) {
             throw new CustomException("There is no process with id " + id, "404");

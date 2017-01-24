@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-lg-12">
         <section class="panel">
-            <header class="panel-heading"> ${title}</header>
+            <header class="panel-heading"> ${title} for company: ${company.name}</header>
             <div class="panel-body">
                 <div class="form">
                     <form class="form-validate form-horizontal " id="register_form" method="POST" onsubmit="return onSubmitFormAddDocument()" action="${pageContext.request.contextPath}/${action_url_add_document}" enctype="multipart/form-data">

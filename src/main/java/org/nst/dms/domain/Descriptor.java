@@ -11,7 +11,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -25,7 +27,8 @@ public class Descriptor implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "descriptor_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "descriptor_seq")
+    @SequenceGenerator(name = "descriptor_seq", sequenceName = "descriptor_seq")
     @NotNull
     private Long id;
     @Column(name = "document_type")

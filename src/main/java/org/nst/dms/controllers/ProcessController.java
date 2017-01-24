@@ -45,8 +45,7 @@ public class ProcessController {
         securityUser.getBreadcrumbs().add("Add process");
         ModelAndView mv = new ModelAndView("add_process");
         User user = userService.findOne(securityUser.getUsername());
-        Company company = companyService.findOne(user.getCompany().getId());
-        mv.addObject("company", company);
+        mv.addObject("company", user.getCompany());
         return mv;
     }
 
@@ -63,11 +62,12 @@ public class ProcessController {
         } else {
             process = new Process(name, null, primitive);
         }
-        processService.save(process);
         ModelAndView mv = new ModelAndView("add_process");
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         User user = userService.findOne(securityUser.getUsername());
         Company company = companyService.findOne(user.getCompany().getId());
+        company.getProcesses().add(process);
+        companyService.save(company);
         mv.addObject("company", company);
         mv.addObject("success_message", "Process successfully added");
         return mv;
