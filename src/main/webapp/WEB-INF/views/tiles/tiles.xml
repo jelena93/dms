@@ -64,6 +64,7 @@
     
     <!-- Home Page Admin-->
     <definition name="admin_home" extends="default_layout"> 
+        <put-attribute name="active_role" value="ADMIN" cascade="true" />  
         <put-attribute name="action_url_search_companies" value="companies/search" cascade="true" />  
         <put-attribute name="action_url_add_company" value="companies/add" cascade="true" />  
         <put-attribute name="action_url_add_user" value="users/add" cascade="true" />  
@@ -72,12 +73,14 @@
     
     <!-- Home Page User -->
     <definition name="user_home" extends="default_layout">  
+        <put-attribute name="active_role" value="USER" cascade="true" />  
         <put-attribute name="action_url_add_process" value="processes/add" cascade="true"/>  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/user_left_side_menu.jsp" />  
     </definition>  
     
     <!-- Home Page Uploader -->
     <definition name="uploader_home" extends="default_layout">  
+        <put-attribute name="active_role" value="UPLOADER" cascade="true" />  
         <put-attribute name="action_url_add_document" value="documents/add" cascade="true" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/uploader_left_side_menu.jsp" />  
     </definition>  

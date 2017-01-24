@@ -3,6 +3,7 @@
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <tiles:importAttribute name="site_name"/>
 <tiles:importAttribute name="action_logout_url"/>
+<tiles:importAttribute name="active_role" ignore="true"/>
 <div class="toggle-nav">
     <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
 </div>
@@ -11,7 +12,7 @@
     <ul class="nav pull-right top-menu">
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                <span class="username">Logged in as ${user.username} - ${user.activeRole}</span>
+                <span class="username">Logged in as ${user.username} - ${active_role}</span>
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
