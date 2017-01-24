@@ -13,7 +13,7 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.dto.ProcessDto;
-import org.nst.dms.exceptions.CustomException;
+import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;

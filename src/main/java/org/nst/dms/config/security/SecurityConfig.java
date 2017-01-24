@@ -5,6 +5,7 @@
  */
 package org.nst.dms.config.security;
 
+import org.nst.dms.domain.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +48,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/resources/**").permitAll()
+                .antMatchers("/companies/**").hasAuthority(Role.ADMIN.name())
+                .antMatchers("/users/**").hasAuthority(Role.ADMIN.name())
+                .antMatchers("/processes/**").hasAuthority(Role.USER.name())
+                .antMatchers("/documents/**").hasAuthority(Role.UPLOADER.name())
                 .anyRequest().authenticated()
+                .and().exceptionHandling().accessDeniedPage("/403")
                 .and().formLogin().loginPage("/login").permitAll()
                 .and().logout().logoutUrl("/logout");
 

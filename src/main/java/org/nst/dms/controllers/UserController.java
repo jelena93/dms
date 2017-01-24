@@ -11,7 +11,7 @@ import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
-import org.nst.dms.exceptions.CustomException;
+import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

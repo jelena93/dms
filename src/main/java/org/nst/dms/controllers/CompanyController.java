@@ -8,7 +8,7 @@ package org.nst.dms.controllers;
 import java.util.List;
 import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.domain.Company;
-import org.nst.dms.exceptions.CustomException;
+import org.nst.dms.controllers.exceptions.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

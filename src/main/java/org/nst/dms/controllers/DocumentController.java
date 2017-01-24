@@ -17,7 +17,7 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
-import org.nst.dms.exceptions.CustomException;
+import org.nst.dms.controllers.exceptions.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,8 +45,7 @@ public class DocumentController {
     public ModelAndView save(Authentication authentication) {
         ModelAndView mv = new ModelAndView("add_document");
         setBreadcrumbs(authentication);
-        List<DocumentType> documentTypes = documentTypeService.findAll();
-        mv.addObject("documentTypes", documentTypes);
+        mv.addObject("documentTypes", getDocs());
         return mv;
     }
 
@@ -76,9 +75,8 @@ public class DocumentController {
         }
         documentTypeService.save(documentType);
         processService.save(process);
-        List<DocumentType> documentTypes = documentTypeService.findAll();
         ModelAndView mv = new ModelAndView("add_document");
-        mv.addObject("documentTypes", documentTypes);
+        mv.addObject("documentTypes", getDocs());
         mv.addObject("success_message", "Document successfully added");
         return mv;
     }
@@ -107,5 +105,20 @@ public class DocumentController {
         user.getBreadcrumbs().clear();
         user.getBreadcrumbs().add("Documents");
         user.getBreadcrumbs().add("Add document");
+    }
+
+    private List<DocumentType> getDocs() {
+        List<DocumentType> documentTypesAll = documentTypeService.findAll();
+        List<DocumentType> documentTypes = new ArrayList<>();
+        for (DocumentType documentType : documentTypesAll) {
+            for (Descriptor descriptor : documentType.getDescriptors()) {
+                if (descriptor.getKey() == null) {
+                    DocumentType d = new DocumentType(documentType.getName());
+                    d.setId(documentType.getId());
+                    d.getDescriptors().add(descriptor);
+                }
+            }
+        }
+        return documentTypes;
     }
 }
