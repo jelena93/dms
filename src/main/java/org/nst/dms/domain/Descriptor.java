@@ -37,7 +37,7 @@ public class Descriptor implements Serializable {
     @Column(name = "descriptorKey")
     @NotNull
     private String key;
-    @Column(name = "descriptorValue")
+    @Column(name = "descriptorValue", unique = true)
     @NotNull
     private String value;
 

@@ -37,7 +37,7 @@ public class DocumentType implements Serializable {
     @Column(name = "document_type_id")
     @NotNull
     private Long id;
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     @NotNull
     private String name;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

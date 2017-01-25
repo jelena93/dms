@@ -52,6 +52,7 @@ public class DocumentController {
         setBreadcrumbs(securityUser);
         User user = userService.findOne(securityUser.getUsername());
         mv.addObject("company", user.getCompany());
+        System.out.println("######## usao ovde");
         mv.addObject("documentTypes", getDocs());
         return mv;
     }
@@ -118,10 +119,11 @@ public class DocumentController {
         List<DocumentType> documentTypes = new ArrayList<>();
         for (DocumentType documentType : documentTypesAll) {
             for (Descriptor descriptor : documentType.getDescriptors()) {
-                if (descriptor.getKey() == null) {
+                if (descriptor.getValue() == null) {
                     DocumentType d = new DocumentType(documentType.getName());
                     d.setId(documentType.getId());
                     d.getDescriptors().add(descriptor);
+                    documentTypes.add(d);
                 }
             }
         }
