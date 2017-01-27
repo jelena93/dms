@@ -1,13 +1,15 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>            
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<tiles:importAttribute name="action_url_add_document"/>
 <div class="row">
     <div class="col-lg-12">
-        ${poruka}
         <section class="panel">
-            <header class="panel-heading"> ${title}</header>
+            <header class="panel-heading"> ${title} for company: ${company.name}</header>
             <div class="panel-body">
                 <div class="form">
-                    <form class="form-validate form-horizontal " id="register_form" method="POST" onsubmit="return onSubmitForm()" action="${pageContext.request.contextPath}/${action_url_add_document}?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
+                    <form class="form-validate form-horizontal " id="register_form" method="POST" onsubmit="return onSubmitFormAddDocument()" action="${pageContext.request.contextPath}/${action_url_add_document}" enctype="multipart/form-data">
                         <div class="form-group">
                             <label class="control-label col-lg-2" for="inputSuccess">Input or output</label>
                             <div class="col-lg-10">
@@ -56,7 +58,8 @@
                             <label for="file" class="control-label col-lg-2">Document <span class="required">*</span></label>
                             <input type="file" id="file" name="file">
                         </div>
-                        <%@include file="process.jsp" %>
+                        <tiles:insertAttribute name="process" />
+                        <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-lg-10">
                                 <button class="btn btn-primary" type="submit">${title}</button>
@@ -68,11 +71,6 @@
         </section>
     </div>
 </div>
-</section>
-</div>
-</div>
-<!-- jquery validate js -->
-<script src="<c:url value="/resources/js/jquery.validate.min.js" />"></script>
-<!-- custom form validation script for this page-->
-<script src="<c:url value="/resources/js/form-validation-script.js" />"></script>
+<script src="<c:url value="/resources/js/processes-tree.js" />"></script>
 <script src="<c:url value="/resources/js/setDocumentTypeDescriptors.js" />"></script>
+<script>getProcessesForAddDocument();</script>

@@ -14,18 +14,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="<c:url value="/resources/img/favicon.jpg" />" />
-        <!-- Bootstrap CSS -->    
-        <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
-        <!-- bootstrap theme -->
-        <link href="<c:url value="/resources/css/bootstrap-theme.css" />" rel="stylesheet">
-        <!--external css-->
-        <!-- font icon -->
-        <link href="<c:url value="/resources/css/elegant-icons-style.css" />" rel="stylesheet" />
-        <link href="<c:url value="/resources/css/font-awesome.css" />" rel="stylesheet" />
-        <!-- Custom styles -->
-        <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
-        <link href="<c:url value="/resources/css/style-responsive.css" />" rel="stylesheet" />
+        <tiles:insertAttribute name="head" />
         <tiles:importAttribute name="title" />
         <tiles:importAttribute name="action_login_url" />
         <title>${title}</title>
@@ -53,7 +42,6 @@
                     <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
                 </div>
             </form>
-
         </div>
     </body>
 </html>

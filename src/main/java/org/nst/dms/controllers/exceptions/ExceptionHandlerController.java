@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.nst.dms.exceptions;
+package org.nst.dms.controllers.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -56,7 +56,7 @@ public class ExceptionHandlerController {
     @ExceptionHandler(NullPointerException.class)
     public ModelAndView handleNullPointerException(NullPointerException ex) {
         ModelAndView mv = new ModelAndView("error");
-        mv.addObject("error", "Nullpointer exception " + ex);
+        mv.addObject("error", new CustomException("Nullpointer exception " + ex, "500"));
         return mv;
     }
 }

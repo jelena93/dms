@@ -33,26 +33,24 @@ public class InitializingBeanImpl implements InitializingBean {
     
     @Override
     public void afterPropertiesSet() throws Exception {
+        Company company = new Company("Soko Stark d.o.o Beograd", "011111111", "01111111", "Vozdovac, Beograd");
+        companyService.save(company);
         List<Role> roles = new ArrayList<>();
         roles.add(Role.ADMIN);
         User user = new User("Pera", "Peric", "admin", "admin", null, roles);
         userService.save(user);
         roles.add(Role.USER);
         roles.add(Role.UPLOADER);
-        user = new User("Zika", "Zikic", "asd", "asd", null, roles);
+        user = new User("Zika", "Zikic", "asd", "asd", company, roles);
         userService.save(user);
-        
-        Company company = new Company("Soko Stark d.o.o Beograd", "011111111", "01111111", "Vozdovac, Beograd");
-        companyService.save(company);
-        
         DocumentType documentType = new DocumentType("Racun");
         documentType = documentTypeService.save(documentType);
-        Descriptor descriptor = new Descriptor("broj racuna", "", documentType.getId());
+        Descriptor descriptor = new Descriptor("broj racuna", null, documentType.getId());
         documentType.getDescriptors().add(descriptor);
         documentTypeService.save(documentType);
         documentType = new DocumentType("Porudzbenica");
         documentType = documentTypeService.save(documentType);
-        descriptor = new Descriptor("broj porudzbenice", "", documentType.getId());
+        descriptor = new Descriptor("broj porudzbenice", null, documentType.getId());
         documentType.getDescriptors().add(descriptor);
         documentTypeService.save(documentType);
     }

@@ -5,10 +5,7 @@
  */
 package org.nst.dms.service.impl;
 
-import org.nst.dms.domain.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.nst.dms.repositories.DocumentRepository;
 import org.nst.dms.service.DocumentService;
 
 /**
@@ -17,11 +14,4 @@ import org.nst.dms.service.DocumentService;
  */
 @Service
 public class DocumentServiceImpl implements DocumentService {
-    @Autowired
-    private DocumentRepository documentRepository;
-    @Override
-    public Document save(Document document) {
-        return documentRepository.save(document);
-    }
-
 }

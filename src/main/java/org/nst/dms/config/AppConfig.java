@@ -26,7 +26,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
+import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
@@ -102,12 +104,12 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public Properties jpaProperties() {
         Properties properties = new Properties();
         properties.put(PersistenceUnitProperties.WEAVING, "static");
-//        properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
-//        properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
-//        properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");
-//        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
-//        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_SOURCE, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
-//        properties.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
+        properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
+        properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
+        properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");
+        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
+        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_SOURCE, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
+        properties.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
 //        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_DROP_SOURCE, "META-INF/sql/data.sql");
 //        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SQL_LOAD_SCRIPT_SOURCE, "META-INF/sql/data.sql");
 //        properties.put("eclipselink.logging.level.sql", "FINE");
@@ -119,12 +121,9 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return new InitializingBeanImpl();
     }
 
-    @Bean
-    public CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-//        resolver.setMaxUploadSize(20000000);
-        resolver.setDefaultEncoding("utf-8");
-        return resolver;
+   @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
     }
 
 }

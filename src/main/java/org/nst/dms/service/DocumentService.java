@@ -5,12 +5,9 @@
  */
 package org.nst.dms.service;
 
-import org.nst.dms.domain.Document;
-
 /**
  *
  * @author Hachiko
  */
 public interface DocumentService {
-    Document save(Document document);
 }

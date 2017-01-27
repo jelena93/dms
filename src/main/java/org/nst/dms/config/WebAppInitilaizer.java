@@ -8,6 +8,7 @@ package org.nst.dms.config;
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
@@ -27,6 +28,7 @@ public class WebAppInitilaizer implements WebApplicationInitializer {
         servlet.addMapping("/");
         servlet.setLoadOnStartup(1);
         servlet.setInitParameter("throwExceptionIfNoHandlerFound", "true");
+        servlet.setMultipartConfig(new MultipartConfigElement("", 1000000, 1000000, 100000));
 
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");

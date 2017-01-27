@@ -1,7 +1,7 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
 var selectedProcessId = null;
-$(function () {
+function getProcessesForAddProcess() {
     $('#processes').jstree({
         'core': {
             'data': {
@@ -15,17 +15,49 @@ $(function () {
                 "variant": "large"
             },
             "plugins": ["wholerow"]
-        }});
-    $('#processes').on('activate_node.jstree', function (e, data) {
+        }}).on('activate_node.jstree', function (e, data) {
+        getProcessInfo(data.node.id);
+        if (data.node.original.primitive) {
+            data.instance.deselect_node(data.node, true);
+        } else {
+            if (selectedProcessId === data.node.id) {
+                data.instance.deselect_node(data.node, true);
+                selectedProcessId = null;
+            } else {
+                selectedProcessId = data.node.id;
+            }
+        }
+    });
+}
+function getProcessesForAddDocument() {
+    $('#processes').jstree({
+        'core': {
+            'data': {
+                'url': '/dms/api/processes',
+                'data': function (node) {
+                    return {'id': node.id};
+                }
+            },
+            "multiple": false,
+            "themes": {
+                "variant": "large"
+            },
+            "plugins": ["wholerow"]
+        }}).on('activate_node.jstree', function (e, data) {
         getProcessInfo(data.node.id);
         if (!data.node.original.primitive) {
             data.instance.deselect_node(data.node, true);
         } else {
-            selectedProcessId = data.node.id;
+            if (selectedProcessId === data.node.id) {
+                data.instance.deselect_node(data.node, true);
+                selectedProcessId = null;
+            } else {
+                selectedProcessId = data.node.id;
+            }
         }
-        console.log(data.node.original.primitive);
     });
-});
+}
+
 function searchProcesses(name) {
     $.ajax({
         type: "GET",
@@ -45,13 +77,6 @@ function searchProcesses(name) {
         }
     });
 }
-function onSubmitForm() {
-    if (selectedProcessId !== null) {
-        $("#parent").val(selectedProcessId);
-    }
-    return true;
-}
-
 function getProcessInfo(id) {
     $.ajax({
         type: "GET",
@@ -68,23 +93,24 @@ function getProcessInfo(id) {
             $('#process_name').html(data.name);
             $('#process_parent').html(data.parent === null ? "/" : data.parent.name);
             $('#process_primitive').html(data.primitive === true ? "YES" : "NO");
-            if(!data.primitive) return;
-            if(data.inputList.length > 0 ){
+            if (!data.primitive)
+                return;
+            if (data.inputList.length > 0) {
                 $('#input_header').show();
                 $('#input_list').html("");
                 for (var i = 0; i < data.inputList.length; i++) {
                     var documentNameList = data.inputList[i].url.split("/");
-                    var documentName = data.inputList[i].url.split("/")[documentNameList.length-1];
-                    $('#input_list').append('<p><span>Document URL: </span> <a href="' + documentNameList+ ' download">'+documentName+'</a></p>');
+                    var documentName = data.inputList[i].url.split("/")[documentNameList.length - 1];
+                    $('#input_list').append('<p><span>Document URL: </span> <a href="' + documentNameList + ' download">' + documentName + '</a></p>');
                 }
             }
-            if(data.outputList.length > 0){
+            if (data.outputList.length > 0) {
                 $('#output_header').show();
                 $('#output_list').html("");
                 for (var i = 0; i < data.outputList.length; i++) {
                     var documentNameList = data.outputList[i].url.split("/");
-                    var documentName = data.outputList[i].url.split("/")[documentNameList.length-1];
-                    $('#output_list').append('<p><span>Document URL: </span> <a href="' + documentNameList+ ' download">'+documentName+'</a></p>');
+                    var documentName = data.outputList[i].url.split("/")[documentNameList.length - 1];
+                    $('#output_list').append('<p><span>Document URL: </span> <a href="' + documentNameList + ' download">' + documentName + '</a></p>');
                 }
             }
         },
@@ -93,8 +119,24 @@ function getProcessInfo(id) {
         }
     });
 }
+function onSubmitForm() {
+    if (selectedProcessId !== null) {
+        $("#processId").val(selectedProcessId);
+    } else {
+        $("#processId").val(null);
+    }
+    return true;
+}
+function onSubmitFormAddDocument() {
+    if (selectedProcessId !== null) {
+        $("#processId").val(selectedProcessId);
+    } else {
+        $("#processId").val(null);
+    }
+    return true;
+}
 
-function clearInfo(){
+function clearInfo() {
     $('#process_info').html("");
     $('#process_id').html("");
     $('#process_name').html("");

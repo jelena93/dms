@@ -11,6 +11,7 @@ import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
+import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.UserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -39,20 +41,15 @@ public class UserController {
         user.getBreadcrumbs().clear();
         user.getBreadcrumbs().add("Users");
         user.getBreadcrumbs().add("Add user");
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.ADMIN);
-        roles.add(Role.USER);
-        roles.add(Role.UPLOADER);
         List<Company> companies = companyService.findAll();
         ModelAndView mv = new ModelAndView("add_user");
-        mv.addObject("roles", roles);
+        mv.addObject("roles", getRoles());
         mv.addObject("companies", companies);
         return mv;
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(String username, String password, String name, String surname, int company, String[] roles) {
-        Company c = companyService.findOne(company);
+    public ModelAndView save(String username, String password, String name, String surname, @RequestParam(name = "company", required = false) Long company, String[] roles) {
         List<Role> rolesArr = new ArrayList<>();
         for (String role : roles) {
             if (role.equals(Role.ADMIN.name())) {
@@ -65,8 +62,29 @@ public class UserController {
                 rolesArr.add(Role.UPLOADER);
             }
         }
+        Company c;
+        if (rolesArr.size() == 1 && rolesArr.contains(Role.ADMIN)) {
+            c = null;
+        } else if (company == null) {
+            throw new CustomException("Can't find company with id " + company, "500");
+        } else {
+            c = companyService.findOne(company);
+        }
         User user = new User(name, surname, username, password, c, rolesArr);
         userService.save(user);
-        return new ModelAndView("add_user", "success_message", "User successfully added");
+        List<Company> companies = companyService.findAll();
+        ModelAndView mv = new ModelAndView("add_user");
+        mv.addObject("roles", getRoles());
+        mv.addObject("companies", companies);
+        mv.addObject("success_message", "User successfully added");
+        return mv;
+    }
+
+    private List<Role> getRoles() {
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ADMIN);
+        roles.add(Role.USER);
+        roles.add(Role.UPLOADER);
+        return roles;
     }
 }
