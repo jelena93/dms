@@ -52,14 +52,6 @@ public class Company implements Serializable {
 
     public Company() { }
 
-    public Company(String name, String pib, String identificationNumber, String headquarters, List<Process> processes) {
-        this.name = name;
-        this.pib = pib;
-        this.identificationNumber = identificationNumber;
-        this.headquarters = headquarters;
-        this.processes = processes;
-    }
-
     public Company(String name, String pib, String identificationNumber, String headquarters) {
         this.name = name;
         this.pib = pib;
@@ -67,42 +59,26 @@ public class Company implements Serializable {
         this.headquarters = headquarters;
     }
     
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
+    public Company(String name, String pib, String identificationNumber, String headquarters, List<Process> processes) {
         this.name = name;
-    }
-    public String getPib() {
-        return pib;
-    }
-    public void setPib(String pib) {
         this.pib = pib;
-    }
-    public String getIdentificationNumber() {
-        return identificationNumber;
-    }
-    public void setIdentificationNumber(String identificationNumber) {
         this.identificationNumber = identificationNumber;
-    }
-    public String getHeadquarters() {
-        return headquarters;
-    }
-    public void setHeadquarters(String headquarters) {
         this.headquarters = headquarters;
-    }
-    public List<Process> getProcesses() {
-        return processes;
-    }
-    public void setProcesses(List<Process> processes) {
         this.processes = processes;
     }
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getPib() { return pib; }
+    public void setPib(String pib) { this.pib = pib; }
+    public String getIdentificationNumber() { return identificationNumber; }
+    public void setIdentificationNumber(String identificationNumber) { this.identificationNumber = identificationNumber; }
+    public String getHeadquarters() { return headquarters; }
+    public void setHeadquarters(String headquarters) { this.headquarters = headquarters; }
+    public List<Process> getProcesses() { return processes; }
+    public void setProcesses(List<Process> processes) { this.processes = processes; }
     @Override
     public int hashCode() {
         int hash = 7;

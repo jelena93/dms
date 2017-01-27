@@ -27,9 +27,8 @@ import javax.validation.constraints.NotNull;
  * @author Hachiko
  */
 @Entity
-@Table(name = "process")
-public class Process implements Serializable {
-
+@Table(name = "action")
+public class Action implements Serializable{
     @Id
     @Basic(optional = false)
     @NotNull
@@ -42,18 +41,18 @@ public class Process implements Serializable {
     @JoinColumn(name = "parent", nullable = true)
     @ManyToOne
     private Process parent;
-    @Column(name = "primitive")
-    private boolean primitive;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "process_actions", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "action"))
-    private List<Action> actionList;
+    @JoinTable(name = "action_input", joinColumns = @JoinColumn(name = "action"), inverseJoinColumns = @JoinColumn(name = "document"))
+    private List<Document> inputList;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "action_outputs", joinColumns = @JoinColumn(name = "action"), inverseJoinColumns = @JoinColumn(name = "document"))
+    private List<Document> outputList;
 
-    public Process() { }
+    public Action() { }
 
-    public Process(String name, Process parent, boolean primitive) {
+    public Action(String name, Process parent) {
         this.name = name;
         this.parent = parent;
-        this.primitive = primitive;
     }
 
     public Long getId() { return id; }
@@ -62,14 +61,14 @@ public class Process implements Serializable {
     public void setName(String name) { this.name = name; }
     public Process getParent() { return parent; }
     public void setParent(Process parent) { this.parent = parent; }
-    public boolean isPrimitive() { return primitive; }
-    public void setPrimitive(boolean primitive) { this.primitive = primitive; }
-    public List<Action> getActionList() { return actionList; }
-    public void setActionList(List<Action> actionList) { this.actionList = actionList; }
+    public List<Document> getInputList() { return inputList; }
+    public void setInputList(List<Document> inputList) { this.inputList = inputList; }
+    public List<Document> getOutputList() { return outputList; }
+    public void setOutputList(List<Document> outputList) { this.outputList = outputList; }
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.id);
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.id);
         return hash;
     }
     @Override
@@ -83,7 +82,7 @@ public class Process implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Process other = (Process) obj;
+        final Action other = (Action) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }

@@ -16,7 +16,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,8 +74,7 @@ public class ProcessRepositoryTest {
             assertEquals(this.process.getName(), process.getName());
             assertEquals(this.process.getParent(), process.getParent());
             assertEquals(this.process.isPrimitive(), process.isPrimitive());
-            assertEquals(this.process.getInputList(), process.getInputList());
-            assertEquals(this.process.getOutputList(), process.getOutputList());
+            assertEquals(this.process.getActionList(), process.getActionList());
         }
     }
 }

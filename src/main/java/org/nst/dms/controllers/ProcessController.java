@@ -16,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.domain.Process;
 import org.nst.dms.exceptions.CustomException;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -54,15 +53,5 @@ public class ProcessController {
         }
         processService.save(process);
         return new ModelAndView("add_process", "success_message", "Process successfully added");
-    }
-
-    @RequestMapping(path = "/search", method = RequestMethod.POST)
-    public ModelAndView findAll(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
-        user.getBreadcrumbs().clear();
-        user.getBreadcrumbs().add("Processes");
-        user.getBreadcrumbs().add("Search process");
-        List<Process> processes = processService.findAll();
-        return new ModelAndView("search_processes", "processes", processes);
     }
 }

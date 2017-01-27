@@ -45,30 +45,14 @@ public class Descriptor implements Serializable {
         this.value = value;
         this.documentType = documentType;
     }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getKey() {
-        return key;
-    }
-    public void setKey(String key) {
-        this.key = key;
-    }
-    public String getValue() {
-        return value;
-    }
-    public void setValue(String value) {
-        this.value = value;
-    }
-    public Long getDocumentType() {
-        return documentType;
-    }
-    public void setDocumentType(Long documentType) {
-        this.documentType = documentType;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getKey() { return key; }
+    public void setKey(String key) { this.key = key; }
+    public String getValue() { return value; }
+    public void setValue(String value) { this.value = value; }
+    public Long getDocumentType() { return documentType; }
+    public void setDocumentType(Long documentType) { this.documentType = documentType; }
     @Override
     public int hashCode() {
         int hash = 5;
@@ -96,6 +80,4 @@ public class Descriptor implements Serializable {
     public String toString() {
         return key + ": " + value;
     }
-    
-    
 }

@@ -47,24 +47,12 @@ public class Document implements Serializable {
     public Document(String url) {
         this.url = url;
     }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getUrl() {
-        return url;
-    }
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    public List<Descriptor> getDescriptors() {
-        return descriptors;
-    }
-    public void setDescriptors(List<Descriptor> descriptors) {
-        this.descriptors = descriptors;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getUrl() { return url; }
+    public void setUrl(String url) { this.url = url; }
+    public List<Descriptor> getDescriptors() { return descriptors; }
+    public void setDescriptors(List<Descriptor> descriptors) { this.descriptors = descriptors; }
     @Override
     public int hashCode() {
         int hash = 7;
@@ -88,11 +76,8 @@ public class Document implements Serializable {
         }
         return true;
     }
-
     @Override
     public String toString() {
         return url;
     }
-    
-    
 }

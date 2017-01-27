@@ -8,12 +8,14 @@ package org.nst.dms.controllers.rest;
 import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
+import org.nst.dms.domain.Action;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.dto.ProcessDto;
 import org.nst.dms.exceptions.CustomException;
+import org.nst.dms.service.ActionService;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +30,17 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
  * @author Hachiko
  */
 @RestController
-public class SearchController {
+public class RestApiController {
 
     @Autowired
     private CompanyService companyService;
@@ -44,6 +48,8 @@ public class SearchController {
     private DocumentTypeService documentTypeService;
     @Autowired
     private ProcessService processService;
+    @Autowired
+    private ActionService actionService;
 
     @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
     public ResponseEntity<List<Company>> search(@Param("name") String name) {
@@ -120,6 +126,19 @@ public class SearchController {
             throw new CustomException("There is no process with id " + id, "404");
         }
         return new ResponseEntity<>(process, HttpStatus.OK);
+    }
+    
+    @RequestMapping(path = "/api/action/edit", method = RequestMethod.POST)
+    public ModelAndView edit(Long id, String name, Long parent) {
+        if (parent == null) {
+            throw new CustomException("Action has to have a parent", "500");
+        }
+        Action action = actionService.find(id);
+        Process processParent = processService.find(parent);
+        action.setName(name);
+        action.setParent(processParent);
+        actionService.save(action);
+        return new ModelAndView("add_action", "success_message", "Action successfully edited");
     }
 
     @ExceptionHandler(Exception.class)

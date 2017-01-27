@@ -49,24 +49,12 @@ public class DocumentType implements Serializable {
         this.name = name;
         descriptors = new ArrayList<>();
     }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public List<Descriptor> getDescriptors() {
-        return descriptors;
-    }
-    public void setDescriptors(List<Descriptor> descriptors) {
-        this.descriptors = descriptors;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public List<Descriptor> getDescriptors() { return descriptors; }
+    public void setDescriptors(List<Descriptor> descriptors) { this.descriptors = descriptors; }
     @Override
     public int hashCode() {
         int hash = 3;
@@ -94,5 +82,4 @@ public class DocumentType implements Serializable {
     public String toString() {
         return name + ": "+ descriptors;
     }
-    
 }

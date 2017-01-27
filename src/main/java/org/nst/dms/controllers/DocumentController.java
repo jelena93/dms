@@ -12,19 +12,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.io.FileUtils;
 import org.nst.dms.config.security.SecurityUser;
+import org.nst.dms.domain.Action;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
-import org.nst.dms.domain.Process;
 import org.nst.dms.exceptions.CustomException;
+import org.nst.dms.service.ActionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.nst.dms.service.DocumentService;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
 import org.springframework.security.core.Authentication;
@@ -41,7 +40,7 @@ public class DocumentController {
     @Autowired
     private DocumentTypeService documentTypeService;
     @Autowired
-    private ProcessService processService;
+    private ActionService actionService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save(Authentication authentication) {
@@ -58,10 +57,7 @@ public class DocumentController {
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long parent) {
-        Process process = processService.find(parent);
-        if (!process.isPrimitive()) {
-            throw new CustomException("Can't add document to a non primitive process", "500");
-        }
+        Action action = actionService.find(parent);
         String url = saveFile(file);
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
@@ -72,16 +68,13 @@ public class DocumentController {
             Descriptor newDescriptor = new Descriptor(key, value, docType);
             newDescriptors.add(newDescriptor);
         }
-//            descriptors.addAll(newDescriptors);
         Document document = new Document(url);
         document.setDescriptors(newDescriptors);
-        if (inputOutput.equals("input")) {
-            process.getInputList().add(document);
-        } else {
-            process.getOutputList().add(document);
-        }
+        if(inputOutput.equals("input")) action.getInputList().add(document);
+        else action.getOutputList().add(document);
+        //@TODO provera da li su descriptori isti kao neki deskriptori
         documentTypeService.save(documentType);
-        processService.save(process);
+        actionService.save(action);
         return new ModelAndView("add_document", "success_message", "Document successfully added");
     }
 
