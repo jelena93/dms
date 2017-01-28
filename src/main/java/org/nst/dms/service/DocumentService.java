@@ -9,5 +9,5 @@ package org.nst.dms.service;
  *
  * @author Hachiko
  */
-public interface DocumentService {
-}
+//@TODO Da li treba da se brise?
+public interface DocumentService { }

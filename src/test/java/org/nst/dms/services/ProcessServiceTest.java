@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.mockito.Mockito;
-import static junit.framework.Assert.assertEquals;
-import org.junit.Test;
 import org.nst.dms.repositories.ProcessRepository;
 import org.nst.dms.service.ProcessService;
 import org.nst.dms.domain.Process;
@@ -27,6 +25,7 @@ import org.nst.dms.service.impl.ProcessServiceImpl;
  *
  * @author Hachiko
  */
+//@TODO Prepraviti process testove zbog izbacivanja search-a
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 public class ProcessServiceTest {
@@ -39,23 +38,10 @@ public class ProcessServiceTest {
         Process process = new Process("Proces 1", null, true);
         List<Process> processes = new ArrayList<>();
         processes.add(process);
-        
-        Mockito.when(processRepository.search("Proces 1")).thenReturn(processes);
     }
 
     @After
     public void verify() { }
-
-    @Test()
-    public void testSearch() {
-        List<Process> processes = processService.search("Proces 1");
-        for (Process process : processes) {
-            assertEquals("Proces 1", process.getName());
-//            assertEquals("100002799", process.getPib());
-//            assertEquals("07026447", process.getIdentificationNumber());
-//            assertEquals("Bulevar Peka Dapčevića 29, Voždovac, Beograd", process.getHeadquarters());
-        }
-    }
 
     @Configuration
     static class ProcessServiceTestContextConfiguration {

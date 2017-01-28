@@ -21,10 +21,6 @@ public class ProcessServiceImpl implements ProcessService {
     @Autowired
     private ProcessRepository processRepository;
     @Override
-    public List<Process> search(String name) {
-        return processRepository.search(name);
-    }
-    @Override
     public List<Process> findAll() {
         return processRepository.findAll();
     }
@@ -40,5 +36,4 @@ public class ProcessServiceImpl implements ProcessService {
     public List<Process> getRootProcesses() {
         return processRepository.getRootProcesses();
     }
-
 }

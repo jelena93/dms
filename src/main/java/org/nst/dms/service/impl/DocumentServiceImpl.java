@@ -12,6 +12,6 @@ import org.nst.dms.service.DocumentService;
  *
  * @author Hachiko
  */
+//@TODO Da li treba da se brise?
 @Service
-public class DocumentServiceImpl implements DocumentService {
-}
+public class DocumentServiceImpl implements DocumentService { }

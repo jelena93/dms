@@ -30,13 +30,7 @@ public class CompanyController {
     private CompanyService companyService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public String addProcess(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
-        user.getBreadcrumbs().clear();
-        user.getBreadcrumbs().add("Companies");
-        user.getBreadcrumbs().add("Add company");
-        return "add_company";
-    }
+    public String addProcess() { return "add_company"; }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(String name, String pib, String identificationNumber, String headquarters) {
@@ -46,25 +40,15 @@ public class CompanyController {
     }
 
     @RequestMapping(path = "/search", method = RequestMethod.GET)
-    public ModelAndView findAll(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
-        user.getBreadcrumbs().clear();
-        user.getBreadcrumbs().add("Companies");
-        user.getBreadcrumbs().add("Search companies");
+    public ModelAndView findAll() {
         List<Company> companies = companyService.findAll();
         return new ModelAndView("search_companies", "companies", companies);
     }
 
     @RequestMapping(path = "/company/{id}", method = RequestMethod.GET)
-    public ModelAndView showCompany(Authentication authentication, @PathVariable("id") long id) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
-        user.getBreadcrumbs().clear();
-        user.getBreadcrumbs().add("Companies");
-        user.getBreadcrumbs().add("Company");
+    public ModelAndView showCompany(@PathVariable("id") long id) {
         Company company = companyService.findOne(id);
-        if (company == null) {
-            throw new CustomException("There is no company with id " + id, "404");
-        }
+        if (company == null) throw new CustomException("There is no company with id " + id, "404");
         return new ModelAndView("company", "company", company);
     }
 

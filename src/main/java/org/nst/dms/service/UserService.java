@@ -12,7 +12,6 @@ import org.nst.dms.domain.User;
  * @author Jelena
  */
 public interface UserService {
-
     User login(String username, String password);
     User save(User user);
     User findOne(String username);

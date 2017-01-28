@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.nst.dms.domain.Process;
-import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -18,8 +17,6 @@ import org.springframework.data.repository.query.Param;
  */
 @Repository
 public interface ProcessRepository extends JpaRepository<Process, Long> {
-    @Query("SELECT p FROM Process p WHERE p.name LIKE CONCAT('%',:name,'%')")
-    List<Process> search(@Param("name") String name);
     @Query("SELECT p FROM Process p WHERE p.parent is NULL")
     List<Process> getRootProcesses();
 }

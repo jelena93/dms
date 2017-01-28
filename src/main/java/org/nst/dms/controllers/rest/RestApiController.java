@@ -8,13 +8,13 @@ package org.nst.dms.controllers.rest;
 import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
+import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Action;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.dto.ProcessDto;
-import org.nst.dms.exceptions.CustomException;
 import org.nst.dms.service.ActionService;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -89,36 +88,7 @@ public class RestApiController {
         }
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
-
-    @RequestMapping(value = "/api/processes/search", method = RequestMethod.GET)
-    public ResponseEntity<List<ProcessDto>> searchProcesses(@Param("name") String name) {
-        if (name == null || name.isEmpty()) {
-            return getProcesses();
-        }
-        List<Process> processesAll = processService.findAll();
-        List<Process> processesName = processService.search(name);
-        List<ProcessDto> data = new ArrayList<>();
-        for (Process process : processesAll) {
-            ProcessDto p;
-            String icon;
-            if (process.isPrimitive()) {
-                icon = "glyphicon glyphicon-ok";
-            } else {
-                icon = "glyphicon glyphicon-folder-open";
-            }
-            if (processesName.contains(process)) {
-                p = new ProcessDto(process.getId(), "#", process.getName(), icon, process.isPrimitive());
-                data.add(p);
-            } else {
-                if (processesName.contains(process.getParent())) {
-                    p = new ProcessDto(process.getId(), process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
-                    data.add(p);
-                }
-            }
-        }
-        return new ResponseEntity<>(data, HttpStatus.OK);
-    }
-
+    
     @RequestMapping(path = "/api/process/{id}", method = RequestMethod.GET)
     public ResponseEntity<Process> showCompany(@PathVariable("id") long id) {
         Process process = processService.find(id);

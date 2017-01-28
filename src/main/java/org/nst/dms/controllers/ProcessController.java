@@ -33,8 +33,6 @@ public class ProcessController {
     @Autowired
     private ProcessService processService;
     @Autowired
-    private CompanyService companyService;
-    @Autowired
     private UserService userService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
@@ -64,24 +62,5 @@ public class ProcessController {
         }
         processService.save(process);
         return new ModelAndView("add_process", "success_message", "Process successfully added");
-        ModelAndView mv = new ModelAndView("add_process");
-        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
-        User user = userService.findOne(securityUser.getUsername());
-        Company company = companyService.findOne(user.getCompany().getId());
-        company.getProcesses().add(process);
-        companyService.save(company);
-        mv.addObject("company", company);
-        mv.addObject("success_message", "Process successfully added");
-        return mv;
-    }
-
-    @RequestMapping(path = "/search", method = RequestMethod.POST)
-    public ModelAndView findAll(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
-        user.getBreadcrumbs().clear();
-        user.getBreadcrumbs().add("Processes");
-        user.getBreadcrumbs().add("Search process");
-        List<Process> processes = processService.findAll();
-        return new ModelAndView("search_processes", "processes", processes);
     }
 }

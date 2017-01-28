@@ -5,27 +5,16 @@
  */
 package org.nst.dms.repositories;
 
-import java.util.ArrayList;
 import static junit.framework.Assert.assertEquals;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nst.dms.config.AppConfig;
 import org.nst.dms.config.WebConfig;
-import org.nst.dms.domain.Company;
-import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

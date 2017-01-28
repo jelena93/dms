@@ -25,15 +25,12 @@ public class UserServiceImpl implements UserService {
     public User login(String username, String password) {
         return userRepository.login(username, password);
     }
-
     @Override
     public User save(User user) {
         return userRepository.save(user);
     }
-    
      @Override
     public User findOne(String username) {
         return userRepository.findOne(username);
     }
-
 }

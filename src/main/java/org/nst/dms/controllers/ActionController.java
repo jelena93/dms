@@ -5,6 +5,7 @@
  */
 package org.nst.dms.controllers;
 
+import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Action;
 import org.nst.dms.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.domain.Process;
-import org.nst.dms.exceptions.CustomException;
 import org.nst.dms.service.ActionService;
 
 /**

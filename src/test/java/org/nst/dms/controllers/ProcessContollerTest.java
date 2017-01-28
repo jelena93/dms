@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
  *
  * @author Hachiko
  */
+//@TODO Prepraviti process testove zbog izbacivanja search-a
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 public class ProcessContollerTest {
@@ -48,7 +49,6 @@ public class ProcessContollerTest {
         process = new Process("Proces 1", null, true);
         List<Process> processes = new ArrayList<>();
         processes.add(process);
-        Mockito.when(processService.search("Proces 1")).thenReturn(processes);
     }
 
     @Test
@@ -64,16 +64,8 @@ public class ProcessContollerTest {
                 .andExpect(status().isOk()).andExpect(redirectedUrl("add_process"));
     }
     
-    @Test
-    public void testSearch() throws Exception {
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.processController).build();
-        mockMvc.perform(post("/search")).andExpect(status().isOk()).andExpect(redirectedUrl("search_processes"));
-    }
-
     @After
     public void verify() {
-        Mockito.verify(this.processService, VerificationModeFactory.times(1)).search("Proces 1");
-        Mockito.reset();
     }
 
     @Configuration

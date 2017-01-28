@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Hachiko
  */
+//@TODO Prepraviti process testove zbog izbacivanja search-a
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class, WebConfig.class})
 @Transactional
@@ -65,16 +66,5 @@ public class ProcessRepositoryTest {
 
     @After
     public void tearDown() {
-    }
-
-    @Test
-    public void search() {
-        List<Process> processes = processRepository.search(this.process.getName());
-        for (Process process : processes) {
-            assertEquals(this.process.getName(), process.getName());
-            assertEquals(this.process.getParent(), process.getParent());
-            assertEquals(this.process.isPrimitive(), process.isPrimitive());
-            assertEquals(this.process.getActionList(), process.getActionList());
-        }
     }
 }
