@@ -5,9 +5,7 @@
  */
 package org.nst.dms.controllers;
 
-import java.util.List;
 import org.nst.dms.config.security.SecurityUser;
-import org.nst.dms.domain.Company;
 import org.nst.dms.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.User;
 import org.nst.dms.controllers.exceptions.CustomException;
-import org.nst.dms.service.CompanyService;
 import org.nst.dms.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -37,7 +37,7 @@ public class Document implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "document_descriptors", joinColumns = @JoinColumn(name = "document"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
     private List<Descriptor> descriptors;
-    @Column(name = "url")
+    @Column(name = "url", unique = true)
     @NotNull
     private String url;
 

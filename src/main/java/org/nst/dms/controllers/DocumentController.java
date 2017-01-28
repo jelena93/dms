@@ -18,6 +18,7 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.service.ActionService;
+import org.nst.dms.service.DescriptorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,8 @@ public class DocumentController {
     private DocumentTypeService documentTypeService;
     @Autowired
     private ActionService actionService;
+    @Autowired
+    private DescriptorService descriptorService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save() {
@@ -56,17 +59,24 @@ public class DocumentController {
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
         List<Descriptor> newDescriptors = new ArrayList<>();
+        List<Descriptor> existingDescriptors = descriptorService.getDescriptorValuesForDocumentType(docType);
+        int numberOfIdenticalDescriptors = 0;
         for (Descriptor descriptor : descriptors) {
             String key = descriptor.getKey();
             String value = request.getParameter(key);
             Descriptor newDescriptor = new Descriptor(key, value, docType);
             newDescriptors.add(newDescriptor);
+            //@TODO napisati equals metodu koja proverava key-value a ne id i radice bolje?
+            for (Descriptor existingDescriptor : existingDescriptors) {
+                if(newDescriptor.getKey().equals(existingDescriptor.getKey()) && newDescriptor.getValue().equals(existingDescriptor.getValue())) numberOfIdenticalDescriptors++;
+            }
         }
+        //@TODO neki dijalog da li ste sigurni da zelite da pregazite fajl il nesto tako?
+        if(numberOfIdenticalDescriptors == descriptors.size()) throw new CustomException("Document already exists", "500");
         Document document = new Document(url);
         document.setDescriptors(newDescriptors);
         if(inputOutput.equals("input")) action.getInputList().add(document);
         else action.getOutputList().add(document);
-        //@TODO provera da li su descriptori isti kao neki deskriptori
         documentTypeService.save(documentType);
         actionService.save(action);
         return new ModelAndView("add_document", "success_message", "Document successfully added");

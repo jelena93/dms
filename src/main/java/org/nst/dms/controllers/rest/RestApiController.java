@@ -14,7 +14,7 @@ import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
-import org.nst.dms.domain.dto.ProcessDto;
+import org.nst.dms.domain.dto.TreeDto;
 import org.nst.dms.service.ActionService;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
@@ -68,23 +68,23 @@ public class RestApiController {
     }
 
     @RequestMapping(value = "/api/processes", method = RequestMethod.GET)
-    public ResponseEntity<List<ProcessDto>> getProcesses() {
+    public ResponseEntity<List<TreeDto>> getProcesses() {
         List<Process> processes = processService.findAll();
-        List<ProcessDto> data = new ArrayList<>();
+        List<TreeDto> data = new ArrayList<>();
         for (Process process : processes) {
-            ProcessDto p;
+            TreeDto p;
             String icon;
-            if (process.isPrimitive()) {
-                icon = "glyphicon glyphicon-ok";
-            } else {
-                icon = "glyphicon glyphicon-folder-open";
-            }
-            if (process.getParent() == null) {
-                p = new ProcessDto(process.getId(), "#", process.getName(), icon, process.isPrimitive());
-            } else {
-                p = new ProcessDto(process.getId(), process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
-            }
+            icon = TreeDto.PROCESS_ICON;
+            if (process.getParent() == null) p = new TreeDto(process.getId(), "#", process.getName(), icon, process.isPrimitive());
+            else p = new TreeDto(process.getId(), process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
             data.add(p);
+            if(process.isPrimitive() && process.getActionList() != null) {
+                icon = TreeDto.ACTION_ICON;
+                for (Action action : process.getActionList()) {
+                    p = new TreeDto(action.getId(), action.getParent().getId()+"", action.getName(), icon);
+                    data.add(p);
+                }
+            }
         }
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
