@@ -75,16 +75,20 @@ public class RestApiController {
             TreeDto p;
             String icon;
             icon = TreeDto.PROCESS_ICON;
-            if (process.getParent() == null) p = new TreeDto(process.getId(), "#", process.getName(), icon, process.isPrimitive());
-            else p = new TreeDto(process.getId(), process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
+            if (process.getParent() == null) p = new TreeDto(process.getId()+"", "#", process.getName(), icon, process.isPrimitive());
+            else p = new TreeDto(process.getId()+"", process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
             data.add(p);
             if(process.isPrimitive() && process.getActionList() != null) {
                 icon = TreeDto.ACTION_ICON;
                 for (Action action : process.getActionList()) {
-                    p = new TreeDto(action.getId(), action.getParent().getId()+"", action.getName(), icon);
+                    p = new TreeDto("a"+action.getId(), action.getParent().getId()+"", action.getName(), icon);
                     data.add(p);
                 }
             }
+            System.out.println("@@"+process.isPrimitive()+" "+process.getActionList());
+        }
+        for (TreeDto treeDto : data) {
+            System.out.println(treeDto);
         }
         return new ResponseEntity<>(data, HttpStatus.OK);
     }

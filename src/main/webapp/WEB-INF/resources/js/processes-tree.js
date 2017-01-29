@@ -1,6 +1,7 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
-var selectedProcessId = null;
+var selectedNode = null;
+var actionEdit = false;
 function getProcessesForAddProcess() {
     $('#processes').jstree({
         'core': {
@@ -16,17 +17,40 @@ function getProcessesForAddProcess() {
             },
             "plugins": ["wholerow"]
         }}).on('activate_node.jstree', function (e, data) {
-        getProcessInfo(data.node.id);
+        if (selectedNode !== null && selectedNode.id === data.node.id) {
+            data.instance.deselect_node(data.node, true);
+            selectedNode = null;
+            $('#info').hide();
+            $("#btn-add-activity").prop("disabled", true);
+            $("#btn-add-process").prop("disabled", true);
+            return;
+        }
+        selectedNode = data.node.original;
+        console.log(selectedNode);
         if (data.node.original.primitive) {
+            getInfo(data.node.id, "/dms/api/process/" + selectedNode.id, false);
+            $("#btn-add-activity").prop("disabled", false);
+            $("#btn-add-process").prop("disabled", true);
+        } else if (data.node.original.activity) {
+            getInfo(data.node.id, "/dms/api/activity/" + selectedNode.id, true);
+            $("#btn-add-activity").prop("disabled", true);
+            $("#btn-add-process").prop("disabled", true);
             data.instance.deselect_node(data.node, true);
         } else {
-            if (selectedProcessId === data.node.id) {
-                data.instance.deselect_node(data.node, true);
-                selectedProcessId = null;
-            } else {
-                selectedProcessId = data.node.id;
-            }
+            getInfo(data.node.id, "/dms/api/process/" + selectedNode.id, false);
+            $("#btn-add-activity").prop("disabled", true);
+            $("#btn-add-process").prop("disabled", false);
         }
+//        if (data.node.original.primitive) {
+//            data.instance.deselect_node(data.node, true);
+//        } else {
+//            if (selectedNode.id === data.node.id) {
+//                data.instance.deselect_node(data.node, true);
+//                selectedNode = null;
+//            } else {
+//                selectedNode = data.node;
+//            }
+//        }
     });
 }
 function getProcessesForAddDocument() {
@@ -44,106 +68,109 @@ function getProcessesForAddDocument() {
             },
             "plugins": ["wholerow"]
         }}).on('activate_node.jstree', function (e, data) {
-        getProcessInfo(data.node.id);
+        getInfo(data.node.id);
         if (!data.node.original.primitive) {
             data.instance.deselect_node(data.node, true);
         } else {
-            if (selectedProcessId === data.node.id) {
+            if (selectedNode.id === data.node.id) {
                 data.instance.deselect_node(data.node, true);
-                selectedProcessId = null;
+                selectedNode = null;
             } else {
-                selectedProcessId = data.node.id;
+                selectedNode = data.node;
             }
         }
     });
 }
 
-function searchProcesses(name) {
+function getInfo(id, url, isActivity) {
     $.ajax({
         type: "GET",
-        url: "/dms/api/processes/search",
-        data: {name: name},
+        url: url,
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
         dataType: 'json',
         success: function (data) {
-            console.log(data);
-            $('#processes').jstree(true).settings.core.data = data;
-            $('#processes').jstree(true).refresh();
+            $('#id').val(data.id);
+            $('#name').val(data.name);
+            actionEdit = false;
+            if (isActivity) {
+                $("#primitive").hide();
+            } else {
+                $("#primitive").show();
+                $('#primitive').prop("checked", data.primitive);
+            }
+            $('#info').show();
         },
         error: function (e) {
-            console.log("ERROR: ", e);
-        }
-    });
-}
-function getProcessInfo(id) {
-    $.ajax({
-        type: "GET",
-        url: "/dms/api/process/" + id,
-        beforeSend: function (request) {
-            request.setRequestHeader(header, token);
-        },
-        dataType: 'json',
-        success: function (data) {
-            clearInfo();
-            $('#profile').show();
-            $('#process_info').html(data.name);
-            $('#process_id').html(data.id);
-            $('#process_name').html(data.name);
-            $('#process_parent').html(data.parent === null ? "/" : data.parent.name);
-            $('#process_primitive').html(data.primitive === true ? "YES" : "NO");
-            if (!data.primitive)
-                return;
-            if (data.inputList.length > 0) {
-                $('#input_header').show();
-                $('#input_list').html("");
-                for (var i = 0; i < data.inputList.length; i++) {
-                    var documentNameList = data.inputList[i].url.split("/");
-                    var documentName = data.inputList[i].url.split("/")[documentNameList.length - 1];
-                    $('#input_list').append('<p><span>Document URL: </span> <a href="' + documentNameList + ' download">' + documentName + '</a></p>');
-                }
-            }
-            if (data.outputList.length > 0) {
-                $('#output_header').show();
-                $('#output_list').html("");
-                for (var i = 0; i < data.outputList.length; i++) {
-                    var documentNameList = data.outputList[i].url.split("/");
-                    var documentName = data.outputList[i].url.split("/")[documentNameList.length - 1];
-                    $('#output_list').append('<p><span>Document URL: </span> <a href="' + documentNameList + ' download">' + documentName + '</a></p>');
-                }
-            }
-        },
-        error: function (e) {
-            console.log("ERROR: ", e);
+            showMessage(e, "alert-danger");
         }
     });
 }
 function onSubmitForm() {
-    if (selectedProcessId !== null) {
-        $("#processId").val(selectedProcessId);
+    if (selectedNode !== null) {
+        $("#processId").val(selectedNode.id);
     } else {
         $("#processId").val(null);
     }
     return true;
 }
 function onSubmitFormAddDocument() {
-    if (selectedProcessId !== null) {
-        $("#processId").val(selectedProcessId);
+    if (selectedNode !== null) {
+        $("#processId").val(selectedNode.id);
     } else {
         $("#processId").val(null);
     }
     return true;
 }
+function enableForm() {
+    if (!actionEdit) {
+        $('#name').prop("disabled", false);
+        $('#primitive').prop("disabled", false);
+        actionEdit = true;
+        $("#btn-edit").text("Save");
+    } else {
+        actionEdit = false;
+        var params = Array();
+        params["id"] = selectedNode.id;
+        params["name"] = $("#name").val();
+        var url = "";
+        if (selectedNode.activity) {
+            url = "/dms/api/activity/edit";
+        } else {
+            url = "/dms/api/process/edit";
+            params["primitive"] = $("#primitive").prop('checked');
+        }
+        edit(url, params);
+    }
+}
+function edit(url, params) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: params,
+        beforeSend: function (request) {
+            request.setRequestHeader(header, token);
+        },
+        dataType: 'json',
+        success: function (data) {
+            showMessage(data, "alert-success");
+        },
+        error: function (e) {
+            showMessage(e, "alert-danger");
 
-function clearInfo() {
-    $('#process_info').html("");
-    $('#process_id').html("");
-    $('#process_name').html("");
-    $('#process_parent').html("");
-    $('#process_primitive').html("");
-    $('#input_header').hide();
-    $('#output_header').hide();
-    $('#input_list').html("");
-    $('#output_list').html("");
+        }
+    });
+}
+function addActivity() {
+
+}
+function addProcess() {}
+
+function showMessage(data, messageType) {
+    $("#message-box").removeClass("alert-success");
+    $("#message-box").removeClass("alert-danger");
+    $("#message-box").addClass(messageType);
+    $("#message-text").html(data);
+    $("#message-box-container").show();
 }

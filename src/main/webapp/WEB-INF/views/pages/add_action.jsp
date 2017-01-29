@@ -26,9 +26,6 @@
         </section>
     </div>
 </div>
-</section>
-</div>
-</div>
 <!-- jquery validate js -->
 <script src="<c:url value="/resources/js/jquery.validate.min.js" />"></script>
 <!-- custom form validation script for this page-->

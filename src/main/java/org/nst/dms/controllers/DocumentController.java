@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Action;
@@ -41,6 +42,8 @@ public class DocumentController {
     private ActionService actionService;
     @Autowired
     private DescriptorService descriptorService;
+    @Autowired
+    ServletContext context;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save() {
@@ -85,17 +88,20 @@ public class DocumentController {
     private String saveFile(MultipartFile file) {
         try {
             byte[] bytes = file.getBytes();
-            String rootPath = System.getProperty("catalina.home");
-            File dir = new File(rootPath + File.separator + "dms-documents");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-            String url = dir.getAbsolutePath() + File.separator + file.getOriginalFilename();
-            File serverFile = new File(url);
-            try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile))) {
+            String relativeWebPath = "/resources/avatars";
+            String absoluteFilePath = context.getRealPath(relativeWebPath);
+            File uploadedFile = new File(absoluteFilePath, file.getOriginalFilename());
+//            String rootPath = System.getProperty("catalina.home");
+//            File dir = new File(rootPath + File.separator + "dms-documents");
+//            if (!dir.exists()) {
+//                dir.mkdir();
+//            }
+//            String url = dir.getAbsolutePath() + File.separator + file.getOriginalFilename();
+//            File serverFile = new File(url);
+            try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile))) {
                 stream.write(bytes);
             }
-            return url;
+            return absoluteFilePath + File.separator + file.getOriginalFilename();
         } catch (IOException e) {
             throw new CustomException("Failed to upload " + file.getOriginalFilename() + "\n" + e.getMessage(), "500");
         }
