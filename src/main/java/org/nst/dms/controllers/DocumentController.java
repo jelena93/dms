@@ -14,11 +14,10 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.nst.dms.controllers.exceptions.CustomException;
-import org.nst.dms.domain.Action;
+import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
-import org.nst.dms.service.ActionService;
 import org.nst.dms.service.DescriptorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.DocumentTypeService;
 import org.springframework.web.multipart.MultipartFile;
+import org.nst.dms.service.ActivityService;
 
 /**
  *
@@ -39,7 +39,7 @@ public class DocumentController {
     @Autowired
     private DocumentTypeService documentTypeService;
     @Autowired
-    private ActionService actionService;
+    private ActivityService activityService;
     @Autowired
     private DescriptorService descriptorService;
     @Autowired
@@ -47,7 +47,6 @@ public class DocumentController {
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save() {
-        //@TODO? moze li ovo bolje nekako? Radili smo na neki dr nacin?
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
@@ -56,8 +55,8 @@ public class DocumentController {
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long parent) {
-        Action action = actionService.find(parent);
+    public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID) {
+        Activity activity = activityService.find(activityID);
         String url = saveFile(file);
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
@@ -78,10 +77,10 @@ public class DocumentController {
         if(numberOfIdenticalDescriptors == descriptors.size()) throw new CustomException("Document already exists", "500");
         Document document = new Document(url);
         document.setDescriptors(newDescriptors);
-        if(inputOutput.equals("input")) action.getInputList().add(document);
-        else action.getOutputList().add(document);
+        if(inputOutput.equals("input")) activity.getInputList().add(document);
+        else activity.getOutputList().add(document);
         documentTypeService.save(documentType);
-        actionService.save(action);
+        activityService.save(activity);
         return new ModelAndView("add_document", "success_message", "Document successfully added");
     }
 

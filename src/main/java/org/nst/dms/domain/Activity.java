@@ -28,8 +28,8 @@ import javax.validation.constraints.NotNull;
  * @author Hachiko
  */
 @Entity
-@Table(name = "action")
-public class Action implements Serializable{
+@Table(name = "activity")
+public class Activity implements Serializable{
     @Id
     @Basic(optional = false)
     @NotNull
@@ -39,24 +39,20 @@ public class Action implements Serializable{
     @NotNull
     @Column(name = "name")
     private String name;
-    @JoinColumn(name = "parent", nullable = true)
-    @ManyToOne
-    private Process parent;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "action_input", joinColumns = @JoinColumn(name = "action"), inverseJoinColumns = @JoinColumn(name = "document"))
+    @JoinTable(name = "activity_input", joinColumns = @JoinColumn(name = "activity"), inverseJoinColumns = @JoinColumn(name = "document"))
     private List<Document> inputList;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "action_outputs", joinColumns = @JoinColumn(name = "action"), inverseJoinColumns = @JoinColumn(name = "document"))
+    @JoinTable(name = "activity_outputs", joinColumns = @JoinColumn(name = "activity"), inverseJoinColumns = @JoinColumn(name = "document"))
     private List<Document> outputList;
 
-    public Action() {
+    public Activity() {
         this.inputList = new ArrayList<>();
         this.outputList = new ArrayList<>();
     }
 
-    public Action(String name, Process parent) {
+    public Activity(String name) {
         this.name = name;
-        this.parent = parent;
         this.inputList = new ArrayList<>();
         this.outputList = new ArrayList<>();
     }
@@ -65,8 +61,6 @@ public class Action implements Serializable{
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    public Process getParent() { return parent; }
-    public void setParent(Process parent) { this.parent = parent; }
     public List<Document> getInputList() { return inputList; }
     public void setInputList(List<Document> inputList) { this.inputList = inputList; }
     public List<Document> getOutputList() { return outputList; }
@@ -88,7 +82,7 @@ public class Action implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Action other = (Action) obj;
+        final Activity other = (Activity) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }

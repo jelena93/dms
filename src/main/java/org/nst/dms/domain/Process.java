@@ -48,8 +48,8 @@ public class Process implements Serializable {
     @Column(name = "primitive")
     private boolean primitive;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "process_actions", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "action"))
-    private List<Action> actionList;
+    @JoinTable(name = "process_activity", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "activity"))
+    private List<Activity> activityList;
 
     public Process() { }
 
@@ -67,8 +67,8 @@ public class Process implements Serializable {
     public void setParent(Process parent) { this.parent = parent; }
     public boolean isPrimitive() { return primitive; }
     public void setPrimitive(boolean primitive) { this.primitive = primitive; }
-    public List<Action> getActionList() { return actionList; }
-    public void setActionList(List<Action> actionList) { this.actionList = actionList; }
+    public List<Activity> getActivityList() { return activityList; }
+    public void setActivityList(List<Activity> activityList) { this.activityList = activityList; }
     @Override
     public int hashCode() {
         int hash = 7;

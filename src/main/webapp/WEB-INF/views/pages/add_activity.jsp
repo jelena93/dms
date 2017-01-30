@@ -7,7 +7,7 @@
             <header class="panel-heading"> ${title}</header>
             <div class="panel-body">
                 <div class="form">
-                    <form class="form-validate form-horizontal " id="register_form" onsubmit="return onSubmitForm()" method="POST" action="${pageContext.request.contextPath}/${action_url_add_action}">
+                    <form class="form-validate form-horizontal " id="register_form" onsubmit="return onSubmitForm()" method="POST" action="${pageContext.request.contextPath}/${action_url_add_activity}">
                         <div class="form-group ">
                             <label for="name" class="control-label col-lg-2">Name <span class="required">*</span></label>
                             <div class="col-lg-10">

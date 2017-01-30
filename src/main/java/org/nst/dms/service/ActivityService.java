@@ -6,14 +6,14 @@
 package org.nst.dms.service;
 
 import java.util.List;
-import org.nst.dms.domain.Action;
+import org.nst.dms.domain.Activity;
 
 /**
  *
  * @author Hachiko
  */
-public interface ActionService {
-    List<Action> findAll();
-    Action save(Action action);
-    Action find(long id);
+public interface ActivityService {
+    List<Activity> findAll();
+    Activity save(Activity activity);
+    Activity find(long id);
 }

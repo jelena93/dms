@@ -6,7 +6,7 @@
 package org.nst.dms.controllers;
 
 import org.nst.dms.controllers.exceptions.CustomException;
-import org.nst.dms.domain.Action;
+import org.nst.dms.domain.Activity;
 import org.nst.dms.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,32 +14,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.domain.Process;
-import org.nst.dms.service.ActionService;
+import org.nst.dms.service.ActivityService;
 
 /**
  *
  * @author Hachiko
  */
 @Controller
-@RequestMapping("/actions")
-public class ActionController {
+@RequestMapping("/activities")
+public class ActivityController {
 
     @Autowired
-    private ActionService actionService;
+    private ActivityService activityService;
     @Autowired
     private ProcessService processService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public ModelAndView addAction() { return new ModelAndView("add_action"); }
+    public ModelAndView addActivity() { return new ModelAndView("add_activity"); }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(String name, Long parent) {
         if (parent == null) {
-            throw new CustomException("Action has to have a parent", "500");
+            throw new CustomException("Activity has to have a parent", "500");
         }
         Process processParent = processService.find(parent);
-        Action action = new Action(name, processParent);
-        actionService.save(action);
-        return new ModelAndView("add_action", "success_message", "Action successfully added");
+        Activity activity = new Activity(name);
+        processParent.getActivityList().add(activity);
+        processService.save(processParent);
+        return new ModelAndView("add_activity", "success_message", "Activity successfully added");
     }
 }

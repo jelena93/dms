@@ -18,7 +18,7 @@
         <put-attribute name="action_url_search_companies" value="companies/search" />  
         <put-attribute name="action_url_add_user" value="users/add" />  
         <put-attribute name="action_url_add_process" value="processes/add" />  
-        <put-attribute name="action_url_add_action" value="actions/add" />  
+        <put-attribute name="action_url_add_activity" value="activities/add" />  
         <put-attribute name="action_url_add_document" value="documents/add" />  
         <put-attribute name="action_companies_search_name" value="" />  
         <put-attribute name="action_type_companies_search" value="" />  

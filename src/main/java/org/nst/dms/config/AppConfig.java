@@ -104,7 +104,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public Properties jpaProperties() {
         Properties properties = new Properties();
         properties.put(PersistenceUnitProperties.WEAVING, "static");
-        properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.CREATE_OR_EXTEND);
+        properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
         properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
         properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");
         properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);

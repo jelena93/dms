@@ -10,21 +10,21 @@ package org.nst.dms.domain.dto;
  * @author Jelena
  */
 public class TreeDto {
-    public static final String ACTION_ICON = "glyphicon glyphicon-ok";
+    public static final String ACTIVITY_ICON = "glyphicon glyphicon-ok";
     public static final String PROCESS_ICON = "glyphicon glyphicon-folder-open";
     private String id;
     private String parent;
     private String text;
     private String icon;
     private boolean primitive;
-    private boolean action = false;
+    private boolean activity = false;
 
     public TreeDto(String id, String parent, String text, String icon) {
         this.id = id;
         this.parent = parent;
         this.text = text;
         this.icon = icon;
-        this.action = true;
+        this.activity = true;
     }
 
     public TreeDto(String id, String parent, String text, String icon, boolean primitive) {
@@ -45,10 +45,10 @@ public class TreeDto {
     public void setIcon(String icon) { this.icon = icon; }
     public boolean isPrimitive() { return primitive; }
     public void setPrimitive(boolean primitive) { this.primitive = primitive; }
-    public boolean isAction() { return action; }
-    public void setAction(boolean action) { this.action = action; }
+    public boolean isActivity() { return activity; }
+    public void setActivity(boolean activity) { this.activity = activity; }
     @Override
     public String toString() {
-        return "TreeDto{" + "id=" + id + ", parent=" + parent + ", text=" + text + ", icon=" + icon + ", primitive=" + primitive + ", action=" + action + '}';
+        return "TreeDto{" + "id=" + id + ", parent=" + parent + ", text=" + text + ", icon=" + icon + ", primitive=" + primitive + ", activity=" + activity + '}';
     }
 }
