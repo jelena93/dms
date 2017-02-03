@@ -64,13 +64,13 @@ public class DocumentController {
         List<Descriptor> existingDescriptors = descriptorService.getDescriptorValuesForDocumentType(docType);
         int numberOfIdenticalDescriptors = 0;
         for (Descriptor descriptor : descriptors) {
-            String key = descriptor.getKey();
+            String key = descriptor.getDescriptorKey();
             String value = request.getParameter(key);
-            Descriptor newDescriptor = new Descriptor(key, value, docType);
+            Descriptor newDescriptor = new Descriptor(key, value, docType, descriptor.getDescriptorType());
             newDescriptors.add(newDescriptor);
             //@TODO napisati equals metodu koja proverava key-value a ne id i radice bolje?
             for (Descriptor existingDescriptor : existingDescriptors) {
-                if(newDescriptor.getKey().equals(existingDescriptor.getKey()) && newDescriptor.getValue().equals(existingDescriptor.getValue())) numberOfIdenticalDescriptors++;
+                if(newDescriptor.getDescriptorKey().equals(existingDescriptor.getDescriptorKey()) && newDescriptor.getDescriptorValue().equals(existingDescriptor.getDescriptorValue())) numberOfIdenticalDescriptors++;
             }
         }
         //@TODO neki dijalog da li ste sigurni da zelite da pregazite fajl il nesto tako?

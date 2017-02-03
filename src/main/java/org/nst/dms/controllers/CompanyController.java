@@ -9,12 +9,14 @@ import java.util.List;
 import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.domain.Company;
 import org.nst.dms.controllers.exceptions.CustomException;
+import org.nst.dms.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.CompanyService;
+import org.nst.dms.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -25,9 +27,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 @RequestMapping("/companies")
 public class CompanyController {
-
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public String addProcess() { return "add_company"; }
@@ -49,7 +52,11 @@ public class CompanyController {
     public ModelAndView showCompany(@PathVariable("id") long id) {
         Company company = companyService.findOne(id);
         if (company == null) throw new CustomException("There is no company with id " + id, "404");
-        return new ModelAndView("company", "company", company);
+        List<User> usersOfCompany = userService.findUsersOfCompany(company);
+        System.out.println("@@@@@@@@@@@ " + usersOfCompany);
+        ModelAndView mv = new ModelAndView("company");
+        mv.addObject("company", company);
+        mv.addObject("users", usersOfCompany);
+        return mv;
     }
-
 }

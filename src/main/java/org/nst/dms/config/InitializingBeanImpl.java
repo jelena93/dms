@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
+import org.nst.dms.domain.DescriptorType;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
@@ -45,12 +46,13 @@ public class InitializingBeanImpl implements InitializingBean {
         userService.save(user);
         DocumentType documentType = new DocumentType("Racun");
         documentType = documentTypeService.save(documentType);
-        Descriptor descriptor = new Descriptor("broj racuna", null, documentType.getId());
+        DescriptorType descriptorType = new DescriptorType(Integer.class);
+        Descriptor descriptor = new Descriptor("broj racuna", null, documentType.getId(), descriptorType);
         documentType.getDescriptors().add(descriptor);
         documentTypeService.save(documentType);
         documentType = new DocumentType("Porudzbenica");
         documentType = documentTypeService.save(documentType);
-        descriptor = new Descriptor("broj porudzbenice", null, documentType.getId());
+        descriptor = new Descriptor("broj porudzbenice", null, documentType.getId(), descriptorType);
         documentType.getDescriptors().add(descriptor);
         documentTypeService.save(documentType);
     }

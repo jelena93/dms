@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div id="profile" >
     <section class="panel">
         <div class="bio-graph-heading">
@@ -29,3 +30,38 @@
         </div>
     </section>
 </div>
+<!--collapse start-->
+<div class="panel-group m-bot20" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse">
+                    Users
+                </a>
+            </h4>
+        </div>
+        <div id="collapse" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="icon_profile"></i>Username</th>
+                            <th><i class="icon_profile"></i>Name</th>
+                            <th><i class="icon_profile"></i>Surname</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="u" items="${users}">
+                            <tr>
+                                <td>${u.username}</td>
+                                <td>${u.name}</td>
+                                <td>${u.surname}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--collapse end-->

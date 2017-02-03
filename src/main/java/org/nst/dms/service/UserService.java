@@ -5,6 +5,8 @@
  */
 package org.nst.dms.service;
 
+import java.util.List;
+import org.nst.dms.domain.Company;
 import org.nst.dms.domain.User;
 
 /**
@@ -15,4 +17,5 @@ public interface UserService {
     User login(String username, String password);
     User save(User user);
     User findOne(String username);
+    List<User> findUsersOfCompany(Company company);
 }
