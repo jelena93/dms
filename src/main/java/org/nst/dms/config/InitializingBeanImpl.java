@@ -13,8 +13,10 @@ import org.nst.dms.domain.DescriptorType;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
+import org.nst.dms.domain.Process;
 import org.nst.dms.service.CompanyService;
 import org.nst.dms.service.DocumentTypeService;
+import org.nst.dms.service.ProcessService;
 import org.nst.dms.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +33,24 @@ public class InitializingBeanImpl implements InitializingBean {
     CompanyService companyService;
     @Autowired
     DocumentTypeService documentTypeService;
+    @Autowired
+    ProcessService processService;
     
     @Override
     public void afterPropertiesSet() throws Exception {
         Company company = new Company("Soko Stark d.o.o Beograd", "011111111", "01111111", "Vozdovac, Beograd");
         companyService.save(company);
+        
+        Process process = new Process("Proces1", null, false);
+        company.getProcesses().add(process);
+        processService.save(process);
+        process = new Process("Dete", process, true);
+        processService.save(process);
+        company.getProcesses().add(process);
+        companyService.save(company);
+        process = new Process("Random process", null, true);
+        processService.save(process);
+        
         List<Role> roles = new ArrayList<>();
         roles.add(Role.ADMIN);
         User user = new User("Pera", "Peric", "admin", "admin", null, roles);

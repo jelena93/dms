@@ -8,12 +8,14 @@ package org.nst.dms.controllers.rest;
 import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
+import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
+import org.nst.dms.domain.User;
 import org.nst.dms.domain.dto.TreeDto;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
@@ -31,8 +33,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.ActivityService;
+import org.nst.dms.service.UserService;
+import org.springframework.security.core.Authentication;
 
 /**
  *
@@ -49,6 +52,8 @@ public class RestApiController {
     private ProcessService processService;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
     public ResponseEntity<List<Company>> search(@Param("name") String name) {
@@ -68,8 +73,10 @@ public class RestApiController {
     }
 
     @RequestMapping(value = "/api/processes", method = RequestMethod.GET)
-    public ResponseEntity<List<TreeDto>> getProcesses() {
-        List<Process> processes = processService.findAll();
+    public ResponseEntity<List<TreeDto>> getProcesses(Authentication authentication) {
+        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        User activeUser  = userService.findOne(user.getUsername());
+        List<Process> processes = activeUser.getCompany().getProcesses();
         List<TreeDto> data = new ArrayList<>();
         for (Process process : processes) {
             TreeDto p;

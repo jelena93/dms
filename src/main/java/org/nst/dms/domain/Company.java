@@ -6,6 +6,7 @@
 package org.nst.dms.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
@@ -53,13 +54,16 @@ public class Company implements Serializable {
     @JoinTable(name = "company_processes", joinColumns = @JoinColumn(name = "company"), inverseJoinColumns = @JoinColumn(name = "process"))
     private List<Process> processes;
 
-    public Company() { }
+    public Company() {
+        this.processes = new ArrayList<>();
+    }
 
     public Company(String name, String pib, String identificationNumber, String headquarters) {
         this.name = name;
         this.pib = pib;
         this.identificationNumber = identificationNumber;
         this.headquarters = headquarters;
+        this.processes = new ArrayList<>();
     }
     
     public Company(String name, String pib, String identificationNumber, String headquarters, List<Process> processes) {
@@ -68,6 +72,7 @@ public class Company implements Serializable {
         this.identificationNumber = identificationNumber;
         this.headquarters = headquarters;
         this.processes = processes;
+        this.processes = new ArrayList<>();
     }
     
     public Long getId() { return id; }
