@@ -28,8 +28,7 @@ public class WebAppInitilaizer implements WebApplicationInitializer {
         servlet.addMapping("/");
         servlet.setLoadOnStartup(1);
         servlet.setInitParameter("throwExceptionIfNoHandlerFound", "true");
-        //10mb
-        servlet.setMultipartConfig(new MultipartConfigElement("", 10000000, 10000000, 10000000));
+        servlet.setMultipartConfig(new MultipartConfigElement("", 1024 * 1024 * 25, 1024 * 1024 * 25, 0));
 
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
