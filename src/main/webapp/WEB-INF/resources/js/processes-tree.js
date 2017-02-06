@@ -1,9 +1,16 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
 var selectedNode = null;
-var actionEdit = false;
+var canEdit = false;
+var modeEdit = "edit";
+var modeAddProcess = "addProcess";
+var modeAddActivity = "addActivity";
+var mode = modeEdit;
 function getProcessesForAddProcess() {
-    $('#processes').jstree({
+    $('#processes').bind('ready.jstree', function (e, data) {
+        $("#btn-add-process").show();
+        $("#btn-add-activity").show();
+    }).jstree({
         'core': {
             'data': {
                 'url': '/dms/api/processes',
@@ -17,72 +24,31 @@ function getProcessesForAddProcess() {
             },
             "plugins": ["wholerow"]
         }}).on('activate_node.jstree', function (e, data) {
-        if (selectedNode !== null && selectedNode.id === data.node.id) {
+        if (selectedNode !== null && selectedNode.id === data.node.original.id) {
             data.instance.deselect_node(data.node, true);
             selectedNode = null;
             $('#info').hide();
             $("#btn-add-activity").prop("disabled", true);
-            $("#btn-add-process").prop("disabled", true);
+            $("#btn-add-process").prop("disabled", false);
             return;
         }
         selectedNode = data.node.original;
-        console.log(selectedNode);
         if (data.node.original.primitive) {
-            getInfo(data.node.id, "/dms/api/process/" + selectedNode.id, false);
+            getInfo("/dms/api/process/" + selectedNode.id, false);
             $("#btn-add-activity").prop("disabled", false);
             $("#btn-add-process").prop("disabled", true);
         } else if (data.node.original.activity) {
-            getInfo(data.node.id, "/dms/api/activity/" + selectedNode.id, true);
+            getInfo("/dms/api/activity/" + selectedNode.id, true);
             $("#btn-add-activity").prop("disabled", true);
             $("#btn-add-process").prop("disabled", true);
-            data.instance.deselect_node(data.node, true);
         } else {
-            getInfo(data.node.id, "/dms/api/process/" + selectedNode.id, false);
+            getInfo("/dms/api/process/" + selectedNode.id, false);
             $("#btn-add-activity").prop("disabled", true);
             $("#btn-add-process").prop("disabled", false);
         }
-//        if (data.node.original.primitive) {
-//            data.instance.deselect_node(data.node, true);
-//        } else {
-//            if (selectedNode.id === data.node.id) {
-//                data.instance.deselect_node(data.node, true);
-//                selectedNode = null;
-//            } else {
-//                selectedNode = data.node;
-//            }
-//        }
     });
 }
-function getProcessesForAddDocument() {
-    $('#processes').jstree({
-        'core': {
-            'data': {
-                'url': '/dms/api/processes',
-                'data': function (node) {
-                    return {'id': node.id};
-                }
-            },
-            "multiple": false,
-            "themes": {
-                "variant": "large"
-            },
-            "plugins": ["wholerow"]
-        }}).on('activate_node.jstree', function (e, data) {
-        getInfo(data.node.id);
-        if (!data.node.original.primitive) {
-            data.instance.deselect_node(data.node, true);
-        } else {
-            if (selectedNode.id === data.node.id) {
-                data.instance.deselect_node(data.node, true);
-                selectedNode = null;
-            } else {
-                selectedNode = data.node;
-            }
-        }
-    });
-}
-
-function getInfo(id, url, isActivity) {
+function getInfo(url, isActivity) {
     $.ajax({
         type: "GET",
         url: url,
@@ -93,13 +59,15 @@ function getInfo(id, url, isActivity) {
         success: function (data) {
             $('#id').val(data.id);
             $('#name').val(data.name);
-            actionEdit = false;
+            canEdit = false;
             if (isActivity) {
-                $("#primitive").hide();
+                $("#form-primitive").hide();
             } else {
-                $("#primitive").show();
+                $("#form-primitive").show();
                 $('#primitive').prop("checked", data.primitive);
             }
+            disableForm();
+            $("#message-box-container").hide();
             $('#info').show();
         },
         error: function (e) {
@@ -107,41 +75,34 @@ function getInfo(id, url, isActivity) {
         }
     });
 }
-function onSubmitForm() {
-    if (selectedNode !== null) {
-        $("#processId").val(selectedNode.id);
-    } else {
-        $("#processId").val(null);
-    }
-    return true;
-}
-function onSubmitFormAddDocument() {
-    if (selectedNode !== null) {
-        $("#processId").val(selectedNode.id);
-    } else {
-        $("#processId").val(null);
-    }
-    return true;
-}
-function enableForm() {
-    if (!actionEdit) {
-        $('#name').prop("disabled", false);
-        $('#primitive').prop("disabled", false);
-        actionEdit = true;
-        $("#btn-edit").text("Save");
-    } else {
-        actionEdit = false;
-        var params = Array();
-        params["id"] = selectedNode.id;
-        params["name"] = $("#name").val();
-        var url = "";
-        if (selectedNode.activity) {
-            url = "/dms/api/activity/edit";
+function checkData() {
+    if (mode === modeEdit) {
+        $("#btn-edit").prop("type", "button");
+        if (!canEdit) {
+            $('#name').prop("disabled", false);
+            $('#primitive').prop("disabled", false);
+            canEdit = true;
+            $("#btn-edit").text("Save");
         } else {
-            url = "/dms/api/process/edit";
-            params["primitive"] = $("#primitive").prop('checked');
+            canEdit = false;
+            var params = {};
+            params.id = selectedNode.id;
+            params.name = $("#name").val();
+            var url = "";
+            if (selectedNode.activity) {
+                url = "/dms/api/activity/edit";
+            } else {
+                url = "/dms/api/process/edit";
+                params.primitive = $("#primitive").prop('checked');
+            }
+            edit(url, params);
         }
-        edit(url, params);
+    } else if (mode === modeAddProcess) {
+        $("#isActivity").val(false);
+        $("#register_form").submit();
+    } else if (mode === modeAddActivity) {
+        $("#isActivity").val(true);
+        $("#register_form").submit();
     }
 }
 function edit(url, params) {
@@ -152,21 +113,32 @@ function edit(url, params) {
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
-        dataType: 'json',
         success: function (data) {
             showMessage(data, "alert-success");
+            canEdit = false;
+            disableForm();
+            $('#processes').jstree(true).refresh();
         },
         error: function (e) {
             showMessage(e, "alert-danger");
-
         }
     });
 }
 function addActivity() {
-
+    mode = modeAddActivity;
+    showFormForAdding(true);
 }
-function addProcess() {}
+function addProcess() {
+    mode = modeAddProcess;
+    showFormForAdding(false);
+}
 
+function disableForm() {
+    $("#name").prop("disabled", true);
+    $("#primitive").prop("disabled", true);
+    $("#btn-edit").text("Edit");
+    mode = modeEdit;
+}
 function showMessage(data, messageType) {
     $("#message-box").removeClass("alert-success");
     $("#message-box").removeClass("alert-danger");
@@ -174,3 +146,19 @@ function showMessage(data, messageType) {
     $("#message-text").html(data);
     $("#message-box-container").show();
 }
+function showFormForAdding(isActivity) {
+    $("#name").prop("disabled", false);
+    $("#name").val("");
+    if (isActivity) {
+        $("#form-primitive").hide();
+    } else {
+        $("#form-primitive").show();
+        $("#primitive").prop("disabled", false);
+        $('#primitive').prop("checked", false);
+    }
+    $("#btn-edit").text("Add");
+    $('#info').show();
+}
+$('#register_form').on('keypress', function (e) {
+    return e.which !== 13;
+});

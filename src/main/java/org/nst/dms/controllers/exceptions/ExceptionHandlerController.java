@@ -57,6 +57,7 @@ public class ExceptionHandlerController {
     public ModelAndView handleNullPointerException(NullPointerException ex) {
         ModelAndView mv = new ModelAndView("error");
         mv.addObject("error", new CustomException("Nullpointer exception " + ex, "500"));
+        ex.printStackTrace();
         return mv;
     }
 }

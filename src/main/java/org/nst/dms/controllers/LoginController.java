@@ -7,7 +7,7 @@ package org.nst.dms.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.nst.dms.config.security.SecurityUser;
+import org.nst.dms.dto.UserDto;
 import org.nst.dms.domain.Role;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class LoginController {
-
+    
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String login() {
         return "login";
@@ -31,7 +31,8 @@ public class LoginController {
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String homePage(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        System.out.println("@@@"+authentication);
+        UserDto user = (UserDto) authentication.getPrincipal();
         user.getBreadcrumbs().clear();
         switch (user.getActiveRole()) {
             case ADMIN:
@@ -44,16 +45,16 @@ public class LoginController {
     }
 
     @RequestMapping(value = {"/role/{role}"}, method = RequestMethod.GET)
-    public String changeUserRole(@PathVariable("role") String role, Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+    public String changeUserRole(Authentication authentication, @PathVariable("role") String role) {
+        UserDto userDto = (UserDto) authentication.getPrincipal();
         if (role.equals(Role.ADMIN.name())) {
-            user.setActiveRole(Role.ADMIN);
+            userDto.setActiveRole(Role.ADMIN);
         }
         if (role.equals(Role.USER.name())) {
-            user.setActiveRole(Role.USER);
+            userDto.setActiveRole(Role.USER);
         }
         if (role.equals(Role.UPLOADER.name())) {
-            user.setActiveRole(Role.UPLOADER);
+            userDto.setActiveRole(Role.UPLOADER);
         }
         return "redirect:/";
     }

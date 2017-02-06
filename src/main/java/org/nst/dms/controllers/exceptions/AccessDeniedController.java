@@ -5,7 +5,7 @@
  */
 package org.nst.dms.controllers.exceptions;
 
-import org.nst.dms.config.security.SecurityUser;
+import org.nst.dms.dto.UserDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,7 @@ public class AccessDeniedController {
 
     @RequestMapping(path = "/403", method = RequestMethod.GET)
     public ModelAndView accessDenied(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        UserDto user = (UserDto) authentication.getPrincipal();
         return new ModelAndView("error", "error", new CustomException("You don't have permission to access this page as "
                 + user.getActiveRole().name(), "403"));
     }

@@ -35,8 +35,9 @@ public class Process implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "process_seq")
-    @SequenceGenerator(name = "process_seq", sequenceName = "process_seq")
+//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "process_seq")
+//    @SequenceGenerator(name = "process_seq", sequenceName = "process_seq")
+    @GeneratedValue
     @Column(name = "id")
     private Long id;
     @NotNull

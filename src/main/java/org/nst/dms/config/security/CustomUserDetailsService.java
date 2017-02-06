@@ -5,6 +5,7 @@
  */
 package org.nst.dms.config.security;
 
+import org.nst.dms.dto.UserDto;
 import org.nst.dms.domain.User;
 import org.nst.dms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("UserName " + username + " not found");
         }
-        SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(), user.getName(),
-                user.getSurname(), user.getRoles(), user.getRoles().get(0));
+        UserDto securityUser = new UserDto(user.getUsername(), user.getPassword(), user.getName(),
+                user.getSurname(), user.getRoles(), user.getRoles().get(0), user.getCompany());
         System.out.println(securityUser);
         return securityUser;
     }

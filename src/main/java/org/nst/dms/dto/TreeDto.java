@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.nst.dms.domain.dto;
+package org.nst.dms.dto;
 
 /**
  *
@@ -12,14 +12,14 @@ package org.nst.dms.domain.dto;
 public class TreeDto {
     public static final String ACTIVITY_ICON = "glyphicon glyphicon-ok";
     public static final String PROCESS_ICON = "glyphicon glyphicon-folder-open";
-    private String id;
+    private long id;
     private String parent;
     private String text;
     private String icon;
     private boolean primitive;
     private boolean activity = false;
 
-    public TreeDto(String id, String parent, String text, String icon) {
+    public TreeDto(long id, String parent, String text, String icon) {
         this.id = id;
         this.parent = parent;
         this.text = text;
@@ -27,7 +27,7 @@ public class TreeDto {
         this.activity = true;
     }
 
-    public TreeDto(String id, String parent, String text, String icon, boolean primitive) {
+    public TreeDto(long id, String parent, String text, String icon, boolean primitive) {
         this.id = id;
         this.parent = parent;
         this.text = text;
@@ -35,8 +35,8 @@ public class TreeDto {
         this.primitive = primitive;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
     public String getParent() { return parent; }
     public void setParent(String parent) { this.parent = parent; }
     public String getText() { return text; }

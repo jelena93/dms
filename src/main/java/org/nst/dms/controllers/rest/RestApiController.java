@@ -8,7 +8,7 @@ package org.nst.dms.controllers.rest;
 import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
-import org.nst.dms.config.security.SecurityUser;
+import org.nst.dms.dto.UserDto;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
@@ -16,7 +16,7 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.User;
-import org.nst.dms.domain.dto.TreeDto;
+import org.nst.dms.dto.TreeDto;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +74,7 @@ public class RestApiController {
 
     @RequestMapping(value = "/api/processes", method = RequestMethod.GET)
     public ResponseEntity<List<TreeDto>> getProcesses(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        UserDto user = (UserDto) authentication.getPrincipal();
         User activeUser  = userService.findOne(user.getUsername());
         List<Process> processes = activeUser.getCompany().getProcesses();
         List<TreeDto> data = new ArrayList<>();
@@ -82,20 +82,16 @@ public class RestApiController {
             TreeDto p;
             String icon;
             icon = TreeDto.PROCESS_ICON;
-            if (process.getParent() == null) p = new TreeDto(process.getId()+"", "#", process.getName(), icon, process.isPrimitive());
-            else p = new TreeDto(process.getId()+"", process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
+            if (process.getParent() == null) p = new TreeDto(process.getId(), "#", process.getName(), icon, process.isPrimitive());
+            else p = new TreeDto(process.getId(), process.getParent().getId() + "", process.getName(), icon, process.isPrimitive());
             data.add(p);
             if(process.isPrimitive() && process.getActivityList() != null) {
                 icon = TreeDto.ACTIVITY_ICON;
                 for (Activity activity : process.getActivityList()) {
-                    p = new TreeDto("a"+activity.getId(), process.getId()+"", activity.getName(), icon);
+                    p = new TreeDto(activity.getId(), process.getId()+"", activity.getName(), icon);
                     data.add(p);
                 }
             }
-            System.out.println("@@"+process.isPrimitive()+" "+process.getActivityList());
-        }
-        for (TreeDto treeDto : data) {
-            System.out.println(treeDto);
         }
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
@@ -108,6 +104,14 @@ public class RestApiController {
         }
         return new ResponseEntity<>(process, HttpStatus.OK);
     }
+    @RequestMapping(path = "/api/activity/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Activity> showActivity(@PathVariable("id") long id) {
+        Activity activity = activityService.find(id);
+        if (activity == null) {
+            throw new CustomException("There is no activity with id " + id, "404");
+        }
+        return new ResponseEntity<>(activity, HttpStatus.OK);
+    }
     
     @RequestMapping(path = "/api/activity/edit", method = RequestMethod.POST)
     public ResponseEntity<String> editActivity(Long id, String name) {
@@ -117,21 +121,21 @@ public class RestApiController {
         return new ResponseEntity<>("Activity successfully edited", HttpStatus.OK);
     }
     
-    @RequestMapping(path = "/api/process/edit", method = RequestMethod.GET)
+    @RequestMapping(path = "/api/process/edit", method = RequestMethod.POST)
     public ResponseEntity<String> editProcess(Long id, String name, boolean primitive) {
-        System.out.println("id: " + id + "name: " + name + "primitive: " + primitive );
+        System.out.println("id: " + id + " name: " + name + " primitive: " + primitive );
         Process process = processService.find(id);
         process.setName(name);
-        process.setPrimitive(primitive);
+//        process.setPrimitive(primitive); da li moze??
         processService.save(process);
         return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleError(Exception ex, WebRequest request) {
-        return new ResponseEntity<Object>(
-                ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Object> handleError(Exception ex, WebRequest request) {
+//        return new ResponseEntity<Object>(
+//                ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+//    }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

@@ -3,11 +3,7 @@
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <tiles:importAttribute name="label_name"/>
-<tiles:importAttribute name="process_message"/>
 <tiles:importAttribute name="input_name"/>
-<div style="display: none;" id="message-box-container" >
-    <tiles:insertAttribute name="message" />
-</div>
 <div class="form" id="info" style="display: none">
     <form class="form-validate form-horizontal " id="register_form" method="POST">
         <div class="form-group ">
@@ -16,16 +12,18 @@
                 <input class=" form-control" id="name" name="name" type="text" disabled />
             </div>
         </div>
-        <div class="form-group ">
+        <div class="form-group " id="form-primitive">
             <label for="primitive" class="control-label col-lg-2">Primitive </label>
             <div class="col-lg-8">
-                <input  type="checkbox" style="width: 20px" class="checkbox form-control" id="primitive" name="primitive" disabled/>
+                <input type="checkbox" style="width: 20px" class="checkbox form-control" id="primitive" name="primitive" disabled/>
             </div>
         </div>
-        <input type="hidden" name="id" id ="id" />
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <input type="hidden" name="isActivity" id="isActivity"/>
+        <input type="hidden" name="parent" id ="id" />
         <div class="form-group">
             <div class="col-lg-offset-8 col-lg-2">
-                <button class="btn btn-primary" id="btn-edit" type="button" onclick="enableForm()">Edit</button>
+                <button class="btn btn-primary" id="btn-edit" type="button" onclick="checkData()">Edit</button>
             </div>
         </div>
     </form>

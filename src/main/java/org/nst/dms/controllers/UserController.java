@@ -6,8 +6,9 @@
 package org.nst.dms.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import org.nst.dms.config.security.SecurityUser;
+import org.nst.dms.dto.UserDto;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
@@ -37,10 +38,8 @@ public class UserController {
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView getAddUser(Authentication authentication) {
-        SecurityUser user = (SecurityUser) authentication.getPrincipal();
-        user.getBreadcrumbs().clear();
-        user.getBreadcrumbs().add("Users");
-        user.getBreadcrumbs().add("Add user");
+        UserDto userDto = (UserDto) authentication.getPrincipal();
+        userDto.setBreadcrumbs(Arrays.asList("Users", "Add user"));
         List<Company> companies = companyService.findAll();
         ModelAndView mv = new ModelAndView("add_user");
         mv.addObject("roles", getRoles());
@@ -73,6 +72,7 @@ public class UserController {
         User user = new User(name, surname, username, password, c, rolesArr);
         userService.save(user);
         List<Company> companies = companyService.findAll();
+//        userDto.setBreadcrumbs(Arrays.asList("Users", "Add user"));
         ModelAndView mv = new ModelAndView("add_user");
         mv.addObject("roles", getRoles());
         mv.addObject("companies", companies);

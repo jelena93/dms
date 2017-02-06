@@ -24,8 +24,7 @@
         <put-attribute name="action_type_companies_search" value="" />  
         <put-attribute name="action_url_show_company" value="" />  
         <put-attribute name="action_logout_url" value="logout" cascade="true" />
-        <put-attribute name="message_type" value="alert-success" cascade="true" />
-        <put-attribute name="message" value="/WEB-INF/views/pages/success_message.jsp" cascade="true"/>  
+        <put-attribute name="message" value="/WEB-INF/views/pages/message.jsp" cascade="true"/>  
         <put-list-attribute name="cssList" cascade="true">
             <add-attribute value="/resources/css/bootstrap.min.css" />
             <add-attribute value="/resources/css/bootstrap-theme.css" />
@@ -118,7 +117,6 @@
         <put-attribute name="title" value="Add process" />  
         <put-attribute name="label_name" value="Parent" cascade="true" />  
         <put-attribute name="input_name" value="parent" cascade="true" />  
-        <put-attribute name="process_message" value="Choose a non primitive process for parent" cascade="true"/>  
         <put-attribute name="process-tree" value="/WEB-INF/views/pages/process-tree.jsp" cascade="true"/>  
         <put-attribute name="process" value="/WEB-INF/views/pages/process.jsp" cascade="true"/>  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_process.jsp" />  
@@ -128,7 +126,7 @@
         <put-attribute name="title" value="Add document" />  
         <put-attribute name="label_name" value="Process" cascade="true" />  
         <put-attribute name="input_name" value="processId" cascade="true" />  
-        <put-attribute name="process_message" value="Choose a primitive process" cascade="true"/>  
+        <put-attribute name="process-tree" value="/WEB-INF/views/pages/process-tree.jsp" cascade="true"/>  
         <put-attribute name="process" value="/WEB-INF/views/pages/process.jsp" cascade="true"/>  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_document.jsp" />  
     </definition>  
