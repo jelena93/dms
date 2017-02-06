@@ -6,6 +6,7 @@ var modeEdit = "edit";
 var modeAddProcess = "addProcess";
 var modeAddActivity = "addActivity";
 var mode = modeEdit;
+var isSure = false;
 function getProcessesForAddProcess() {
     $('#processes').bind('ready.jstree', function (e, data) {
         $("#btn-add-process").show();
@@ -76,6 +77,7 @@ function getInfo(url, isActivity) {
     });
 }
 function checkData() {
+    console.log(isSure)
     if (mode === modeEdit) {
         $("#btn-edit").prop("type", "button");
         if (!canEdit) {
@@ -84,7 +86,6 @@ function checkData() {
             canEdit = true;
             $("#btn-edit").text("Save");
         } else {
-            canEdit = false;
             var params = {};
             params.id = selectedNode.id;
             params.name = $("#name").val();
@@ -95,7 +96,12 @@ function checkData() {
                 url = "/dms/api/process/edit";
                 params.primitive = $("#primitive").prop('checked');
             }
-            edit(url, params);
+            if (!isSure && !selectedNode.activity && !selectedNode.primitive && params.primitive) {
+                showPopUp();
+            } else {
+                canEdit = false;
+                edit(url, params);
+            }
         }
     } else if (mode === modeAddProcess) {
         $("#isActivity").val(false);
@@ -104,6 +110,20 @@ function checkData() {
         $("#isActivity").val(true);
         $("#register_form").submit();
     }
+}
+function showPopUp() {
+    $("#modal").modal({
+        show: true,
+        backdrop: 'static',
+        keyboard: false
+    });
+}
+function edit() {
+    isSure = true;
+    checkData();
+}
+function cancelEdit() {
+    isSure = false;
 }
 function edit(url, params) {
     $.ajax({

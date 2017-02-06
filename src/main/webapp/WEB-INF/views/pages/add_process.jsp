@@ -3,6 +3,25 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <tiles:importAttribute name="action_url_add_process"/>
+<div class="modal fade" id="modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Are you sure?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Setting process to primitive will delete all child nodes of this process, are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="edit()">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancelEdit()">No</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 <div class="row">
     <div class="col-lg-12">
         <section class="panel">

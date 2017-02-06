@@ -4833,7 +4833,7 @@ button.close {
   border: 0;
   -webkit-appearance: none;
 }
-.modal-open {
+/*.modal-open {
   overflow: hidden;
 }
 body.modal-open,
@@ -4926,10 +4926,10 @@ body.modal-open,
 .modal-footer:before,
 .modal-footer:after {
   content: " ";
-  /* 1 */
+   1 
 
   display: table;
-  /* 2 */
+   2 
 
 }
 .modal-footer:after {
@@ -4938,10 +4938,10 @@ body.modal-open,
 .modal-footer:before,
 .modal-footer:after {
   content: " ";
-  /* 1 */
+   1 
 
   display: table;
-  /* 2 */
+   2 
 
 }
 .modal-footer:after {
@@ -4969,7 +4969,7 @@ body.modal-open,
     -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   }
-}
+}*/
 .tooltip {
   position: absolute;
   z-index: 1030;
