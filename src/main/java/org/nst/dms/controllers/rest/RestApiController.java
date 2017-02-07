@@ -32,7 +32,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.nst.dms.service.ActivityService;
 import org.nst.dms.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
 /**
  *
@@ -130,11 +133,12 @@ public class RestApiController {
         return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<Object> handleError(Exception ex, WebRequest request) {
-//        return new ResponseEntity<Object>(
-//                ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleError(Exception ex, WebRequest request) {
+        ex.printStackTrace();
+        return new ResponseEntity<Object>(
+                ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

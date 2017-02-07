@@ -15,8 +15,8 @@
                 <p>Setting process to primitive will delete all child nodes of this process, are you sure?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="edit()">Yes</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancelEdit()">No</button>
+                <button type="button" class="btn btn-danger" onclick="asd()">Yes</button>
+                <button type="button" class="btn btn-default" onclick="cancelEdit()">No</button>
             </div>
         </div>
     </div>

@@ -120,15 +120,18 @@ function showPopUp() {
         keyboard: false
     });
 }
-function edit() {
+function asd() {
     isSure = true;
+    console.log("edit")
+    $('#modal').modal('hide');
     checkData();
 }
 function cancelEdit() {
+    console.log("canceledit")
     isSure = false;
+    $('#modal').modal('hide');
 }
 function edit(url, params) {
-    console.log("Params in edit: " + params);
     $.ajax({
         type: "POST",
         url: url,
@@ -137,13 +140,15 @@ function edit(url, params) {
             request.setRequestHeader(header, token);
         },
         success: function (data) {
-            showMessage(data, "alert-success");
+//            showMessage(data, "alert-success");
+console.log(data)
             canEdit = false;
             disableForm();
             $('#processes').jstree(true).refresh();
         },
         error: function (e) {
-            showMessage(e, "alert-danger");
+console.log(e)
+//            showMessage(e, "alert-danger");
         }
     });
 }
