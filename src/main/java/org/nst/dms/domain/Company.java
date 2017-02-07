@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.eclipse.persistence.annotations.CascadeOnDelete;
 
 /**
  *
@@ -51,6 +52,7 @@ public class Company implements Serializable {
     @NotNull
     private String headquarters;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @CascadeOnDelete
     @JoinTable(name = "company_processes", joinColumns = @JoinColumn(name = "company"), inverseJoinColumns = @JoinColumn(name = "process"))
     private List<Process> processes;
 

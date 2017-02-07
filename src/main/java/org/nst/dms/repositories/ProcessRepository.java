@@ -21,4 +21,6 @@ public interface ProcessRepository extends JpaRepository<Process, Long> {
     List<Process> getRootProcesses();
     @Query("DELETE FROM Process p WHERE p.parent.id =?1")
     void deleteChildren(Long id);
+    @Query("SELECT p FROM Process p WHERE p.parent.id =?1")
+    Process findByParentId(Long id);
 }

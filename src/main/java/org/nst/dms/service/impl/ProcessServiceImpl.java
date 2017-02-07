@@ -40,4 +40,14 @@ public class ProcessServiceImpl implements ProcessService {
     public void deleteChildren(Long id) {
         processRepository.deleteChildren(id);
     }
+
+    @Override
+    public void delete(Process process) {
+        processRepository.delete(process);
+    }
+
+    @Override
+    public Process findByParentId(Long id) {
+        return processRepository.findByParentId(id);
+    }
 }

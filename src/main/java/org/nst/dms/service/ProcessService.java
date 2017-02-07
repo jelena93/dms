@@ -18,4 +18,6 @@ public interface ProcessService {
     Process find(long id);
     List<Process> getRootProcesses();
     void deleteChildren(Long id);
+    void delete(Process process);
+    Process findByParentId(Long id);
 }

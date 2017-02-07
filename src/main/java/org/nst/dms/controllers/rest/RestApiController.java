@@ -127,10 +127,22 @@ public class RestApiController {
         Process process = processService.find(id);
         if(process == null) return new ResponseEntity<>("Process is null", HttpStatus.OK);
         process.setName(name);
-        if(process.isPrimitive() != primitive && primitive) processService.deleteChildren(process.getId());
+        if(process.isPrimitive() != primitive && primitive) {
+//            processService.deleteChildren(process.getId());
+              deleteParent(process);
+        }
         process.setPrimitive(primitive);
         processService.save(process);
         return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
+    }
+    
+    public void deleteParent(Process p) {
+        Process childProcess = processService.findByParentId(p.getId());
+        if (childProcess == null) {
+            processService.delete(p);
+            return;
+        }
+        deleteParent(childProcess);
     }
 
     @ExceptionHandler(Exception.class)
