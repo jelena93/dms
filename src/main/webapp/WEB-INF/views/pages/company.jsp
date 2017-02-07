@@ -42,24 +42,29 @@
         </div>
         <div id="collapse" class="panel-collapse collapse">
             <div class="panel-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th><i class="icon_profile"></i>Username</th>
-                            <th><i class="icon_profile"></i>Name</th>
-                            <th><i class="icon_profile"></i>Surname</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="u" items="${users}">
+                <c:choose>
+                <c:when test="${users.isEmpty()}" ><h4 style="text-align: center;">There are no users for this company</h4></c:when>
+                <c:otherwise>
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>${u.username}</td>
-                                <td>${u.name}</td>
-                                <td>${u.surname}</td>
+                                <th><i class="icon_profile"></i>Username</th>
+                                <th><i class="icon_profile"></i>Name</th>
+                                <th><i class="icon_profile"></i>Surname</th>
                             </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="u" items="${users}">
+                                <tr>
+                                    <td>${u.username}</td>
+                                    <td>${u.name}</td>
+                                    <td>${u.surname}</td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
