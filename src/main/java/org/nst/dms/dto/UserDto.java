@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.nst.dms.config.security;
+package org.nst.dms.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  *
  * @author Jelena
  */
-public class SecurityUser implements UserDetails {
+public class UserDto implements UserDetails {
 
     private final String username;
     private final String password;
@@ -26,14 +27,16 @@ public class SecurityUser implements UserDetails {
     private final List<Role> roles;
     private Role activeRole;
     private List<String> breadcrumbs;
-
-    public SecurityUser(String username, String password, String name, String surname, List<Role> roles, Role activeRole) {
+    private final Company company;
+    
+    public UserDto(String username, String password, String name, String surname, List<Role> roles, Role activeRole, Company company) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.roles = roles;
         this.activeRole = activeRole;
+        this.company = company;
         breadcrumbs = new ArrayList<>();
     }
 
@@ -82,6 +85,10 @@ public class SecurityUser implements UserDetails {
 
     public List<String> getBreadcrumbs() {
         return breadcrumbs;
+    }
+
+    public Company getCompany() {
+        return company;
     }
 
     @Override

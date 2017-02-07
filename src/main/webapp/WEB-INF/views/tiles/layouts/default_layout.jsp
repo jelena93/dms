@@ -13,6 +13,9 @@
         <tiles:insertAttribute name="head" />
         <tiles:importAttribute name="title" scope="request"/>
         <sec:authentication var="user" property="principal" scope="request"/>
+        <tiles:importAttribute name="action_url_add_process"/>
+        <tiles:importAttribute name="action_url_add_document"/>
+        <tiles:importAttribute name="action_url_add_activity"/>
         <title>${title}</title>
     </head>
     <body>
@@ -28,9 +31,7 @@
             <section id="main-content">
                 <section class="wrapper">            
                     <tiles:insertAttribute name="breadcrumbs" />
-                    <c:if test="${not empty message_text}">
-                        <tiles:insertAttribute name="message" />
-                    </c:if>
+                    <tiles:insertAttribute name="message" />
                     <tiles:insertAttribute name="site_content" />
                 </section>
             </section>

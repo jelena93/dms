@@ -109,6 +109,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
         properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_SOURCE, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
         properties.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
+        
+        
 //        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_DROP_SOURCE, "META-INF/sql/data.sql");
 //        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SQL_LOAD_SCRIPT_SOURCE, "META-INF/sql/data.sql");
 //        properties.put("eclipselink.logging.level.sql", "FINE");

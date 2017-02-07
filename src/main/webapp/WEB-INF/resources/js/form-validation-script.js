@@ -23,7 +23,7 @@ var Script = function () {
                 headquarters: {
                     required: true
                 },
-                document: {
+                file: {
                     required: true
                 },
                 company: {
@@ -59,7 +59,7 @@ var Script = function () {
                 headquarters: {
                     required: "Please provide headquarters."
                 },
-                document: {
+                file: {
                     required: "Please provide document."
                 },
                 company: {
