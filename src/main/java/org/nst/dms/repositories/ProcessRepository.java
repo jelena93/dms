@@ -19,4 +19,6 @@ import org.nst.dms.domain.Process;
 public interface ProcessRepository extends JpaRepository<Process, Long> {
     @Query("SELECT p FROM Process p WHERE p.parent is NULL")
     List<Process> getRootProcesses();
+    @Query("DELETE FROM Process p WHERE p.parent.id =?1")
+    void deleteChildren(Long id);
 }
