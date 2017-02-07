@@ -122,12 +122,10 @@ function showPopUp() {
 }
 function asd() {
     isSure = true;
-    console.log("edit")
     $('#modal').modal('hide');
     checkData();
 }
 function cancelEdit() {
-    console.log("canceledit")
     isSure = false;
     $('#modal').modal('hide');
 }
@@ -140,14 +138,14 @@ function edit(url, params) {
             request.setRequestHeader(header, token);
         },
         success: function (data) {
-//            showMessage(data, "alert-success");
-console.log(data)
+            showMessage(data, "alert-success");
+            console.log(data)
             canEdit = false;
             disableForm();
             $('#processes').jstree(true).refresh();
         },
         error: function (e) {
-console.log(e)
+            console.log(e)
 //            showMessage(e, "alert-danger");
         }
     });
