@@ -5,10 +5,13 @@
  */
 package org.nst.dms.controllers;
 
+import org.nst.dms.dto.MessageDto;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletContext;
@@ -35,7 +38,8 @@ import org.nst.dms.service.ActivityService;
 @Controller
 @RequestMapping("/documents")
 public class DocumentController {
-
+    @Autowired
+    private HttpServletRequest request;
     @Autowired
     private DocumentTypeService documentTypeService;
     @Autowired
@@ -46,7 +50,7 @@ public class DocumentController {
     ServletContext context;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public ModelAndView save() {
+    public ModelAndView save() throws MalformedURLException, URISyntaxException {
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
@@ -58,6 +62,7 @@ public class DocumentController {
     public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID) {
         Activity activity = activityService.find(activityID);
         String url = saveFile(file);
+        System.out.println("@url"+url);
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
         List<Descriptor> newDescriptors = new ArrayList<>();
@@ -65,30 +70,35 @@ public class DocumentController {
         int numberOfIdenticalDescriptors = 0;
         for (Descriptor descriptor : descriptors) {
             String key = descriptor.getDescriptorKey();
-            String value = request.getParameter(key);
+            String value = request.getParameter(key).trim();
             descriptor.setValue(value);
-            if(descriptor.getValue() == null) throw new CustomException("Descriptor value is not correct", "500");
+            if(descriptor.getValue() == null) return new ModelAndView("add_document", "message", new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, "Descriptor value is not correct"));
             Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
             newDescriptors.add(newDescriptor);
             numberOfIdenticalDescriptors += checkIfFileAlreadyAdded(existingDescriptors, newDescriptor);
         }
         if(numberOfIdenticalDescriptors == descriptors.size()) {
-//            @TODO neki jOptionpane
+//            @TODO neki jOptionpane: Document already exists. Are you sure you want to rewrite the file?
             throw new CustomException("Document already exists", "500");
         }
         Document document = new Document(url);
         document.setDescriptors(newDescriptors);
         if(inputOutput.equals("input")) activity.getInputList().add(document);
         else activity.getOutputList().add(document);
-//        documentTypeService.save(documentType);
         activityService.save(activity);
-        return new ModelAndView("add_document", "success_message", "Document successfully added");
+        
+        ModelAndView mv = new ModelAndView("add_document");
+        List<DocumentType> documentTypes = documentTypeService.findAll();
+        mv.addObject("documentTypes", documentTypes);
+        mv.addObject("action_type_processes_search", "add_document");
+        mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added to "+url));
+        return mv;
     }
 
     private String saveFile(MultipartFile file) {
         try {
             byte[] bytes = file.getBytes();
-            String relativeWebPath = "/resources/avatars";
+            String relativeWebPath = "/WEB-INF";
             String absoluteFilePath = context.getRealPath(relativeWebPath);
             File uploadedFile = new File(absoluteFilePath, file.getOriginalFilename());
             try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile))) {

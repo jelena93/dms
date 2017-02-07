@@ -5,8 +5,8 @@
  */
 package org.nst.dms.controllers;
 
+import org.nst.dms.dto.MessageDto;
 import java.util.List;
-import org.nst.dms.config.security.SecurityUser;
 import org.nst.dms.domain.Company;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.User;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.CompanyService;
 import org.nst.dms.service.UserService;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
@@ -39,7 +38,7 @@ public class CompanyController {
     public ModelAndView save(String name, String pib, String identificationNumber, String headquarters) {
         Company c = new Company(name, pib, identificationNumber, headquarters);
         companyService.save(c);
-        return new ModelAndView("add_company", "success_message", "Company successfully added");
+        return new ModelAndView("add_company", "message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Company successfully added"));
     }
 
     @RequestMapping(path = "/search", method = RequestMethod.GET)
