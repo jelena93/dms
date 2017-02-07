@@ -63,13 +63,13 @@ public class InitializingBeanImpl implements InitializingBean {
         DocumentType documentType = new DocumentType("Racun");
         documentType = documentTypeService.save(documentType);
         DescriptorType descriptorType = new DescriptorType(Integer.class);
-        Descriptor descriptor = new Descriptor("broj racuna", null, documentType.getId(), descriptorType);
+        Descriptor descriptor = new Descriptor("broj racuna", documentType.getId(), descriptorType);
         documentType.getDescriptors().add(descriptor);
         documentType = documentTypeService.save(documentType);
         descriptorType = documentType.getDescriptors().get(0).getDescriptorType();
         documentType = new DocumentType("Porudzbenica");
         documentType = documentTypeService.save(documentType);
-        descriptor = new Descriptor("broj porudzbenice", null, documentType.getId(), descriptorType);
+        descriptor = new Descriptor("broj porudzbenice", documentType.getId(), descriptorType);
         documentType.getDescriptors().add(descriptor);
         documentTypeService.save(documentType);
     }

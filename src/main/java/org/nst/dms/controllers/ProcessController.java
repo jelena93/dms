@@ -15,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.User;
 import org.nst.dms.controllers.exceptions.CustomException;
+import org.nst.dms.domain.Company;
+import org.nst.dms.service.CompanyService;
 import org.nst.dms.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +33,8 @@ public class ProcessController {
     private ProcessService processService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CompanyService companyService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView addProcess(Authentication authentication) {
@@ -58,6 +62,11 @@ public class ProcessController {
             process = new Process(name, null, primitive);
         }
         processService.save(process);
+        
+        SecurityUser user = (SecurityUser) authentication.getPrincipal();
+        Company company = userService.findOne(user.getUsername()).getCompany();
+        company.getProcesses().add(process);
+        companyService.save(company);
         return new ModelAndView("add_process", "success_message", "Process successfully added");
     }
 }

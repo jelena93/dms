@@ -66,20 +66,21 @@ public class DocumentController {
         for (Descriptor descriptor : descriptors) {
             String key = descriptor.getDescriptorKey();
             String value = request.getParameter(key);
-            Descriptor newDescriptor = new Descriptor(key, value, docType, descriptor.getDescriptorType());
+            descriptor.setValue(value);
+            if(descriptor.getValue() == null) throw new CustomException("Descriptor value is not correct", "500");
+            Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
             newDescriptors.add(newDescriptor);
-            //@TODO napisati equals metodu koja proverava key-value a ne id i radice bolje?
-            for (Descriptor existingDescriptor : existingDescriptors) {
-                if(newDescriptor.getDescriptorKey().equals(existingDescriptor.getDescriptorKey()) && newDescriptor.getDescriptorValue().equals(existingDescriptor.getDescriptorValue())) numberOfIdenticalDescriptors++;
-            }
+            numberOfIdenticalDescriptors += checkIfFileAlreadyAdded(existingDescriptors, newDescriptor);
         }
-        //@TODO neki dijalog da li ste sigurni da zelite da pregazite fajl il nesto tako?
-        if(numberOfIdenticalDescriptors == descriptors.size()) throw new CustomException("Document already exists", "500");
+        if(numberOfIdenticalDescriptors == descriptors.size()) {
+//            @TODO neki jOptionpane
+            throw new CustomException("Document already exists", "500");
+        }
         Document document = new Document(url);
         document.setDescriptors(newDescriptors);
         if(inputOutput.equals("input")) activity.getInputList().add(document);
         else activity.getOutputList().add(document);
-        documentTypeService.save(documentType);
+//        documentTypeService.save(documentType);
         activityService.save(activity);
         return new ModelAndView("add_document", "success_message", "Document successfully added");
     }
@@ -90,13 +91,6 @@ public class DocumentController {
             String relativeWebPath = "/resources/avatars";
             String absoluteFilePath = context.getRealPath(relativeWebPath);
             File uploadedFile = new File(absoluteFilePath, file.getOriginalFilename());
-//            String rootPath = System.getProperty("catalina.home");
-//            File dir = new File(rootPath + File.separator + "dms-documents");
-//            if (!dir.exists()) {
-//                dir.mkdir();
-//            }
-//            String url = dir.getAbsolutePath() + File.separator + file.getOriginalFilename();
-//            File serverFile = new File(url);
             try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile))) {
                 stream.write(bytes);
             }
@@ -104,5 +98,12 @@ public class DocumentController {
         } catch (IOException e) {
             throw new CustomException("Failed to upload " + file.getOriginalFilename() + "\n" + e.getMessage(), "500");
         }
+    }
+
+    private int checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor) {
+        for (Descriptor existingDescriptor : existingDescriptors) {
+            if(existingDescriptor.equals(newDescriptor)) return 1;
+        }
+        return 0;
     }
 }

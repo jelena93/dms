@@ -46,10 +46,6 @@ public class Descriptor implements Serializable {
     @Column(name = "descriptorKey")
     @NotNull
     private String descriptorKey;
-    @Column(name = "descriptorValue")
-    @NotNull
-    private String descriptorValue;
-    
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "descriptor_type", nullable = false) 
     private DescriptorType descriptorType;
@@ -69,19 +65,23 @@ public class Descriptor implements Serializable {
 
     public Descriptor() { }
 
-    public Descriptor(String key, String value, Long documentType, DescriptorType descriptorType) {
+    public Descriptor(String key, Long documentType, DescriptorType descriptorType) {
         this.descriptorKey = key;
-        this.descriptorValue = value;
         this.documentType = documentType;
         this.descriptorType = descriptorType;
+    }
+    
+    public Descriptor(String key, Object value, Long documentType, DescriptorType descriptorType) {
+        this.descriptorKey = key;
+        this.documentType = documentType;
+        this.descriptorType = descriptorType;
+        setValue(value);
     }
     
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getDescriptorKey() { return descriptorKey; }
     public void setDescriptorKey(String descriptorKey) { this.descriptorKey = descriptorKey; }
-    public String getDescriptorValue() { return descriptorValue; }
-    public void setDescriptorValue(String DescriptorValue) { this.descriptorValue = DescriptorValue; }
     public Long getDocumentType() { return documentType; }
     public void setDocumentType(Long documentType) { this.documentType = documentType; }
     public DescriptorType getDescriptorType() { return descriptorType; }
@@ -105,14 +105,14 @@ public class Descriptor implements Serializable {
             return false;
         }
         final Descriptor other = (Descriptor) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.descriptorKey, other.descriptorKey) || !Objects.equals(this.getValue(), other.getValue())) {
             return false;
         }
         return true;
     }
     @Override
     public String toString() {
-        return descriptorKey + ": " + descriptorValue;
+        return descriptorKey + ": " + getValue();
     }
     
     public Object getValue() {
