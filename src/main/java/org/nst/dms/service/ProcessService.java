@@ -17,4 +17,5 @@ public interface ProcessService {
     Process save(Process process);
     Process find(long id);
     List<Process> getRootProcesses();
+    void deleteChildren(Long id);
 }

@@ -36,4 +36,8 @@ public class ProcessServiceImpl implements ProcessService {
     public List<Process> getRootProcesses() {
         return processRepository.getRootProcesses();
     }
+    @Override
+    public void deleteChildren(Long id) {
+        processRepository.deleteChildren(id);
+    }
 }
