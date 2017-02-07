@@ -6,6 +6,8 @@
 package org.nst.dms.domain;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Basic;
@@ -134,16 +136,27 @@ public class Descriptor implements Serializable {
             dateValue = null;
         } else {
             if (Integer.class.equals(paramClass)) {
-                longValue = ((Integer) value).longValue();
+                if(value instanceof String) {
+                    Integer valueInt = Integer.parseInt(value.toString());
+                    longValue = (valueInt).longValue();
+                }else longValue = ((Integer) value).longValue();
                 doubleValue = longValue.doubleValue();
             } else if (Long.class.equals(paramClass)) {
-                longValue = ((Long) value);
+                if(value instanceof String) {
+                    Long valueLong = Long.parseLong(value.toString());
+                    longValue = (valueLong);
+                }else longValue = ((Long) value);
                 doubleValue = longValue.doubleValue();
             } else if (Double.class.equals(paramClass)) {
-                doubleValue = ((Double) value);
+                if(value instanceof String) {
+                    Double valueDouble = Double.parseDouble(value.toString());
+                    doubleValue = (valueDouble);
+                }else doubleValue = ((Double) value);
                 longValue = doubleValue.longValue();
             } else if (String.class.equals(paramClass)) stringValue = (String) value;
-            else if (Date.class.equals(paramClass)) dateValue = (Date) value;
+            else if (Date.class.equals(paramClass)) {
+                try { dateValue = new SimpleDateFormat().parse(value.toString()); } catch (ParseException ex) { dateValue = (Date) value; }
+            }
         }
     }
 }
