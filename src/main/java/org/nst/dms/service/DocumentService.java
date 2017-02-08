@@ -5,9 +5,12 @@
  */
 package org.nst.dms.service;
 
+import org.nst.dms.domain.Document;
+
 /**
  *
  * @author Hachiko
  */
-//@TODO Da li treba da se brise?
-public interface DocumentService { }
+public interface DocumentService {
+    Document findOne(Long id);
+}

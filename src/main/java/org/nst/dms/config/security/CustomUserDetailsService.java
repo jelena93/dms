@@ -28,7 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         UserDto securityUser = new UserDto(user.getUsername(), user.getPassword(), user.getName(),
                 user.getSurname(), user.getRoles(), user.getRoles().get(0), user.getCompany());
-        System.out.println(securityUser);
         return securityUser;
     }
 }

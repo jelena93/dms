@@ -5,13 +5,22 @@
  */
 package org.nst.dms.service.impl;
 
+import org.nst.dms.domain.Document;
+import org.nst.dms.repositories.DocumentRepository;
 import org.springframework.stereotype.Service;
 import org.nst.dms.service.DocumentService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author Hachiko
  */
-//@TODO Da li treba da se brise?
 @Service
-public class DocumentServiceImpl implements DocumentService { }
+public class DocumentServiceImpl implements DocumentService {
+
+    @Autowired
+    private DocumentRepository documentRepository;
+
+    public Document findOne(Long id) {return documentRepository.findOne(id); }
+
+}

@@ -34,22 +34,27 @@ public class Document implements Serializable {
     @GeneratedValue
     @NotNull
     private Long id;
+    @Column(name = "file_type")
+    @NotNull
+    private String fileType;
+    @Column(name = "file_name")
+    @NotNull
+    private String fileName;
+    @Column(name = "file_content")
+    @NotNull
+    private byte[] fileContent;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "document_descriptors", joinColumns = @JoinColumn(name = "document"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
     private List<Descriptor> descriptors;
-    @Column(name = "url", unique = true)
-    @NotNull
-    private String url;
-
     public Document() { }
-    
-    public Document(String url) {
-        this.url = url;
-    }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public String getUrl() { return url; }
-    public void setUrl(String url) { this.url = url; }
+    public String getFileType() { return fileType; }
+    public void setFileType(String fileType) { this.fileType = fileType; }
+    public String getFileName() { return fileName;}
+    public void setFileName(String fileName) {this.fileName = fileName;}
+    public byte[] getFileContent() { return fileContent; }
+    public void setFileContent(byte[] fileContent) { this.fileContent = fileContent;}
     public List<Descriptor> getDescriptors() { return descriptors; }
     public void setDescriptors(List<Descriptor> descriptors) { this.descriptors = descriptors; }
     @Override
@@ -77,6 +82,6 @@ public class Document implements Serializable {
     }
     @Override
     public String toString() {
-        return url;
+        return fileName;
     }
 }

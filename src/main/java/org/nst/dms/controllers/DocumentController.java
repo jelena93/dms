@@ -6,15 +6,9 @@
 package org.nst.dms.controllers;
 
 import org.nst.dms.dto.MessageDto;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Activity;
@@ -30,6 +24,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.DocumentTypeService;
 import org.springframework.web.multipart.MultipartFile;
 import org.nst.dms.service.ActivityService;
+import org.nst.dms.service.DocumentService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  *
@@ -39,18 +39,16 @@ import org.nst.dms.service.ActivityService;
 @RequestMapping("/documents")
 public class DocumentController {
     @Autowired
-    private HttpServletRequest request;
-    @Autowired
     private DocumentTypeService documentTypeService;
     @Autowired
     private ActivityService activityService;
     @Autowired
     private DescriptorService descriptorService;
     @Autowired
-    ServletContext context;
+    private DocumentService documentService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public ModelAndView save() throws MalformedURLException, URISyntaxException {
+    public ModelAndView save() {
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
@@ -61,8 +59,6 @@ public class DocumentController {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID) {
         Activity activity = activityService.find(activityID);
-        String url = saveFile(file);
-        System.out.println("@url"+url);
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
         List<Descriptor> newDescriptors = new ArrayList<>();
@@ -81,7 +77,14 @@ public class DocumentController {
 //            @TODO neki jOptionpane: Document already exists. Are you sure you want to rewrite the file?
             throw new CustomException("Document already exists", "500");
         }
-        Document document = new Document(url);
+        Document document = new Document();
+        document.setFileName(file.getOriginalFilename());
+        document.setFileType(file.getContentType());
+        try {
+            document.setFileContent(file.getBytes());
+        } catch (IOException ex) {
+            throw new CustomException(ex.getMessage(), "500");
+        }
         document.setDescriptors(newDescriptors);
         if(inputOutput.equals("input")) activity.getInputList().add(document);
         else activity.getOutputList().add(document);
@@ -91,23 +94,8 @@ public class DocumentController {
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
         mv.addObject("action_type_processes_search", "add_document");
-        mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added to "+url));
+        mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added"));
         return mv;
-    }
-
-    private String saveFile(MultipartFile file) {
-        try {
-            byte[] bytes = file.getBytes();
-            String relativeWebPath = "/WEB-INF";
-            String absoluteFilePath = context.getRealPath(relativeWebPath);
-            File uploadedFile = new File(absoluteFilePath, file.getOriginalFilename());
-            try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile))) {
-                stream.write(bytes);
-            }
-            return absoluteFilePath + File.separator + file.getOriginalFilename();
-        } catch (IOException e) {
-            throw new CustomException("Failed to upload " + file.getOriginalFilename() + "\n" + e.getMessage(), "500");
-        }
     }
 
     private int checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor) {
@@ -115,5 +103,15 @@ public class DocumentController {
             if(existingDescriptor.equals(newDescriptor)) return 1;
         }
         return 0;
+    }
+    
+    @RequestMapping(path = "/download/{id}", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> downloadFile(@PathVariable("id") long id) {
+        Document document = documentService.findOne(id);
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.valueOf(document.getFileType()));
+        header.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + document.getFileName());
+        header.setContentLength(document.getFileContent().length);
+        return new ResponseEntity<>(document.getFileContent(), header, HttpStatus.OK);
     }
 }

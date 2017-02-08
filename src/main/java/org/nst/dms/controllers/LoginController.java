@@ -5,6 +5,7 @@
  */
 package org.nst.dms.controllers;
 
+import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.nst.dms.dto.UserDto;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class LoginController {
-    
+
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String login() {
         return "login";
@@ -31,16 +32,17 @@ public class LoginController {
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String homePage(Authentication authentication) {
-        System.out.println("@@@"+authentication);
-        UserDto user = (UserDto) authentication.getPrincipal();
-        user.getBreadcrumbs().clear();
-        switch (user.getActiveRole()) {
+        UserDto userDto = (UserDto) authentication.getPrincipal();
+        userDto.setBreadcrumbs(Arrays.asList("Dashboard"));
+        switch (userDto.getActiveRole()) {
             case ADMIN:
                 return "admin_home";
             case USER:
                 return "user_home";
-            default:
+            case UPLOADER:
                 return "uploader_home";
+            default:
+                return "login";
         }
     }
 
