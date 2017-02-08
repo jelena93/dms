@@ -36,6 +36,4 @@ public class CompanyServiceImpl implements CompanyService {
     public Company findOne(long companyId) {
         return companyRepository.findOne(companyId);
     }
-    
-
 }

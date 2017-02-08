@@ -6,6 +6,7 @@
 package org.nst.dms.controllers.rest;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
 import org.nst.dms.dto.UserDto;
@@ -122,29 +123,19 @@ public class RestApiController {
     }
     
     @RequestMapping(path = "/api/process/edit", method = RequestMethod.POST)
-    public ResponseEntity<String> editProcess(Long id, String name, boolean primitive) {
+    public ResponseEntity<String> editProcess(Authentication authentication, Long id, String name, boolean primitive) {
         System.out.println("@@@@@@@@@@@@@@@ id: " + id + " name: " + name + " primitive: " + primitive );
         Process process = processService.find(id);
         if(process == null) return new ResponseEntity<>("Process is null", HttpStatus.OK);
         process.setName(name);
-        if(process.isPrimitive() != primitive && primitive) {
-//            processService.deleteChildren(process.getId());
-              deleteParent(process);
+        if(process.isPrimitive() != primitive && primitive)  {
+            deleteProcessFromCompany(authentication, process);
+            process.setPrimitive(primitive);
         }
-        process.setPrimitive(primitive);
         processService.save(process);
         return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
     }
     
-    public void deleteParent(Process p) {
-        Process childProcess = processService.findByParentId(p.getId());
-        if (childProcess == null) {
-            processService.delete(p);
-            return;
-        }
-        deleteParent(childProcess);
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleError(Exception ex, WebRequest request) {
         ex.printStackTrace();
@@ -155,5 +146,25 @@ public class RestApiController {
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
+    private void deleteProcessFromCompany(Authentication authentication, Process process) {
+        UserDto user = (UserDto) authentication.getPrincipal();
+        List<Process> processes = user.getCompany().getProcesses();
+        deleteChildren (process, processes, true);
+        companyService.save(user.getCompany());
+    }
+
+    private void deleteChildren(Process process, List<Process> processes, boolean root) {
+            System.out.print("@@@@@"+process.getId());
+        for (Process next : processes) {
+            if(next.getParent() != null && next.getParent().equals(process)) {
+                deleteChildren(next, processes, false);
+            }
+        }
+        if(!root) {
+            processes.remove(process);
+            processService.delete(process);
+        }
     }
 }
