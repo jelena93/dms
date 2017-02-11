@@ -13,8 +13,8 @@ function showDescriptors() {
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
                 var descriptors = '<div class="form-group"> <label for="' + data[i].id
-                        + '" class="control-label col-lg-2">' + data[i].descriptorKey
-                        + '<span class="required">*</span></label><div class="col-lg-10"> ' +
+                        + '" class="control-label col-lg-4">' + data[i].descriptorKey
+                        + '<span class="required">*</span></label><div class="col-lg-8"> ' +
                         '<input type="text" class="form-control" name="' + data[i].descriptorKey + '" id="' + data[i].id + '" placeholder="Enter '
                         + data[i].descriptorKey + '"></div></div>';
             }

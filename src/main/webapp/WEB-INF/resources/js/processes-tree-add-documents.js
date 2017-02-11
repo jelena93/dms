@@ -59,6 +59,7 @@ function displayActivityInfo(activity) {
                 "' title='Download'><span class='icon_cloud-download'></span></a></td></tr>";
         $('#table-outputList tbody').append(outputList);
     }
+    $("#form-document").hide();
     $("#activity-info").show();
 }
 function showFormAddDocument() {

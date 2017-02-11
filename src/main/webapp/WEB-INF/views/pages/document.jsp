@@ -36,8 +36,8 @@
                     <div class="panel-body" id="descriptors">
                         <c:forEach var="desc" items="${documentTypes[0].descriptors}">
                             <div class="form-group">
-                                <label for="${desc.id}" class="control-label col-lg-2">${desc.descriptorKey} <span class="required">*</span></label>
-                                <div class="col-lg-10">
+                                <label for="${desc.id}" class="control-label col-lg-4">${desc.descriptorKey} <span class="required">*</span></label>
+                                <div class="col-lg-8">
                                     <input type="text" class="form-control" name="${desc.descriptorKey}" id="${desc.id}" placeholder="Enter ${desc.descriptorKey}">
                                 </div>
                             </div>
