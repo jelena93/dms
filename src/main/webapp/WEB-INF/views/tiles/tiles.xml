@@ -127,7 +127,8 @@
         <put-attribute name="label_name" value="Process" cascade="true" />  
         <put-attribute name="input_name" value="processId" cascade="true" />  
         <put-attribute name="process-tree" value="/WEB-INF/views/pages/process-tree.jsp" cascade="true"/>  
-        <put-attribute name="process" value="/WEB-INF/views/pages/process.jsp" cascade="true"/>  
+        <put-attribute name="document" value="/WEB-INF/views/pages/document.jsp" cascade="true"/>  
+        <put-attribute name="activity_info" value="/WEB-INF/views/pages/activity_info.jsp" cascade="true"/>  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_document.jsp" />  
     </definition>  
     

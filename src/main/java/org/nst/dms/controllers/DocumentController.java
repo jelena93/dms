@@ -105,12 +105,21 @@ public class DocumentController {
         return 0;
     }
     
-    @RequestMapping(path = "/download/{id}", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> downloadFile(@PathVariable("id") long id) {
+    @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> showFile(@PathVariable("id") long id) {
         Document document = documentService.findOne(id);
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.valueOf(document.getFileType()));
         header.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + document.getFileName());
+        header.setContentLength(document.getFileContent().length);
+        return new ResponseEntity<>(document.getFileContent(), header, HttpStatus.OK);
+    }
+    @RequestMapping(path = "/document/download/{id}", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> downloadFile(@PathVariable("id") long id) {
+        Document document = documentService.findOne(id);
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.valueOf(document.getFileType()));
+        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + document.getFileName());
         header.setContentLength(document.getFileContent().length);
         return new ResponseEntity<>(document.getFileContent(), header, HttpStatus.OK);
     }

@@ -12,7 +12,6 @@ function search(name) {
         },
         dataType: 'json',
         success: function (data) {
-            console.log(data);
             $("#table-companies tbody").html('');
             for (var i = 0; i < data.length; i++) {
                 var link = '<div class="btn-group"><a class="btn btn-success" href="' + action_url_show_company + '/' + data[i].id + '"><i class="icon_check_alt2"></i></a></div>';

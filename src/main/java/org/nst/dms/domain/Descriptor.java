@@ -15,10 +15,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -39,7 +41,9 @@ public class Descriptor implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "descriptor_id")
-    @GeneratedValue
+//    @GeneratedValue
+    @SequenceGenerator(name = "DescriptorGen", sequenceName = "DESCRIPTOR_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DescriptorGen", strategy = GenerationType.SEQUENCE)
     @NotNull
     private Long id;
     @Column(name = "document_type")

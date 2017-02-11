@@ -34,8 +34,10 @@ import org.eclipse.persistence.annotations.CascadeOnDelete;
 public class Company implements Serializable {
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "company_seq")
-    @SequenceGenerator(name = "company_seq", sequenceName = "company_seq")
+//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "company_seq")
+//    @SequenceGenerator(name = "company_seq", sequenceName = "company_seq")
+    @SequenceGenerator(name = "CompanyGen", sequenceName = "COMPANY_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "CompanyGen", strategy = GenerationType.SEQUENCE)
     @Column(name = "company_id")
     @NotNull
     private Long id;
