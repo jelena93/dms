@@ -146,6 +146,7 @@ function edit(url, params) {
         success: function (data) {
             showMessage(data, "alert-success");
             canEdit = false;
+            isSure = false;
             disableForm();
             $('#processes').jstree(true).refresh();
             selectedNode.name = params["name"];

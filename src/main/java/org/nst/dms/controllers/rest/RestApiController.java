@@ -127,11 +127,8 @@ public class RestApiController {
         Process process = processService.find(id);
         if(process == null) return new ResponseEntity<>("Process is null", HttpStatus.OK);
         process.setName(name);
-        if(process.isPrimitive() != primitive && primitive) deleteProcessFromCompany(authentication, process);
-        if (process.isPrimitive() != primitive && !primitive) {
-            System.out.println("briseee seeeee");
-            process.getActivityList().clear();
-        }
+        if (process.isPrimitive() != primitive && primitive) deleteProcessFromCompany(authentication, process);
+        if (process.isPrimitive() != primitive && !primitive) process.getActivityList().clear();
         process.setPrimitive(primitive);
         processService.save(process);
         return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
