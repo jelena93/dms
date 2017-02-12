@@ -103,7 +103,6 @@ function checkData() {
                 canEdit = false;
                 edit(url, params);
             }
-
         }
     } else if (mode === modeAddProcess) {
         $("#isActivity").val(false);
@@ -139,10 +138,20 @@ function edit(url, params) {
         },
         success: function (data) {
             showMessage(data, "alert-success");
-            console.log(data)
             canEdit = false;
             disableForm();
             $('#processes').jstree(true).refresh();
+            selectedNode.name = params["name"];
+            if (!selectedNode.activity) {
+                selectedNode.primitive = params["primitive"];
+                if (selectedNode.primitive) {
+                    $("#btn-add-activity").prop("disabled", false);
+                    $("#btn-add-process").prop("disabled", true);
+                } else {
+                    $("#btn-add-activity").prop("disabled", true);
+                    $("#btn-add-process").prop("disabled", false);
+                }
+            }
         },
         error: function (e) {
             console.log(e)

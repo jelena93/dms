@@ -6,11 +6,9 @@
 package org.nst.dms.controllers.rest;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
 import org.nst.dms.dto.UserDto;
-import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
@@ -96,24 +94,25 @@ public class RestApiController {
         }
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
-    
+
     @RequestMapping(path = "/api/process/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Process> showProcess(@PathVariable("id") long id) {
+    public ResponseEntity<Process> showProcess(@PathVariable("id") long id) throws Exception {
         Process process = processService.find(id);
         if (process == null) {
-            throw new CustomException("There is no process with id " + id, "404");
+            throw new Exception("There is no process with id " + id);
         }
         return new ResponseEntity<>(process, HttpStatus.OK);
     }
+
     @RequestMapping(path = "/api/activity/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Activity> showActivity(@PathVariable("id") long id) {
+    public ResponseEntity<Activity> showActivity(@PathVariable("id") long id) throws Exception {
         Activity activity = activityService.find(id);
         if (activity == null) {
-            throw new CustomException("There is no activity with id " + id, "404");
+            throw new Exception("There is no activity with id " + id);
         }
         return new ResponseEntity<>(activity, HttpStatus.OK);
     }
-    
+
     @RequestMapping(path = "/api/activity/edit", method = RequestMethod.POST)
     public ResponseEntity<String> editActivity(Long id, String name) {
         Activity activity = activityService.find(id);
@@ -121,21 +120,19 @@ public class RestApiController {
         activityService.save(activity);
         return new ResponseEntity<>("Activity successfully edited", HttpStatus.OK);
     }
-    
+
     @RequestMapping(path = "/api/process/edit", method = RequestMethod.POST)
     public ResponseEntity<String> editProcess(Authentication authentication, Long id, String name, boolean primitive) {
         System.out.println("@@@@@@@@@@@@@@@ id: " + id + " name: " + name + " primitive: " + primitive );
         Process process = processService.find(id);
         if(process == null) return new ResponseEntity<>("Process is null", HttpStatus.OK);
         process.setName(name);
-        if(process.isPrimitive() != primitive && primitive)  {
-            deleteProcessFromCompany(authentication, process);
-            process.setPrimitive(primitive);
-        }
+        if(process.isPrimitive() != primitive && primitive) deleteProcessFromCompany(authentication, process);
+        process.setPrimitive(primitive);
         processService.save(process);
         return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
     }
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleError(Exception ex, WebRequest request) {
         ex.printStackTrace();
@@ -150,21 +147,30 @@ public class RestApiController {
 
     private void deleteProcessFromCompany(Authentication authentication, Process process) {
         UserDto user = (UserDto) authentication.getPrincipal();
-        List<Process> processes = user.getCompany().getProcesses();
-        deleteChildren (process, processes, true);
-        companyService.save(user.getCompany());
+        Company company = userService.findOne(user.getUsername()).getCompany();
+        List<Process> processes = company.getProcesses();
+        deleteChildren(process, processes, true);
+        companyService.save(company);
     }
 
     private void deleteChildren(Process process, List<Process> processes, boolean root) {
-            System.out.print("@@@@@"+process.getId());
-        for (Process next : processes) {
-            if(next.getParent() != null && next.getParent().equals(process)) {
-                deleteChildren(next, processes, false);
-            }
+        List<Process> children = getChildren(process, processes);
+        for (Process child : children) {
+            deleteChildren(child, processes, false);
         }
-        if(!root) {
+        if (!root) {
             processes.remove(process);
-            processService.delete(process);
         }
     }
+
+    private List<Process> getChildren(Process p, List<Process> lista) {
+        List<Process> children = new ArrayList<>();
+        for (Process process : lista) {
+            if (p != null && p.equals(process.getParent())) {
+                children.add(process);
+            }
+        }
+        return children;
+    }
+    
 }

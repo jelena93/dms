@@ -53,8 +53,7 @@ public class Company implements Serializable {
     @Column(name = "headquarters")
     @NotNull
     private String headquarters;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @CascadeOnDelete
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "company_processes", joinColumns = @JoinColumn(name = "company"), inverseJoinColumns = @JoinColumn(name = "process"))
     private List<Process> processes;
 
