@@ -31,7 +31,7 @@ $('#table-companies-set-user').on('click', '.clickable-row', function (event) {
     if ($(this).hasClass('active')) {
         $(this).removeClass('active');
         selectedCompanyId = null;
-        $("#company").val("");
+        $("#company").val(null);
         $('label[for="company"]').eq(1).show();
     } else {
         selectedCompanyId = $(this).attr('id');
@@ -53,6 +53,7 @@ function onSubmitForm() {
     if (selectedCompanyId === null) {
         $("#company").val(null);
         search("");
+        return false;
     }
     var roles = $('#roles').val();
     if (roles === null) {
@@ -61,5 +62,5 @@ function onSubmitForm() {
     if (roles.length === 1 && roles[0] === "ADMIN") {
         return true;
     }
-    return false;
+    return true;
 }
