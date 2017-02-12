@@ -14,12 +14,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -33,7 +35,9 @@ public class Process implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @GeneratedValue
+    @TableGenerator(table = "seq", name = "seq_gen", pkColumnName = "seq_name", valueColumnName = "seq_val", 
+    pkColumnValue = "id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "dog_gen")
     @Column(name = "id")
     private Long id;
     @NotNull
