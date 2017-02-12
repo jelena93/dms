@@ -16,7 +16,7 @@ function showDescriptors() {
                         + '" class="control-label col-lg-4">' + data[i].descriptorKey
                         + '<span class="required">*</span></label><div class="col-lg-8"> ' +
                         '<input type="text" class="form-control" name="' + data[i].descriptorKey + '" id="' + data[i].id + '" placeholder="Enter '
-                        + data[i].descriptorKey + '"></div></div>';
+                        + data[i].descriptorKey + ' required"></div></div>';
             }
             $('#descriptors').html(descriptors);
         },
