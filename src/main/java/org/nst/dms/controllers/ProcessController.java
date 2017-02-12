@@ -5,7 +5,6 @@
  */
 package org.nst.dms.controllers;
 
-import java.util.Arrays;
 import org.nst.dms.dto.MessageDto;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.service.ProcessService;
@@ -41,7 +40,6 @@ public class ProcessController {
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView addProcess(Authentication authentication) {
         UserDto userDto = (UserDto) authentication.getPrincipal();
-        userDto.setBreadcrumbs(Arrays.asList("Processes", "Add process"));
         ModelAndView mv = new ModelAndView("add_process");
         mv.addObject("company", userDto.getCompany());
         return mv;
@@ -52,7 +50,6 @@ public class ProcessController {
             @RequestParam(name = "primitive", required = false) boolean primitive, boolean isActivity) {
         Process process = null;
         UserDto userDto = (UserDto) authentication.getPrincipal();
-        userDto.setBreadcrumbs(Arrays.asList("Processes", "Add process"));
         String successMessage = "Process successfully added";
         if (parent == null && isActivity) {
             throw new CustomException("Activity has to have a parent", "500");

@@ -26,7 +26,6 @@ public class UserDto implements UserDetails {
     private final String surname;
     private final List<Role> roles;
     private Role activeRole;
-    private List<String> breadcrumbs;
     private final Company company;
     
     public UserDto(String username, String password, String name, String surname, List<Role> roles, Role activeRole, Company company) {
@@ -37,7 +36,6 @@ public class UserDto implements UserDetails {
         this.roles = roles;
         this.activeRole = activeRole;
         this.company = company;
-        breadcrumbs = new ArrayList<>();
     }
 
     @Override
@@ -77,14 +75,6 @@ public class UserDto implements UserDetails {
 
     public Role getActiveRole() {
         return activeRole;
-    }
-
-    public void setBreadcrumbs(List<String> breadcrumbs) {
-        this.breadcrumbs = breadcrumbs;
-    }
-
-    public List<String> getBreadcrumbs() {
-        return breadcrumbs;
     }
 
     public Company getCompany() {

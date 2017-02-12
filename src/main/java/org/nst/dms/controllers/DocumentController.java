@@ -15,6 +15,7 @@ import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
+import org.nst.dms.dto.UserDto;
 import org.nst.dms.service.DescriptorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
@@ -48,16 +50,18 @@ public class DocumentController {
     private DocumentService documentService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public ModelAndView save() {
+    public ModelAndView save(Authentication authentication) {
+        UserDto userDto = (UserDto) authentication.getPrincipal();
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
         mv.addObject("action_type_processes_search", "add_document");
+        mv.addObject("company", userDto.getCompany());
         return mv;
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID) {
+    public ModelAndView save(Authentication authentication, String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID) {
         Activity activity = activityService.find(activityID);
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
@@ -94,6 +98,8 @@ public class DocumentController {
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
         mv.addObject("action_type_processes_search", "add_document");
+        UserDto userDto = (UserDto) authentication.getPrincipal();
+        mv.addObject("company", userDto.getCompany());
         mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added"));
         return mv;
     }

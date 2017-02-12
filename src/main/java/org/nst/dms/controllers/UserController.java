@@ -6,9 +6,7 @@
 package org.nst.dms.controllers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.nst.dms.dto.UserDto;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.UserService;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -37,9 +34,7 @@ public class UserController {
     private CompanyService companyService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public ModelAndView getAddUser(Authentication authentication) {
-        UserDto userDto = (UserDto) authentication.getPrincipal();
-        userDto.setBreadcrumbs(Arrays.asList("Users", "Add user"));
+    public ModelAndView getAddUser() {
         List<Company> companies = companyService.findAll();
         ModelAndView mv = new ModelAndView("add_user");
         mv.addObject("roles", getRoles());

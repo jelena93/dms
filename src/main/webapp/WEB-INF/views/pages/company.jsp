@@ -8,19 +8,19 @@
             <h1>Company details</h1>
             <div class="row">
                 <div class="bio-row">
-                    <p><span>Id: </span> ${company.id}</p>
+                    <p><strong>Id: </strong> ${company.id}</p>
                 </div>
                 <div class="bio-row">
-                    <p><span>Name: </span> ${company.name}</p>
+                    <p><strong>Name: </strong> ${company.name}</p>
                 </div>
                 <div class="bio-row">
-                    <p><span>Identification number </span> ${company.identificationNumber}</p>
+                    <p><strong>Identification number </strong> ${company.identificationNumber}</p>
                 </div>
                 <div class="bio-row">
-                    <p><span>Pib: </span> ${company.pib}</p>
+                    <p><strong>Pib: </strong> ${company.pib}</p>
                 </div>
                 <div class="bio-row">
-                    <p><span>Headquarters: </span> ${company.headquarters}</p>
+                    <p><strong>Headquarters: </strong> ${company.headquarters}</p>
                 </div>
             </div>
         </div>

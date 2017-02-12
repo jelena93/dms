@@ -47,7 +47,7 @@ public class Document implements Serializable {
     @Column(name = "file_content")
     @NotNull
     private byte[] fileContent;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "document_descriptors", joinColumns = @JoinColumn(name = "document"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
     private List<Descriptor> descriptors;
     public Document() { }

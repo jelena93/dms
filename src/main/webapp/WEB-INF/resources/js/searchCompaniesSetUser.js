@@ -50,14 +50,15 @@ $('#roles').change(function () {
     }
 });
 function onSubmitForm() {
+    if (selectedCompanyId === null) {
+        $("#company").val(null);
+        search("");
+    }
     var roles = $('#roles').val();
     if (roles === null) {
         return false;
     }
     if (roles.length === 1 && roles[0] === "ADMIN") {
-        return true;
-    }
-    if (selectedCompanyId !== null) {
         return true;
     }
     return false;

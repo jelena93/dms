@@ -12,10 +12,10 @@
                 <h4 class="modal-title">Are you sure?</h4>
             </div>
             <div class="modal-body">
-                <p>Setting process to primitive will delete all child nodes of this process, are you sure?</p>
+                <p id="process-text-warning"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="asd()">Yes</button>
+                <button type="button" class="btn btn-danger" onclick="sendEditRequest()">Yes</button>
                 <button type="button" class="btn btn-default" onclick="cancelEdit()">No</button>
             </div>
         </div>

@@ -32,7 +32,7 @@ public class CompanyController {
     private UserService userService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public String addProcess() { return "add_company"; }
+    public String addCompany() { return "add_company"; }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(String name, String pib, String identificationNumber, String headquarters) {

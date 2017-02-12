@@ -5,7 +5,6 @@
  */
 package org.nst.dms.controllers;
 
-import java.util.Arrays;
 import static org.nst.dms.domain.Role.ADMIN;
 import static org.nst.dms.domain.Role.UPLOADER;
 import static org.nst.dms.domain.Role.USER;
@@ -26,7 +25,6 @@ public class HomeController {
     @RequestMapping(method = RequestMethod.GET)
     public String homePage(Authentication authentication) {
         UserDto userDto = (UserDto) authentication.getPrincipal();
-        userDto.setBreadcrumbs(Arrays.asList("Dashboard"));
         switch (userDto.getActiveRole()) {
             case ADMIN:
                 return "admin_home";

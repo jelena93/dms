@@ -44,7 +44,7 @@ public class Process implements Serializable {
     private Process parent;
     @Column(name = "primitive")
     private boolean primitive;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "process_activity", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "activity"))
     private List<Activity> activityList;
 

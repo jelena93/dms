@@ -89,6 +89,10 @@ function checkData() {
             var params = {};
             params.id = selectedNode.id;
             params.name = $("#name").val();
+            if (params.name === "") {
+                $("#register_form").submit();
+                return;
+            }
             var url = "";
             if (selectedNode.activity) {
                 url = "/dms/api/activity/edit";
@@ -98,7 +102,9 @@ function checkData() {
             }
             console.log("Params: " + params.id + " " + params.name + " " + params.primitive);
             if (!isSure && !selectedNode.activity && !selectedNode.primitive && params.primitive) {
-                showPopUp();
+                showPopUp("Setting process to primitive will delete all child nodes of this process, are you sure?");
+            } else if (!isSure && !selectedNode.activity && selectedNode.primitive && !params.primitive) {
+                showPopUp("Setting process to non primitive will delete all documents from activities, are you sure?");
             } else {
                 canEdit = false;
                 edit(url, params);
@@ -112,14 +118,15 @@ function checkData() {
         $("#register_form").submit();
     }
 }
-function showPopUp() {
+function showPopUp(text) {
+    $("#process-text-warning").text(text);
     $("#modal").modal({
         show: true,
         backdrop: 'static',
         keyboard: false
     });
 }
-function asd() {
+function sendEditRequest() {
     isSure = true;
     $('#modal').modal('hide');
     checkData();
@@ -172,6 +179,8 @@ function disableForm() {
     $("#name").prop("disabled", true);
     $("#primitive").prop("disabled", true);
     $("#btn-edit").text("Edit");
+    $("#btn-edit").text("Edit");
+    hideErrorForName();
     mode = modeEdit;
 }
 function showMessage(data, messageType) {
@@ -182,6 +191,7 @@ function showMessage(data, messageType) {
     $("#message-box-container").show();
 }
 function showFormForAdding(isActivity) {
+    hideErrorForName();
     $("#name").prop("disabled", false);
     $("#name").val("");
     if (isActivity) {
@@ -193,6 +203,13 @@ function showFormForAdding(isActivity) {
     }
     $("#btn-edit").text("Add");
     $('#info').show();
+}
+function hideErrorForName() {
+    if ($("label[for='name']").hasClass("error")) {
+        $("label[for='name']").eq(1).hide();
+        $("label[for='name']").eq(1).removeClass("error");
+        $("#name").removeClass("error");
+    }
 }
 $('#register_form').on('keypress', function (e) {
     return e.which !== 13;
