@@ -70,28 +70,30 @@ public class DocumentController {
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
         List<Descriptor> newDescriptors = new ArrayList<>();
-        List<Descriptor> existingDescriptors = descriptorService.getDescriptorValuesForDocumentType(docType);
-        int numberOfIdenticalDescriptors = 0;
+//        List<Descriptor> existingDescriptors = descriptorService.getDescriptorValuesForDocumentType(docType);
+//        int numberOfIdenticalDescriptors = 0;
         for (Descriptor descriptor : descriptors) {
             String key = descriptor.getDescriptorKey();
             String value = request.getParameter(key).trim();
             descriptor.setValue(value);
-            if(descriptor.getValue() == null) return new ModelAndView("add_document", "message", new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, "Descriptor value is not correct"));
+//            if(descriptor.getValue() == null) return new ModelAndView("add_document", "message", new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, "Descriptor value is not correct"));
             Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
             newDescriptors.add(newDescriptor);
-            numberOfIdenticalDescriptors += checkIfFileAlreadyAdded(existingDescriptors, newDescriptor);
+//            numberOfIdenticalDescriptors += checkIfFileAlreadyAdded(existingDescriptors, newDescriptor);
         }
-        if(numberOfIdenticalDescriptors == descriptors.size()) {
-//            @TODO neki jOptionpane: Document already exists. Are you sure you want to rewrite the file?
-            throw new CustomException("Document already exists", "500");
-        }
+//        if(numberOfIdenticalDescriptors == descriptors.size()) {
+////            @TODO neki jOptionpane: Document already exists. Are you sure you want to rewrite the file?
+//            throw new CustomException("Document already exists" , "500");
+//        }
         Document document = new Document();
         document.setFileName(file.getOriginalFilename());
         document.setFileType(file.getContentType());
         try {
             document.setFileContent(file.getBytes());
         } catch (IOException ex) {
-            throw new CustomException(ex.getMessage(), "500");
+            ModelAndView mv = new ModelAndView("add_document");
+            mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, ex.getMessage()));
+            return mv;
         }
         document.setDescriptors(newDescriptors);
         if(inputOutput.equals("input")) activity.getInputList().add(document);
@@ -109,12 +111,12 @@ public class DocumentController {
         return mv;
     }
 
-    private int checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor) {
-        for (Descriptor existingDescriptor : existingDescriptors) {
-            if(existingDescriptor.equals(newDescriptor)) return 1;
-        }
-        return 0;
-    }
+//    private int checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor) {
+//        for (Descriptor existingDescriptor : existingDescriptors) {
+//            if(existingDescriptor.equals(newDescriptor)) return 1;
+//        }
+//        return 0;
+//    }
     
     @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> showFile(@PathVariable("id") long id) {
