@@ -8,6 +8,8 @@ package org.nst.dms.controllers.rest;
 import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
@@ -15,6 +17,7 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.User;
+import org.nst.dms.dto.MessageDto;
 import org.nst.dms.dto.TreeDto;
 import org.nst.dms.service.DocumentTypeService;
 import org.nst.dms.service.ProcessService;
@@ -30,11 +33,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.nst.dms.service.ActivityService;
+import org.nst.dms.service.DescriptorService;
 import org.nst.dms.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -53,6 +58,8 @@ public class RestApiController {
     private ActivityService activityService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DescriptorService descriptorService;
 
     @RequestMapping(value = "/api/companies/search", method = RequestMethod.GET)
     public ResponseEntity<List<Company>> search(@Param("name") String name) {
@@ -123,7 +130,6 @@ public class RestApiController {
 
     @RequestMapping(path = "/api/process/edit", method = RequestMethod.POST)
     public ResponseEntity<String> editProcess(Authentication authentication, Long id, String name, boolean primitive) {
-        System.out.println("@@@@@@@@@@@@@@@ id: " + id + " name: " + name + " primitive: " + primitive );
         Process process = processService.find(id);
         if(process == null) return new ResponseEntity<>("Process is null", HttpStatus.OK);
         process.setName(name);
@@ -131,6 +137,28 @@ public class RestApiController {
         if (process.isPrimitive() != primitive && !primitive) process.getActivityList().clear();
         process.setPrimitive(primitive);
         processService.save(process);
+        return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
+    }
+    
+    @RequestMapping(path = "/api/documents/validation", method = RequestMethod.POST)
+    public ResponseEntity<String> checkIfDocumentExists(HttpServletRequest request, long docType) throws Exception {
+        DocumentType documentType = documentTypeService.find(docType);
+        List<Descriptor> descriptors = documentType.getDescriptors();
+        List<Descriptor> newDescriptors = new ArrayList<>();
+        List<Descriptor> existingDescriptors = descriptorService.getDescriptorValuesForDocumentType(docType);
+        int numberOfIdenticalDescriptors = 0;
+        for (Descriptor descriptor : descriptors) {
+            String key = descriptor.getDescriptorKey();
+            String value = request.getParameter(key).trim();
+            descriptor.setValue(value);
+            if(descriptor.getValue() == null) throw new Exception("Descriptor value is not correct");
+            Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
+            newDescriptors.add(newDescriptor);
+            numberOfIdenticalDescriptors += checkIfFileAlreadyAdded(existingDescriptors, newDescriptor);
+        }
+        if(numberOfIdenticalDescriptors == descriptors.size()) {
+            throw new Exception("Document already exists. Are you sure you want to rewrite the file?");
+        }
         return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
     }
 
@@ -174,4 +202,10 @@ public class RestApiController {
         return children;
     }
     
+    private int checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor) {
+        for (Descriptor existingDescriptor : existingDescriptors) {
+            if(existingDescriptor.equals(newDescriptor)) return 1;
+        }
+        return 0;
+    }
 }
