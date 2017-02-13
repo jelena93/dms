@@ -15,6 +15,7 @@ import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
+import org.nst.dms.domain.User;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.service.DescriptorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.nst.dms.service.DocumentTypeService;
 import org.springframework.web.multipart.MultipartFile;
 import org.nst.dms.service.ActivityService;
 import org.nst.dms.service.DocumentService;
+import org.nst.dms.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,15 +50,17 @@ public class DocumentController {
     private DescriptorService descriptorService;
     @Autowired
     private DocumentService documentService;
-
+    @Autowired
+    private UserService userService;
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save(Authentication authentication) {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
+        User loggedUser = userService.findOne(userDto.getUsername());
         mv.addObject("documentTypes", documentTypes);
         mv.addObject("action_type_processes_search", "add_document");
-        mv.addObject("company", userDto.getCompany());
+        mv.addObject("company", loggedUser.getCompany());
         return mv;
     }
 
@@ -99,7 +103,8 @@ public class DocumentController {
         mv.addObject("documentTypes", documentTypes);
         mv.addObject("action_type_processes_search", "add_document");
         UserDto userDto = (UserDto) authentication.getPrincipal();
-        mv.addObject("company", userDto.getCompany());
+        User loggedUser = userService.findOne(userDto.getUsername());
+        mv.addObject("company", loggedUser.getCompany());
         mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added"));
         return mv;
     }

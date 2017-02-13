@@ -18,6 +18,7 @@ import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Company;
 import org.nst.dms.service.CompanyService;
 import org.nst.dms.domain.Activity;
+import org.nst.dms.domain.User;
 import org.nst.dms.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +42,8 @@ public class ProcessController {
     public ModelAndView addProcess(Authentication authentication) {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         ModelAndView mv = new ModelAndView("add_process");
-        mv.addObject("company", userDto.getCompany());
+        User loggedUser = userService.findOne(userDto.getUsername());
+        mv.addObject("company", loggedUser.getCompany());
         return mv;
     }
 

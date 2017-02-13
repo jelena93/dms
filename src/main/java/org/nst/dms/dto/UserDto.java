@@ -26,16 +26,14 @@ public class UserDto implements UserDetails {
     private final String surname;
     private final List<Role> roles;
     private Role activeRole;
-    private final Company company;
     
-    public UserDto(String username, String password, String name, String surname, List<Role> roles, Role activeRole, Company company) {
+    public UserDto(String username, String password, String name, String surname, List<Role> roles, Role activeRole) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.roles = roles;
         this.activeRole = activeRole;
-        this.company = company;
     }
 
     @Override
@@ -75,10 +73,6 @@ public class UserDto implements UserDetails {
 
     public Role getActiveRole() {
         return activeRole;
-    }
-
-    public Company getCompany() {
-        return company;
     }
 
     @Override

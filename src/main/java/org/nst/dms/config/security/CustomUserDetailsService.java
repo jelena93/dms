@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("UserName " + username + " not found");
         }
         UserDto securityUser = new UserDto(user.getUsername(), user.getPassword(), user.getName(),
-                user.getSurname(), user.getRoles(), user.getRoles().get(0), user.getCompany());
+                user.getSurname(), user.getRoles(), user.getRoles().get(0));
         return securityUser;
     }
 }
