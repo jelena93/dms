@@ -20,6 +20,10 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="file" class="control-label col-lg-2">Document <span class="required">*</span></label>
+            <input type="file" id="file" name="file">
+        </div>
+        <div class="form-group">
             <label for="docType" class="control-label col-lg-2">Document type </label>
             <div class="col-lg-10">
                 <select class="form-control" name="docType" id="docType" onchange="showDescriptors()">
@@ -38,17 +42,13 @@
                             <div class="form-group">
                                 <label for="${desc.id}" class="control-label col-lg-4">${desc.descriptorKey} <span class="required">*</span></label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" name="${desc.descriptorKey}" id="${desc.id}" placeholder="Enter ${desc.descriptorKey}" required>
+                                    <input type="text" class="form-control descriptors" name="${desc.descriptorKey}" id="${desc.id}" placeholder="Enter ${desc.descriptorKey}" required>
                                 </div>
                             </div>
                         </c:forEach>
                     </div>
                 </section>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="file" class="control-label col-lg-2">Document <span class="required">*</span></label>
-            <input type="file" id="file" name="file">
         </div>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="hidden" name="activityID" id="activityID"/>

@@ -13,6 +13,7 @@ public class MessageDto {
 
     public static String MESSAGE_TYPE_SUCCESS = "alert-success";
     public static String MESSAGE_TYPE_ERROR = "alert-danger";
+    public static String MESSAGE_TYPE_QUESTION  = "question";
 
     private String messageType;
     private String messageText;

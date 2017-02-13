@@ -10,6 +10,7 @@
         <put-attribute name="site_name" value="dms" cascade="true" />  
         <put-attribute name="header" value="/WEB-INF/views/tiles/template/default_header.jsp" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/tiles/template/default_left_side_menu.jsp" />  
+        <put-attribute name="modal_question" value="/WEB-INF/views/pages/modal_question.jsp" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/dashboard.jsp" />  
         <put-attribute name="action_login_url" value="login" />
         <put-attribute name="action_logout_url" value="logout" />

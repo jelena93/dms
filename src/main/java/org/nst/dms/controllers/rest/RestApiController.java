@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
@@ -35,11 +34,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.nst.dms.service.ActivityService;
 import org.nst.dms.service.DescriptorService;
 import org.nst.dms.service.UserService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -141,7 +138,7 @@ public class RestApiController {
     }
     
     @RequestMapping(path = "/api/documents/validation", method = RequestMethod.POST)
-    public ResponseEntity<String> checkIfDocumentExists(HttpServletRequest request, long docType) throws Exception {
+    public ResponseEntity<MessageDto> checkIfDocumentExists(HttpServletRequest request, long docType) throws Exception {
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
         List<Descriptor> newDescriptors = new ArrayList<>();
@@ -156,17 +153,14 @@ public class RestApiController {
             newDescriptors.add(newDescriptor);
             numberOfIdenticalDescriptors += checkIfFileAlreadyAdded(existingDescriptors, newDescriptor);
         }
-        if(numberOfIdenticalDescriptors == descriptors.size()) {
-            throw new Exception("Document already exists. Are you sure you want to rewrite the file?");
-        }
-        return new ResponseEntity<>("Process successfully edited", HttpStatus.OK);
+        if(numberOfIdenticalDescriptors == descriptors.size()) return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, "Document already exists. Are you sure you want to rewrite the file?"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "ok"), HttpStatus.OK);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleError(Exception ex, WebRequest request) {
+    public ResponseEntity<MessageDto> handleError(Exception ex, WebRequest request) {
         ex.printStackTrace();
-        return new ResponseEntity<Object>(
-                ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @InitBinder

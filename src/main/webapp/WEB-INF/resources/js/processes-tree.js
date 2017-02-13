@@ -72,8 +72,9 @@ function getInfo(url, isActivity) {
             $("#message-box-container").hide();
             $('#info').show();
         },
-        error: function (e) {
-            showMessage(e, "alert-danger");
+        error: function (request, status, error) {
+            var message = jQuery.parseJSON(request.responseText);
+            showMessage(message.messageText, message.messageType);
         }
     });
 }
@@ -119,19 +120,19 @@ function checkData() {
     }
 }
 function showPopUp(text) {
-    $("#process-text-warning").text(text);
+    $("#modal-question-text").text(text);
     $("#modal").modal({
         show: true,
         backdrop: 'static',
         keyboard: false
     });
 }
-function sendEditRequest() {
+function sendRequest() {
     isSure = true;
     $('#modal').modal('hide');
     checkData();
 }
-function cancelEdit() {
+function closeModal() {
     isSure = false;
     $('#modal').modal('hide');
 }
@@ -161,9 +162,9 @@ function edit(url, params) {
                 }
             }
         },
-        error: function (e) {
-            console.log(e)
-//            showMessage(e, "alert-danger");
+        error: function (request, status, error) {
+            var message = jQuery.parseJSON(request.responseText);
+            showMessage(message.messageText, message.messageType);
         }
     });
 }

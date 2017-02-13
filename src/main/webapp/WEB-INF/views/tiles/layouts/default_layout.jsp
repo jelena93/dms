@@ -21,6 +21,7 @@
     <body>
         <!-- container section start -->
         <section id="container" class="">
+            <tiles:insertAttribute name="modal_question" />
             <header class="header dark-bg">
                 <tiles:insertAttribute name="header" />
             </header>

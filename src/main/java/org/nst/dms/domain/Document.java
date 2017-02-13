@@ -44,7 +44,7 @@ public class Document implements Serializable {
     @Column(name = "file_name")
     @NotNull
     private String fileName;
-    @Column(name = "file_content")
+    @Column(name = "file_content", length = 1024 * 1024 * 25)
     @NotNull
     private byte[] fileContent;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -3,25 +3,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <tiles:importAttribute name="action_url_add_process"/>
-<!-- Modal -->
-<div class="modal fade" id="modal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Are you sure?</h4>
-            </div>
-            <div class="modal-body">
-                <p id="process-text-warning"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="sendEditRequest()">Yes</button>
-                <button type="button" class="btn btn-default" onclick="cancelEdit()">No</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Model end-->
 <div class="row">
     <div class="col-lg-12">
         <section class="panel">

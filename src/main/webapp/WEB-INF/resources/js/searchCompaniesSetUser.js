@@ -22,8 +22,9 @@ function search(name) {
                                 + '</td></tr>');
             }
         },
-        error: function (e) {
-            console.log("ERROR: ", e);
+        error: function (request, status, error) {
+            var message = jQuery.parseJSON(request.responseText);
+            showMessage(message.messageText, message.messageType);
         }
     });
 }
