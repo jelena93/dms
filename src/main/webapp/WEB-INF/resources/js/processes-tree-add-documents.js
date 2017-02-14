@@ -86,6 +86,7 @@ function checkIfDocumentExists() {
         var docType = $("#docType").val();
         var params = {};
         params["docType"] = docType;
+        params["activityID"] = selectedNode.id;
         var descriptors = $(".descriptors");
         for (var i = 0; i < descriptors.length; i++) {
             params[descriptors[i].name] = descriptors[i].value;
