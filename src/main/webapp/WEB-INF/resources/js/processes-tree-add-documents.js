@@ -8,7 +8,7 @@ function getProcessesForAddDocument() {
         'core': {
             'data': {
                 'url': '/dms/api/processes',
-                'data': function (node) {
+                'data': function(node) {
                     return {'id': node.id};
                 }
             },
@@ -17,7 +17,7 @@ function getProcessesForAddDocument() {
                 "variant": "large"
             },
             "plugins": ["wholerow"]
-        }}).on('activate_node.jstree', function (e, data) {
+        }}).on('activate_node.jstree', function(e, data) {
         if (data.node.original.activity) {
             selectedNode = data.node.original;
             getActivityInfo(selectedNode.id);
@@ -33,14 +33,14 @@ function getActivityInfo(id) {
     $.ajax({
         type: "GET",
         url: "../api/activity/" + id,
-        beforeSend: function (request) {
+        beforeSend: function(request) {
             request.setRequestHeader(header, token);
         },
         dataType: 'json',
-        success: function (data) {
+        success: function(data) {
             displayActivityInfo(data);
         },
-        error: function (request, status, error) {
+        error: function(request, status, error) {
             var message = jQuery.parseJSON(request.responseText);
             showMessage(message.messageText, message.messageType);
         }
@@ -74,7 +74,7 @@ function onSubmitForm() {
     if ($("#file").val() === "") {
         return false;
     }
-    if (checked) {
+    if (checked || isSure) {
         return true;
     }
     checkIfDocumentExists();
@@ -103,10 +103,10 @@ function documentValidation(params) {
         url: "/dms/api/documents/validation",
         data: params,
         dataType: 'json',
-        beforeSend: function (request) {
+        beforeSend: function(request) {
             request.setRequestHeader(header, token);
         },
-        success: function (data) {
+        success: function(data) {
             if (data.messageType === "question") {
                 showPopUp(data.messageText);
             } else if (data.messageType === "alert-success") {
@@ -116,9 +116,14 @@ function documentValidation(params) {
                 console.log(data);
             }
         },
-        error: function (request, status, error) {
-            var message = jQuery.parseJSON(request.responseText);
-            showMessage(message.messageText, message.messageType);
+        error: function(request, status, error) {
+            console.log(request);
+            try {
+                var message = jQuery.parseJSON(request.responseText);
+                showMessage(message.messageText, message.messageType);
+            } catch (e) {
+
+            }
         }
     });
 }
@@ -146,6 +151,6 @@ function closeModal() {
     isSure = false;
     $('#modal').modal('hide');
 }
-$('#register_form').on('keypress', function (e) {
+$('#register_form').on('keypress', function(e) {
     return e.which !== 13;
 });
