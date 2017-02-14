@@ -24,8 +24,12 @@ function search(name) {
             }
         },
         error: function (request, status, error) {
-            var message = jQuery.parseJSON(request.responseText);
-            showMessage(message.messageText, message.messageType);
+            try {
+                var message = jQuery.parseJSON(request.responseText);
+                showMessage(message.messageText, message.messageType);
+            } catch (e) {
+                console.log(request);
+            }
         }
     });
 }

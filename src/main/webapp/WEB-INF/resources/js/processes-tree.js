@@ -73,8 +73,12 @@ function getInfo(url, isActivity) {
             $('#info').show();
         },
         error: function (request, status, error) {
-            var message = jQuery.parseJSON(request.responseText);
-            showMessage(message.messageText, message.messageType);
+            try {
+                var message = jQuery.parseJSON(request.responseText);
+                showMessage(message.messageText, message.messageType);
+            } catch (e) {
+                console.log(request);
+            }
         }
     });
 }
@@ -163,8 +167,12 @@ function edit(url, params) {
             }
         },
         error: function (request, status, error) {
-            var message = jQuery.parseJSON(request.responseText);
-            showMessage(message.messageText, message.messageType);
+            try {
+                var message = jQuery.parseJSON(request.responseText);
+                showMessage(message.messageText, message.messageType);
+            } catch (e) {
+                console.log(request);
+            }
         }
     });
 }

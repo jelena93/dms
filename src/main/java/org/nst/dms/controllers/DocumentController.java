@@ -79,12 +79,17 @@ public class DocumentController {
             newDescriptors.add(newDescriptor);
         }
         Document document = new Document();
+        boolean found = false;
         if(existingDocumentID != null) {
             List<Document> documents;
             if(inputOutput.equals("input")) documents = activity.getInputList();
             else documents = activity.getInputList();
-            for (Document d : documents) {
-                if(Objects.equals(existingDocumentID, d.getId())) document = d;
+            for (Document doc : documents) {
+                if(Objects.equals(existingDocumentID, doc.getId())) {
+                    document = doc;
+                    found = true;
+                    break;
+                }
             }
         }
         document.setFileName(file.getOriginalFilename());
@@ -97,10 +102,11 @@ public class DocumentController {
             return mv;
         }
         document.setDescriptors(newDescriptors);
-        if(inputOutput.equals("input")) activity.getInputList().add(document);
-        else activity.getOutputList().add(document);
+        if (!found) {
+            if (inputOutput.equals("input"))activity.getInputList().add(document);
+            else activity.getOutputList().add(document);
+        }
         activityService.save(activity);
-        
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
@@ -108,7 +114,8 @@ public class DocumentController {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User loggedUser = userService.findOne(userDto.getUsername());
         mv.addObject("company", loggedUser.getCompany());
-        mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added"));
+        if(found) mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully edited"));
+        else mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added"));
         return mv;
     }
 

@@ -21,8 +21,12 @@ function showDescriptors() {
             $('#descriptors').html(descriptors);
         },
         error: function (request, status, error) {
-            var message = jQuery.parseJSON(request.responseText);
-            showMessage(message.messageText, message.messageType);
+            try {
+                var message = jQuery.parseJSON(request.responseText);
+                showMessage(message.messageText, message.messageType);
+            } catch (e) {
+                console.log(request);
+            }
         }
     });
 }

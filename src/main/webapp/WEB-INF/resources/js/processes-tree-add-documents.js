@@ -8,7 +8,7 @@ function getProcessesForAddDocument() {
         'core': {
             'data': {
                 'url': '/dms/api/processes',
-                'data': function(node) {
+                'data': function (node) {
                     return {'id': node.id};
                 }
             },
@@ -17,7 +17,7 @@ function getProcessesForAddDocument() {
                 "variant": "large"
             },
             "plugins": ["wholerow"]
-        }}).on('activate_node.jstree', function(e, data) {
+        }}).on('activate_node.jstree', function (e, data) {
         if (data.node.original.activity) {
             selectedNode = data.node.original;
             getActivityInfo(selectedNode.id);
@@ -33,16 +33,20 @@ function getActivityInfo(id) {
     $.ajax({
         type: "GET",
         url: "../api/activity/" + id,
-        beforeSend: function(request) {
+        beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             displayActivityInfo(data);
         },
-        error: function(request, status, error) {
-            var message = jQuery.parseJSON(request.responseText);
-            showMessage(message.messageText, message.messageType);
+        error: function (request, status, error) {
+            try {
+                var message = jQuery.parseJSON(request.responseText);
+                showMessage(message.messageText, message.messageType);
+            } catch (e) {
+                console.log(request);
+            }
         }
     });
 }
@@ -106,10 +110,10 @@ function documentValidation(params) {
         url: "/dms/api/documents/validation",
         data: params,
         dataType: 'json',
-        beforeSend: function(request) {
+        beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
-        success: function(data) {
+        success: function (data) {
             if (data.messageType === "question") {
                 $("#existingDocumentID").val(data.messageText);
                 showPopUp("Document already exists. Are you sure you want to rewrite the file?");
@@ -120,13 +124,12 @@ function documentValidation(params) {
                 console.log(data);
             }
         },
-        error: function(request, status, error) {
-            console.log(request);
+        error: function (request, status, error) {
             try {
                 var message = jQuery.parseJSON(request.responseText);
                 showMessage(message.messageText, message.messageType);
             } catch (e) {
-
+                console.log(request);
             }
         }
     });
@@ -155,6 +158,6 @@ function closeModal() {
     isSure = false;
     $('#modal').modal('hide');
 }
-$('#register_form').on('keypress', function(e) {
+$('#register_form').on('keypress', function (e) {
     return e.which !== 13;
 });
