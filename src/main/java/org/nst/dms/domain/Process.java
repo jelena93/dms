@@ -6,6 +6,7 @@
 package org.nst.dms.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
@@ -52,12 +53,13 @@ public class Process implements Serializable {
     @JoinTable(name = "process_activity", joinColumns = @JoinColumn(name = "process"), inverseJoinColumns = @JoinColumn(name = "activity"))
     private List<Activity> activityList;
 
-    public Process() { }
+    public Process() { this.activityList = new ArrayList<>(); }
 
     public Process(String name, Process parent, boolean primitive) {
         this.name = name;
         this.parent = parent;
         this.primitive = primitive;
+        this.activityList = new ArrayList<>();
     }
 
     public Long getId() { return id; }

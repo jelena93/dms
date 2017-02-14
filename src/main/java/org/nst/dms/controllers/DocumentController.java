@@ -9,6 +9,7 @@ import org.nst.dms.dto.MessageDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Activity;
@@ -65,27 +66,27 @@ public class DocumentController {
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(Authentication authentication, String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID) {
+    public ModelAndView save(Authentication authentication, String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID, Long existingDocumentID) {
         Activity activity = activityService.find(activityID);
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
         List<Descriptor> newDescriptors = new ArrayList<>();
-//        List<Descriptor> existingDescriptors = descriptorService.getDescriptorValuesForDocumentType(docType);
-//        int numberOfIdenticalDescriptors = 0;
         for (Descriptor descriptor : descriptors) {
             String key = descriptor.getDescriptorKey();
             String value = request.getParameter(key).trim();
             descriptor.setValue(value);
-//            if(descriptor.getValue() == null) return new ModelAndView("add_document", "message", new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, "Descriptor value is not correct"));
             Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
             newDescriptors.add(newDescriptor);
-//            numberOfIdenticalDescriptors += checkIfFileAlreadyAdded(existingDescriptors, newDescriptor);
         }
-//        if(numberOfIdenticalDescriptors == descriptors.size()) {
-////            @TODO neki jOptionpane: Document already exists. Are you sure you want to rewrite the file?
-//            throw new CustomException("Document already exists" , "500");
-//        }
         Document document = new Document();
+        if(existingDocumentID != null) {
+            List<Document> documents;
+            if(inputOutput.equals("input")) documents = activity.getInputList();
+            else documents = activity.getInputList();
+            for (Document d : documents) {
+                if(Objects.equals(existingDocumentID, d.getId())) document = d;
+            }
+        }
         document.setFileName(file.getOriginalFilename());
         document.setFileType(file.getContentType());
         try {
@@ -111,13 +112,6 @@ public class DocumentController {
         return mv;
     }
 
-//    private int checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor) {
-//        for (Descriptor existingDescriptor : existingDescriptors) {
-//            if(existingDescriptor.equals(newDescriptor)) return 1;
-//        }
-//        return 0;
-//    }
-    
     @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> showFile(@PathVariable("id") long id) {
         Document document = documentService.findOne(id);

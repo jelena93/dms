@@ -8,11 +8,13 @@ package org.nst.dms.controllers.rest;
 import java.util.ArrayList;
 import org.nst.dms.service.CompanyService;
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
+import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Process;
 import org.nst.dms.domain.User;
@@ -138,22 +140,25 @@ public class RestApiController {
     }
     
     @RequestMapping(path = "/api/documents/validation", method = RequestMethod.POST)
-    public ResponseEntity<MessageDto> checkIfDocumentExists(HttpServletRequest request, long docType) throws Exception {
+    public ResponseEntity<MessageDto> checkIfDocumentExists(HttpServletRequest request, long docType, long activityID, String inputOutput) throws Exception {
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
-        List<Descriptor> newDescriptors = new ArrayList<>();
         List<Descriptor> existingDescriptors = descriptorService.getDescriptorValuesForDocumentType(docType);
         int numberOfIdenticalDescriptors = 0;
+        Long existingDocumentID = null;
         for (Descriptor descriptor : descriptors) {
             String key = descriptor.getDescriptorKey();
             String value = request.getParameter(key).trim();
             descriptor.setValue(value);
             if(descriptor.getValue() == null) throw new Exception("Descriptor value is not correct");
             Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
-            newDescriptors.add(newDescriptor);
-            numberOfIdenticalDescriptors += checkIfFileAlreadyAdded(existingDescriptors, newDescriptor);
+            Long id = checkIfFileAlreadyAdded(existingDescriptors, newDescriptor, activityID, inputOutput);
+            if(id == null) continue;
+            else if(existingDocumentID == null) existingDocumentID = id;
+            else if(!Objects.equals(id, existingDocumentID)) continue;
+            numberOfIdenticalDescriptors += 1;
         }
-        if(numberOfIdenticalDescriptors == descriptors.size()) return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, "Document already exists. Are you sure you want to rewrite the file?"), HttpStatus.OK);
+        if(numberOfIdenticalDescriptors == descriptors.size() && existingDocumentID != null) return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, existingDocumentID+""), HttpStatus.OK);
         return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "ok"), HttpStatus.OK);
     }
 
@@ -196,10 +201,14 @@ public class RestApiController {
         return children;
     }
     
-    private int checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor) {
+    private Long checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor, long activityID, String inputOutput) {
         for (Descriptor existingDescriptor : existingDescriptors) {
-            if(existingDescriptor.equals(newDescriptor)) return 1;
+            if(existingDescriptor.equals(newDescriptor)) {
+                Activity activity = activityService.find(activityID);
+                if(inputOutput.equals("input")) for (Document document : activity.getInputList()) if(document.getDescriptors().contains(existingDescriptor)) return document.getId();
+                else if (inputOutput.equals("output")) for (Document d : activity.getOutputList()) if(d.getDescriptors().contains(existingDescriptor)) return document.getId();
+            }
         }
-        return 0;
+        return null;
     }
 }

@@ -52,6 +52,7 @@
         </div>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="hidden" name="activityID" id="activityID"/>
+        <input type="hidden" name="existingDocumentID" id="existingDocumentID"/>
         <div class="form-group">
             <div class="col-lg-offset-2 col-lg-10">
                 <button class="btn btn-primary" type="submit">${title}</button>

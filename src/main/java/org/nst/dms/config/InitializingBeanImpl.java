@@ -7,6 +7,7 @@ package org.nst.dms.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DescriptorType;
@@ -45,6 +46,7 @@ public class InitializingBeanImpl implements InitializingBean {
         company.getProcesses().add(process);
         processService.save(process);
         process = new Process("Dete", process, true);
+        process.getActivityList().add(new Activity("Aktivnost 1"));
         processService.save(process);
         company.getProcesses().add(process);
         companyService.save(company);

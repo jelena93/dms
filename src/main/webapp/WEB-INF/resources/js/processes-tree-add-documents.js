@@ -87,6 +87,8 @@ function checkIfDocumentExists() {
         var params = {};
         params["docType"] = docType;
         params["activityID"] = selectedNode.id;
+        params["inputOutput"] = $("input[name='inputOutput']:checked").val();
+        console.log("@@@@" + params["inputOutput"]);
         var descriptors = $(".descriptors");
         for (var i = 0; i < descriptors.length; i++) {
             params[descriptors[i].name] = descriptors[i].value;
@@ -109,7 +111,8 @@ function documentValidation(params) {
         },
         success: function(data) {
             if (data.messageType === "question") {
-                showPopUp(data.messageText);
+                $("#existingDocumentID").val(data.messageText);
+                showPopUp("Document already exists. Are you sure you want to rewrite the file?");
             } else if (data.messageType === "alert-success") {
                 checked = true;
                 $("#register_form").submit();
