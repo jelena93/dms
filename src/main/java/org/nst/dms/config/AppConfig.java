@@ -28,6 +28,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
@@ -42,6 +43,16 @@ import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
+    public boolean isTest() {
+        return true;
+    }
+    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("WEB-INF/resources/");
+    }
+    
+    @Bean
     public TilesConfigurer tilesConfigurer() {
         TilesConfigurer tilesConfigurer = new TilesConfigurer();
         tilesConfigurer.setDefinitions("WEB-INF/views/tiles/tiles.xml");
@@ -55,10 +66,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         registry.viewResolver(viewResolver);
     }
 
-//    @Bean
-//    public StringHttpMessageConverter stringHttpMessageConverter() {
-//        return new StringHttpMessageConverter(Charset.forName("UTF-8"));
-//    }
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -103,17 +110,15 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public Properties jpaProperties() {
         Properties properties = new Properties();
         properties.put(PersistenceUnitProperties.WEAVING, "static");
-        properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
-        properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
-        properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");
-        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
-        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_SOURCE, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
-        properties.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
-        
-        
-//        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_DROP_SOURCE, "META-INF/sql/data.sql");
-//        properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SQL_LOAD_SCRIPT_SOURCE, "META-INF/sql/data.sql");
-//        properties.put("eclipselink.logging.level.sql", "FINE");
+        if (isTest()) {
+            properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
+            properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
+            properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");
+            properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_SCRIPTS_ACTION, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
+            properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_SOURCE, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
+            properties.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
+        }
+
         return properties;
     }
 
@@ -122,7 +127,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return new InitializingBeanImpl();
     }
 
-   @Bean
+    @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
