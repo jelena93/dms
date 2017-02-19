@@ -14,7 +14,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nst.dms.config.AppConfig;
-import org.nst.dms.config.WebConfig;
 import org.nst.dms.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Hachiko
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, WebConfig.class})
+@ContextConfiguration(classes = AppConfig.class)
 @Transactional
 public class UserRepositoryTest {
 

@@ -1,10 +1,11 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
+var action_url_document_type_api;
 function showDescriptors() {
     var docType = document.getElementById("docType").value;
     $.ajax({
         type: "GET",
-        url: "/dms/api/document-type",
+        url: action_url_document_type_api,
         data: {id: docType},
         beforeSend: function (request) {
             request.setRequestHeader(header, token);

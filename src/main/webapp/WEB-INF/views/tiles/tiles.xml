@@ -125,6 +125,7 @@
         <put-attribute name="action_url_processes_api" value="api/processes" cascade="true" />  
         <put-attribute name="action_url_show_activity_api" value="api/activities/activity" cascade="true" />  
         <put-attribute name="action_url_document_validation_api" value="api/documents/validation" cascade="true" />  
+        <put-attribute name="action_url_document_type_api" value="api/document-type" cascade="true" />  
         <put-attribute name="action_url_show_document_info" value="documents/document" cascade="true" />  
         <put-attribute name="action_url_download_document" value="documents/document/download" cascade="true" />  
         <put-attribute name="action_url_display_document" value="documents/document/display" cascade="true" />  

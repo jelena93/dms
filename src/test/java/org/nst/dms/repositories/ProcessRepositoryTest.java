@@ -5,9 +5,6 @@
  */
 package org.nst.dms.repositories;
 
-import static junit.framework.Assert.assertEquals;
-
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
@@ -17,10 +14,8 @@ import javax.sql.DataSource;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nst.dms.config.AppConfig;
-import org.nst.dms.config.WebConfig;
 import org.nst.dms.domain.Process;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 //@TODO Prepraviti process testove zbog izbacivanja search-a
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, WebConfig.class})
+@ContextConfiguration(classes = AppConfig.class)
 @Transactional
 public class ProcessRepositoryTest {
 

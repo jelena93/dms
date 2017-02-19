@@ -118,7 +118,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
             properties.put(PersistenceUnitProperties.SCHEMA_GENERATION_CREATE_SOURCE, PersistenceUnitProperties.SCHEMA_GENERATION_METADATA_SOURCE);
             properties.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
         }
-
         return properties;
     }
 
