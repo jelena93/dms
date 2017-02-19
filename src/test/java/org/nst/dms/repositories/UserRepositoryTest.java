@@ -56,7 +56,7 @@ public class UserRepositoryTest {
 
     @Test
     public void login() {
-        User user = userRepository.login(this.user.getUsername(), this.user.getPassword());
+        User user = userRepository.findOne(this.user.getUsername());
         assertEquals(this.user.getName(), user.getName());
         assertEquals(this.user.getSurname(), user.getSurname());
         assertEquals(this.user.getUsername(), user.getUsername());

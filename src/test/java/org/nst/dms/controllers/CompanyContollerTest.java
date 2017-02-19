@@ -48,7 +48,7 @@ public class CompanyContollerTest {
         company = new Company("Soko Štark d.o.o. Beograd", "100002799", "07026447", "Bulevar Peka Dapčevića 29, Voždovac, Beograd", null);
         List<Company> companies = new ArrayList<>();
         companies.add(company);
-        Mockito.when(this.companyService.search("Soko Stark d.o.o. Beograd")).thenReturn(companies);
+        Mockito.when(this.companyService.findByNameContainingOrHeadquartersContaining("Soko Stark d.o.o. Beograd")).thenReturn(companies);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class CompanyContollerTest {
 
     @After
     public void verify() {
-        Mockito.verify(this.companyService, VerificationModeFactory.times(1)).search("Soko Stark d.o.o. Beograd");
+        Mockito.verify(this.companyService, VerificationModeFactory.times(1)).findByNameContainingOrHeadquartersContaining("Soko Stark d.o.o. Beograd");
         Mockito.reset();
     }
 

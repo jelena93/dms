@@ -21,8 +21,8 @@ public class CompanyServiceImpl implements CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
     @Override
-    public List<Company> search(String name) {
-        return companyRepository.search(name);
+    public List<Company> findByNameContainingOrHeadquartersContaining(String name) {
+        return companyRepository.findByNameContainingOrHeadquartersContaining(name, name);
     }
     @Override
     public List<Company> findAll() {

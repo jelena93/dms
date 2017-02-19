@@ -39,12 +39,14 @@
                     <header class="panel-heading"> Descriptors</header>
                     <div class="panel-body" id="descriptors">
                         <c:forEach var="desc" items="${documentTypes[0].descriptors}">
-                            <div class="form-group">
-                                <label for="${desc.id}" class="control-label col-lg-4">${desc.descriptorKey} <span class="required">*</span></label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control descriptors" name="${desc.descriptorKey}" id="${desc.id}" placeholder="Enter ${desc.descriptorKey}" required>
+                            <c:if test="${desc.value==null}">
+                                <div class="form-group">
+                                    <label for="${desc.id}" class="control-label col-lg-4">${desc.descriptorKey} <span class="required">*</span></label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control descriptors" name="${desc.descriptorKey}" id="${desc.id}" placeholder="Enter ${desc.descriptorKey}" required>
+                                    </div>
                                 </div>
-                            </div>
+                            </c:if>
                         </c:forEach>
                     </div>
                 </section>

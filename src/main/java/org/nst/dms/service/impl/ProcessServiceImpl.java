@@ -33,21 +33,16 @@ public class ProcessServiceImpl implements ProcessService {
         return processRepository.findOne(id);
     }
     @Override
-    public List<Process> getRootProcesses() {
-        return processRepository.getRootProcesses();
+    public List<Process> findByParentIsNull() {
+        return processRepository.findByParentIsNull();
     }
-    @Override
-    public void deleteChildren(Long id) {
-        processRepository.deleteChildren(id);
-    }
-
     @Override
     public void delete(Process process) {
         processRepository.delete(process);
     }
 
     @Override
-    public Process findByParentId(Long id) {
-        return processRepository.findByParentId(id);
+    public Process findByParent(Long id) {
+        return processRepository.findByParent(id);
     }
 }

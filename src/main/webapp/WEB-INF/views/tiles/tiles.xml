@@ -12,17 +12,6 @@
         <put-attribute name="left_side_menu" value="/WEB-INF/views/tiles/template/default_left_side_menu.jsp" />  
         <put-attribute name="modal_question" value="/WEB-INF/views/pages/modal_question.jsp" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/dashboard.jsp" />  
-        <put-attribute name="action_login_url" value="login" />
-        <put-attribute name="action_logout_url" value="logout" />
-        <put-attribute name="action_url_add_company" value="companies/add" />  
-        <put-attribute name="action_url_search_companies" value="companies/search" />  
-        <put-attribute name="action_url_add_user" value="users/add" />  
-        <put-attribute name="action_url_add_process" value="processes/add" />  
-        <put-attribute name="action_url_add_activity" value="activities/add" />  
-        <put-attribute name="action_url_add_document" value="documents/add" />  
-        <put-attribute name="action_companies_search_name" value="" />  
-        <put-attribute name="action_type_companies_search" value="" />  
-        <put-attribute name="action_url_show_company" value="" />  
         <put-attribute name="action_logout_url" value="logout" cascade="true" />
         <put-attribute name="message" value="/WEB-INF/views/pages/message.jsp" cascade="true"/>  
         <put-list-attribute name="cssList" cascade="true">
@@ -77,6 +66,7 @@
     <definition name="admin_home" extends="default_layout"> 
         <put-attribute name="active_role" value="ADMIN" cascade="true" />  
         <put-attribute name="action_url_search_companies" value="companies/search" cascade="true" />  
+        <put-attribute name="action_url_search_companies_api" value="api/companies/search" cascade="true" />  
         <put-attribute name="action_url_add_company" value="companies/add" cascade="true" />  
         <put-attribute name="action_url_add_user" value="users/add" cascade="true" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
@@ -103,13 +93,14 @@
     
     <definition name="search_companies" extends="admin_home">  
         <put-attribute name="title" value="Search companies" />  
-        <put-attribute name="action_url_show_company" value="companies/company"  cascade="true"/>  
+        <put-attribute name="action_url_show_company" value="companies/company" cascade="true"/>  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/search_companies.jsp" />  
     </definition>  
     
     <definition name="add_user" extends="admin_home">  
         <put-attribute name="title" value="Add user" />  
         <put-attribute name="search_companies" value="/WEB-INF/views/pages/search_companies_set_user.jsp" cascade="true"/>  
+        <put-attribute name="action_url_search_companies_api" value="api/companies/search" cascade="true" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_user.jsp" />  
     </definition>  
   
@@ -117,7 +108,12 @@
         <put-attribute name="title" value="Add process" />  
         <put-attribute name="label_name" value="Parent" cascade="true" />  
         <put-attribute name="input_name" value="parent" cascade="true" />  
-        <put-attribute name="process-tree" value="/WEB-INF/views/pages/process-tree.jsp" cascade="true"/>  
+        <put-attribute name="action_url_processes_api" value="api/processes" cascade="true" />  
+        <put-attribute name="action_url_show_process_api" value="api/processes/process" cascade="true" />  
+        <put-attribute name="action_url_show_activity_api" value="api/activities/activity" cascade="true" />  
+        <put-attribute name="action_url_edit_process_api" value="api/processes/edit" cascade="true" />  
+        <put-attribute name="action_url_edit_activity_api" value="api/activities/edit" cascade="true" />  
+        <put-attribute name="process_tree" value="/WEB-INF/views/pages/process_tree.jsp" cascade="true"/>  
         <put-attribute name="process" value="/WEB-INF/views/pages/process.jsp" cascade="true"/>  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_process.jsp" />  
     </definition>  
@@ -126,15 +122,28 @@
         <put-attribute name="title" value="Add document" />  
         <put-attribute name="label_name" value="Process" cascade="true" />  
         <put-attribute name="input_name" value="processId" cascade="true" />  
-        <put-attribute name="process-tree" value="/WEB-INF/views/pages/process-tree.jsp" cascade="true"/>  
+        <put-attribute name="action_url_processes_api" value="api/processes" cascade="true" />  
+        <put-attribute name="action_url_show_activity_api" value="api/activities/activity" cascade="true" />  
+        <put-attribute name="action_url_document_validation_api" value="api/documents/validation" cascade="true" />  
+        <put-attribute name="action_url_show_document_info" value="documents/document" cascade="true" />  
+        <put-attribute name="action_url_download_document" value="documents/document/download" cascade="true" />  
+        <put-attribute name="action_url_display_document" value="documents/document/display" cascade="true" />  
+        <put-attribute name="process_tree" value="/WEB-INF/views/pages/process_tree.jsp" cascade="true"/>  
         <put-attribute name="document" value="/WEB-INF/views/pages/document.jsp" cascade="true"/>  
         <put-attribute name="activity_info" value="/WEB-INF/views/pages/activity_info.jsp" cascade="true"/>  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_document.jsp" />  
     </definition>  
     
-    <definition name="company" extends="admin_home">  
+    <definition name="company_info" extends="admin_home">  
         <put-attribute name="title" value="Company" />  
-        <put-attribute name="site_content" value="/WEB-INF/views/pages/company.jsp" />  
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/company_info.jsp" />  
+    </definition>  
+    
+    <definition name="document_info" extends="uploader_home">  
+        <put-attribute name="title" value="Document" />  
+        <put-attribute name="action_url_download_document" value="documents/document/download" cascade="true" />  
+        <put-attribute name="action_url_display_document" value="documents/document/display" cascade="true" /> 
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/document_info.jsp" />  
     </definition>  
     
 </tiles-definitions>

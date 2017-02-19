@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.CompanyService;
 import org.nst.dms.service.UserService;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
@@ -51,11 +54,15 @@ public class CompanyController {
     public ModelAndView showCompany(@PathVariable("id") long id) {
         Company company = companyService.findOne(id);
         if (company == null) throw new CustomException("There is no company with id " + id, "404");
-        List<User> usersOfCompany = userService.findUsersOfCompany(company);
-        System.out.println("@@@@@@@@@@@ " + usersOfCompany);
-        ModelAndView mv = new ModelAndView("company");
+        List<User> usersOfCompany = userService.findByCompanyId(id);
+        ModelAndView mv = new ModelAndView("company_info");
         mv.addObject("company", company);
         mv.addObject("users", usersOfCompany);
         return mv;
+    }
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 }

@@ -16,8 +16,7 @@ public interface ProcessService {
     List<Process> findAll();
     Process save(Process process);
     Process find(long id);
-    List<Process> getRootProcesses();
-    void deleteChildren(Long id);
+    List<Process> findByParentIsNull();
     void delete(Process process);
-    Process findByParentId(Long id);
+    Process findByParent(Long id);
 }

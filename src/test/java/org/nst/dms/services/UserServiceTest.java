@@ -45,18 +45,18 @@ public class UserServiceTest {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.ADMIN);
         user = new User("Ana", "Licina", "hachiko93", "hachiko93", company, roles);
-        Mockito.when(userService.login("hachiko93", "hachiko93")).thenReturn(user);
+        Mockito.when(userService.findOne("hachiko93")).thenReturn(user);
     }
 
     @After
     public void verify() {
-        Mockito.verify(userRepository, VerificationModeFactory.times(1)).login(Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(userRepository, VerificationModeFactory.times(1)).findOne(Mockito.anyString());
         Mockito.reset(userRepository);
     }
 
     @Test()
     public void testLogin(){
-        User user = userService.login("hachiko93", "hachiko93");
+        User user = userService.findOne("hachiko93");
         assertEquals("Ana", user.getName());
         assertEquals("Licina", user.getSurname());
     }

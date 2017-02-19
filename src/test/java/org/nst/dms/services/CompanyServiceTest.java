@@ -40,19 +40,18 @@ public class CompanyServiceTest {
         Company company = new Company("Soko Štark d.o.o. Beograd", "100002799", "07026447", "Bulevar Peka Dapčevića 29, Voždovac, Beograd", null);
         List<Company> companies = new ArrayList<>();
         companies.add(company);
-        
-        Mockito.when(companyRepository.search("Soko Štark d.o.o. Beograd")).thenReturn(companies);
+        Mockito.when(companyRepository.findByNameContainingOrHeadquartersContaining("Soko Štark d.o.o. Beograd", "Vozdovac, Beograd")).thenReturn(companies);
     }
 
     @After
     public void verify() {
-        Mockito.verify(companyRepository, VerificationModeFactory.times(1)).search(Mockito.anyString());
+        Mockito.verify(companyRepository, VerificationModeFactory.times(1)).findByNameContainingOrHeadquartersContaining(Mockito.anyString(), Mockito.anyString());
         Mockito.reset(companyRepository);
     }
 
     @Test()
     public void testSearch(){
-        List<Company> companies = companyService.search("Soko Štark d.o.o. Beograd");
+        List<Company> companies = companyService.findByNameContainingOrHeadquartersContaining("Soko Štark d.o.o. Beograd");
         for (Company company : companies) {
             assertEquals("Soko Štark d.o.o. Beograd", company.getName());
             assertEquals("100002799", company.getPib());

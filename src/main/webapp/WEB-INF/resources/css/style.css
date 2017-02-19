@@ -3416,6 +3416,9 @@ ul.inbox-pagination li {
     font-size: 16px;
     font-weight: 300;
 }
+.bio-graph-heading a{
+    color: white;
+}
 
 .bio-graph-info {
     color: #89817e;

@@ -21,7 +21,7 @@ public class DescriptorServiceImpl implements DescriptorService {
     @Autowired
     private DescriptorRepository descriptorRepository;
     @Override
-    public List<Descriptor> getDescriptorValuesForDocumentType(Long id) {
-        return descriptorRepository.getDescriptorValuesForDocumentType(id);
+    public List<Descriptor> findByDocumentType(Long id) {
+        return descriptorRepository.findByDocumentType(id);
     }
  }

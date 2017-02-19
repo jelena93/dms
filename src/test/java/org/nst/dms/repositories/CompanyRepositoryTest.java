@@ -72,7 +72,7 @@ public class CompanyRepositoryTest {
 
     @Test
     public void search() {
-        List<Company> companies = companyRepository.search(this.company.getName());
+        List<Company> companies = companyRepository.findByNameContainingOrHeadquartersContaining(this.company.getName(), this.company.getHeadquarters());
         for (Company company : companies) {
             assertEquals(this.company.getName(), company.getName());
             assertEquals(this.company.getPib(), company.getPib());

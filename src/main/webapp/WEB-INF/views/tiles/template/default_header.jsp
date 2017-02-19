@@ -19,7 +19,7 @@
                 <div class="log-arrow-up"></div>
                 <li class="eborder-top">
                     <c:forEach var="role" items="${user.roles}">   
-                        <c:if test="${user.activeRole != role}">
+                        <c:if test="${active_role != role}">
                             <a href="${pageContext.request.contextPath}/role/${role}"><i class="icon_profile"></i> Change role to ${role}</a>
                         </c:if>
                     </c:forEach>

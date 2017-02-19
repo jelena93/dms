@@ -20,7 +20,10 @@ import org.nst.dms.service.CompanyService;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.User;
 import org.nst.dms.service.UserService;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -81,5 +84,9 @@ public class ProcessController {
         }
         return new ModelAndView("add_process", "message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, successMessage));
     }
-
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 }

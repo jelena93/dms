@@ -13,7 +13,7 @@ import org.nst.dms.domain.Company;
  * @author Hachiko
  */
 public interface CompanyService {
-    List<Company> search(String name);
+    List<Company> findByNameContainingOrHeadquartersContaining(String name);
     List<Company> findAll();
     Company save(Company company);
     Company findOne(long companyId);

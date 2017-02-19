@@ -5,13 +5,7 @@
  */
 package org.nst.dms.config;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-@Configuration
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig  {
 
 //    @Override
 //    public RequestMappingHandlerMapping requestMappingHandlerMapping() {
@@ -20,10 +14,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        handlerMapping.setUseTrailingSlashMatch(false);
 //        return handlerMapping;
 //    }
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**").addResourceLocations("WEB-INF/resources/");
-    }
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/resources/**").addResourceLocations("WEB-INF/resources/");
+//    }
 
 //    @Override
 //    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {

@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.nst.dms.service.UserService;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -67,7 +70,6 @@ public class UserController {
         User user = new User(name, surname, username, password, c, rolesArr);
         userService.save(user);
         List<Company> companies = companyService.findAll();
-//        userDto.setBreadcrumbs(Arrays.asList("Users", "Add user"));
         ModelAndView mv = new ModelAndView("add_user");
         mv.addObject("roles", getRoles());
         mv.addObject("companies", companies);
@@ -81,5 +83,10 @@ public class UserController {
         roles.add(Role.USER);
         roles.add(Role.UPLOADER);
         return roles;
+    }
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 }

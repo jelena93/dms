@@ -7,6 +7,7 @@ var modeAddProcess = "addProcess";
 var modeAddActivity = "addActivity";
 var mode = modeEdit;
 var isSure = false;
+var action_url_processes_api, action_url_show_process_api, action_url_show_activity_api, action_url_edit_process_api, action_url_edit_activity_api;
 function getProcessesForAddProcess() {
     $('#processes').bind('ready.jstree', function (e, data) {
         $("#btn-add-process").show();
@@ -14,7 +15,7 @@ function getProcessesForAddProcess() {
     }).jstree({
         'core': {
             'data': {
-                'url': '/dms/api/processes',
+                'url': action_url_processes_api,
                 'data': function (node) {
                     return {'id': node.id};
                 }
@@ -36,15 +37,15 @@ function getProcessesForAddProcess() {
         }
         selectedNode = data.node.original;
         if (data.node.original.primitive) {
-            getInfo("/dms/api/process/" + selectedNode.id, false);
+            getInfo(action_url_show_process_api + "/" + selectedNode.id, false);
             $("#btn-add-activity").prop("disabled", false);
             $("#btn-add-process").prop("disabled", true);
         } else if (data.node.original.activity) {
-            getInfo("/dms/api/activity/" + selectedNode.id, true);
+            getInfo(action_url_show_activity_api + "/" + selectedNode.id, true);
             $("#btn-add-activity").prop("disabled", true);
             $("#btn-add-process").prop("disabled", true);
         } else {
-            getInfo("/dms/api/process/" + selectedNode.id, false);
+            getInfo(action_url_show_process_api + "/" + selectedNode.id, false);
             $("#btn-add-activity").prop("disabled", true);
             $("#btn-add-process").prop("disabled", false);
         }
@@ -100,9 +101,9 @@ function checkData() {
             }
             var url = "";
             if (selectedNode.activity) {
-                url = "/dms/api/activity/edit";
+                url = action_url_edit_activity_api;
             } else {
-                url = "/dms/api/process/edit";
+                url = action_url_edit_process_api;
                 params.primitive = $("#primitive").prop('checked');
             }
             console.log("Params: " + params.id + " " + params.name + " " + params.primitive);

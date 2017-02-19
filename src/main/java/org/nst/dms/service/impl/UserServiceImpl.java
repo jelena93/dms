@@ -24,10 +24,6 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User login(String username, String password) {
-        return userRepository.login(username, password);
-    }
-    @Override
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -37,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findUsersOfCompany(Company company) {
-        return userRepository.findUsersOfCompany(company);
+    public List<User> findByCompanyId(Long companyId) {
+        return userRepository.findByCompanyId(companyId);
     }
 }

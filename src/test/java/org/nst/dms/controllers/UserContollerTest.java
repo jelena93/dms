@@ -51,7 +51,7 @@ public class UserContollerTest {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.ADMIN);
         user = new User("Ana", "Licina", "hachiko93", "hachiko93", company, roles);
-        Mockito.when(userService.login("hachiko93", "hachiko93")).thenReturn(user);
+        Mockito.when(userService.findOne("hachiko93")).thenReturn(user);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class UserContollerTest {
 
     @After
     public void verify() {
-        Mockito.verify(this.userService, VerificationModeFactory.times(1)).login("hachiko93", "hachiko93");
+        Mockito.verify(this.userService, VerificationModeFactory.times(1)).findOne("hachiko93");
         Mockito.reset();
     }
 

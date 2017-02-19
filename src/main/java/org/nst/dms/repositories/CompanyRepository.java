@@ -8,8 +8,6 @@ package org.nst.dms.repositories;
 import java.util.List;
 import org.nst.dms.domain.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,6 +16,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    @Query("SELECT c FROM Company c WHERE c.name LIKE CONCAT('%',:name,'%')")
-    List<Company> search(@Param("name")String name);
+    List<Company> findByNameContainingOrHeadquartersContaining(String name, String headquarters);
 }

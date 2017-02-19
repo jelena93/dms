@@ -8,7 +8,6 @@ package org.nst.dms.repositories;
 import java.util.List;
 import org.nst.dms.domain.Descriptor;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,6 +16,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface DescriptorRepository extends JpaRepository<Descriptor, Long> {
-    @Query("SELECT d FROM Descriptor d WHERE d.documentType=?1")
-    List<Descriptor> getDescriptorValuesForDocumentType(Long id);
+    List<Descriptor> findByDocumentType(Long documentType);
 }

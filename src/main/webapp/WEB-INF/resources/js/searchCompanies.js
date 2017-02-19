@@ -1,11 +1,12 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
 var action_url_show_company;
+var action_url_search_companies_api;
 var selectedCompanyId = null;
 function search(name) {
     $.ajax({
         type: "GET",
-        url: "/dms/api/companies/search",
+        url: action_url_search_companies_api,
         data: {name: name},
         beforeSend: function (request) {
             request.setRequestHeader(header, token);

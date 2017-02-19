@@ -18,7 +18,6 @@ import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.User;
 import org.nst.dms.dto.UserDto;
-import org.nst.dms.service.DescriptorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +28,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.nst.dms.service.ActivityService;
 import org.nst.dms.service.DocumentService;
 import org.nst.dms.service.UserService;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
@@ -47,8 +49,6 @@ public class DocumentController {
     private DocumentTypeService documentTypeService;
     @Autowired
     private ActivityService activityService;
-    @Autowired
-    private DescriptorService descriptorService;
     @Autowired
     private DocumentService documentService;
     @Autowired
@@ -119,7 +119,7 @@ public class DocumentController {
         return mv;
     }
 
-    @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/document/display/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> showFile(@PathVariable("id") long id) {
         Document document = documentService.findOne(id);
         HttpHeaders header = new HttpHeaders();
@@ -128,6 +128,14 @@ public class DocumentController {
         header.setContentLength(document.getFileContent().length);
         return new ResponseEntity<>(document.getFileContent(), header, HttpStatus.OK);
     }
+    
+    @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
+    public ModelAndView showDocument(@PathVariable("id") long id) {
+        Document document = documentService.findOne(id);
+        if(document==null) throw new CustomException("There is no document with id "+id, "400");
+        return new ModelAndView("document_info", "document", document);
+    }
+    
     @RequestMapping(path = "/document/download/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> downloadFile(@PathVariable("id") long id) {
         Document document = documentService.findOne(id);
@@ -136,5 +144,10 @@ public class DocumentController {
         header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + document.getFileName());
         header.setContentLength(document.getFileContent().length);
         return new ResponseEntity<>(document.getFileContent(), header, HttpStatus.OK);
+    }
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 }

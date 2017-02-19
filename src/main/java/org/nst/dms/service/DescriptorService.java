@@ -13,5 +13,5 @@ import org.nst.dms.domain.Descriptor;
  * @author Hachiko
  */
 public interface DescriptorService {
-    List<Descriptor> getDescriptorValuesForDocumentType(Long id);
+    List<Descriptor> findByDocumentType(Long documentType);
 }

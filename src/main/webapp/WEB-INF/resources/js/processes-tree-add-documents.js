@@ -3,11 +3,13 @@ var header = $("meta[name='_csrf_header']").attr("content");
 var selectedNode = null;
 var checked = false;
 var isSure = false;
+var action_url_processes_api, action_url_show_activity_api, action_url_document_validation_api,
+        action_url_show_document_info, action_url_download_document, action_url_display_document;
 function getProcessesForAddDocument() {
     $('#processes').jstree({
         'core': {
             'data': {
-                'url': '/dms/api/processes',
+                'url': action_url_processes_api,
                 'data': function (node) {
                     return {'id': node.id};
                 }
@@ -32,7 +34,7 @@ function getProcessesForAddDocument() {
 function getActivityInfo(id) {
     $.ajax({
         type: "GET",
-        url: "../api/activity/" + id,
+        url: action_url_show_activity_api + "/" + id,
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
@@ -54,16 +56,18 @@ function displayActivityInfo(activity) {
     $("#table-inputList tbody").html('');
     $("#table-outputList tbody").html('');
     for (var i = 0; i < activity.inputList.length; i++) {
-        var inputList = "<tr><td><a target='_blank' href='document/" + activity.inputList[i].id + "'>" + activity.inputList[i].fileName + "</a></td><td>" +
-                "<a class='btn btn-default' href='document/download/" + activity.inputList[i].id +
-                "' title='Download'><span class='icon_cloud-download'></span></a></td></tr>";
+        var inputList = "<tr><td><a target='_blank' href='" + action_url_display_document + "/" + activity.inputList[i].id + "'>" + activity.inputList[i].fileName + "</a></td><td>" +
+                "<a class='btn btn-default' href='" + action_url_download_document + "/" + activity.inputList[i].id +
+                "' title='Download'><span class='icon_cloud-download'></span> Download file</a></td><td><div class='btn-group'><a class='btn btn-success' target='_blank' title='Show document' href='"
+                + action_url_show_document_info + "/" + activity.inputList[i].id + "'><i class='icon_check_alt2'></i></a></div></td></tr>";
         $('#table-inputList tbody').append(inputList);
     }
 
     for (var i = 0; i < activity.outputList.length; i++) {
-        var outputList = "<tr><td><a target='_blank' href='document/" + activity.outputList[i].id + "'>" + activity.outputList[i].fileName
-                + "</a></td><td>" + "<a class='btn btn-default' href='/document/download/" + activity.outputList[i].id +
-                "' title='Download'><span class='icon_cloud-download'></span></a></td></tr>";
+        var outputList = "<tr><td><a target='_blank' href='" + action_url_display_document + "/" + activity.outputList[i].id + "'>" + activity.outputList[i].fileName
+                + "</a></td><td>" + "<a class='btn btn-default' href='" + action_url_download_document + "/" + activity.outputList[i].id +
+                "' title='Download'><span class='icon_cloud-download'></span> Download file</a></td><td><div class='btn-group'><a class='btn btn-success' target='_blank' title='Show document' href='"
+                + action_url_show_document_info + "/" + activity.outputList[i].id + "'><i class='icon_check_alt2'></i></a></div></td></tr>";
         $('#table-outputList tbody').append(outputList);
     }
     $("#form-document").hide();
@@ -92,22 +96,25 @@ function checkIfDocumentExists() {
         params["docType"] = docType;
         params["activityID"] = selectedNode.id;
         params["inputOutput"] = $("input[name='inputOutput']:checked").val();
-        console.log("@@@@" + params["inputOutput"]);
         var descriptors = $(".descriptors");
+        var sendValidationRequest = true;
         for (var i = 0; i < descriptors.length; i++) {
             params[descriptors[i].name] = descriptors[i].value;
             if (descriptors[i].value === "") {
-                return;
+                sendValidationRequest = false;
+                break;
             }
         }
-        documentValidation(params);
+        if (sendValidationRequest) {
+            documentValidation(params);
+        }
     }
 
 }
 function documentValidation(params) {
     $.ajax({
         type: "POST",
-        url: "/dms/api/documents/validation",
+        url: action_url_document_validation_api,
         data: params,
         dataType: 'json',
         beforeSend: function (request) {

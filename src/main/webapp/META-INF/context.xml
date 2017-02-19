@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/dms">
   <ResourceLink global="jdbc/dms" name="jdbc/dms" type="javax.sql.DataSource"/>
-  <Resource
+<!--  <Resource
             name="jdbc/dms"
             auth="Container"
             type="javax.sql.DataSource"
@@ -21,5 +21,5 @@
             password="admin"
             driverClassName="com.mysql.jdbc.Driver"
             url="jdbc:mysql://localhost:3306/dms?allowMultiQueries=true"
-        />
+        />-->
 </Context>
