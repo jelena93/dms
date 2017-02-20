@@ -7,23 +7,27 @@ function showDescriptors() {
         type: "GET",
         url: action_url_document_type_api,
         data: {id: docType},
-        beforeSend: function (request) {
+        beforeSend: function(request) {
             request.setRequestHeader(header, token);
         },
         dataType: 'json',
-        success: function (data) {
+        success: function(data) {
             for (var i = 0; i < data.length; i++) {
+                console.log(data[i])
+                var placeholder = "Enter " + data[i].descriptorKey;
                 if (data[i].value === null) {
+                    if (data[i].descriptorType.paramClass === "java.util.Date") {
+                        placeholder += " in format " + data[i].date_FORMAT;
+                    }
                     var descriptors = '<div class="form-group"> <label for="' + data[i].id
                             + '" class="control-label col-lg-4">' + data[i].descriptorKey
                             + '<span class="required">*</span></label><div class="col-lg-8"> ' +
-                            '<input type="text" class="form-control descriptors" name="' + data[i].descriptorKey + '" id="' + data[i].id + '" placeholder="Enter '
-                            + data[i].descriptorKey + '" required></div></div>';
+                            '<input type="text" class="form-control descriptors" name="' + data[i].descriptorKey + '" id="' + data[i].id + '" placeholder="' + placeholder + '" required></div></div>';
                 }
             }
             $('#descriptors').html(descriptors);
         },
-        error: function (request, status, error) {
+        error: function(request, status, error) {
             try {
                 var message = jQuery.parseJSON(request.responseText);
                 showMessage(message.messageText, message.messageType);
