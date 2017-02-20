@@ -69,7 +69,7 @@ public class Descriptor implements Serializable {
     @Column(name = "STRING_VALUE")
     private String stringValue;
     
-    public static final String DATE_FORMAT = "dd.MM.yyyy";
+    private final String DATE_FORMAT = "dd.MM.yyyy";
 
     public Descriptor() {
     }
@@ -107,6 +107,10 @@ public class Descriptor implements Serializable {
         return documentType;
     }
 
+    public String getDATE_FORMAT() {
+        return DATE_FORMAT;
+    }
+    
     public void setDocumentType(Long documentType) {
         this.documentType = documentType;
     }
