@@ -68,6 +68,8 @@ public class Descriptor implements Serializable {
 
     @Column(name = "STRING_VALUE")
     private String stringValue;
+    
+    public static final String DATE_FORMAT = "dd.MM.yyyy";
 
     public Descriptor() {
     }
@@ -190,7 +192,7 @@ public class Descriptor implements Serializable {
                     } else doubleValue = ((Double) value);
                     longValue = doubleValue.longValue();
                 } else if (String.class.equals(paramClass)) stringValue = (String) value;
-                else if (Date.class.equals(paramClass)) try { dateValue = new SimpleDateFormat("dd.MM.yyyy").parse(value.toString()); } catch (ParseException ex) { dateValue = (Date) value; }
+                else if (Date.class.equals(paramClass)) try { dateValue = new SimpleDateFormat(DATE_FORMAT).parse(value.toString()); } catch (ParseException ex) { dateValue = (Date) value; }
             }} catch (Exception ex) {
                 longValue = null;
                 doubleValue = null;
