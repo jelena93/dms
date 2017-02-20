@@ -6,6 +6,7 @@
 package org.nst.dms.config;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
@@ -70,11 +71,12 @@ public class InitializingBeanImpl implements InitializingBean {
             DescriptorType descriptorType = new DescriptorType(Integer.class);
             Descriptor descriptor = new Descriptor("broj racuna", documentType.getId(), descriptorType);
             documentType.getDescriptors().add(descriptor);
-            documentType = documentTypeService.save(documentType);
-            descriptorType = documentType.getDescriptors().get(0).getDescriptorType();
+            documentTypeService.save(documentType);
+            
+            descriptorType = new DescriptorType(Date.class);
             documentType = new DocumentType("Porudzbenica");
             documentType = documentTypeService.save(documentType);
-            descriptor = new Descriptor("broj porudzbenice", documentType.getId(), descriptorType);
+            descriptor = new Descriptor("datum porudzbenice", documentType.getId(), descriptorType);
             documentType.getDescriptors().add(descriptor);
             documentTypeService.save(documentType);
         }

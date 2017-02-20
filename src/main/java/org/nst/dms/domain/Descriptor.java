@@ -42,7 +42,6 @@ public class Descriptor implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "descriptor_id")
-//    @GeneratedValue
     @SequenceGenerator(name = "DescriptorGen", sequenceName = "DESCRIPTOR_ID_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DescriptorGen", strategy = GenerationType.SEQUENCE)
     @NotNull
@@ -191,7 +190,7 @@ public class Descriptor implements Serializable {
                     } else doubleValue = ((Double) value);
                     longValue = doubleValue.longValue();
                 } else if (String.class.equals(paramClass)) stringValue = (String) value;
-                else if (Date.class.equals(paramClass)) try { dateValue = new SimpleDateFormat().parse(value.toString()); } catch (ParseException ex) { dateValue = (Date) value; }
+                else if (Date.class.equals(paramClass)) try { dateValue = new SimpleDateFormat("dd.MM.yyyy").parse(value.toString()); } catch (ParseException ex) { dateValue = (Date) value; }
             }} catch (Exception ex) {
                 longValue = null;
                 doubleValue = null;
