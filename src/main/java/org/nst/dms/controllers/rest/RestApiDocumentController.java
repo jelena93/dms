@@ -53,7 +53,8 @@ public class RestApiDocumentController {
             String key = descriptor.getDescriptorKey();
             String value = request.getParameter(key).trim();
             descriptor.setValue(value);
-            if(descriptor.getValue() == null) throw new Exception("Descriptor value is not correct");
+            if(descriptor.getValue() == null) throw new Exception("Value for descriptor " + descriptor.getDescriptorKey() 
+                    + "  is not correct. Expecting descriptor of type " + descriptor.getDescriptorType().getStringMessageByParamClass() + ".");
             Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
             Long id = checkIfFileAlreadyAdded(existingDescriptors, newDescriptor, activityID, inputOutput);
             if(id == null) continue;

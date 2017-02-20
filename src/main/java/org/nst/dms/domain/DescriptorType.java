@@ -5,6 +5,7 @@
  */
 package org.nst.dms.domain;
 
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,5 +39,10 @@ public class DescriptorType {
     public void setId(Long id) { this.id = id; }
     public Class getParamClass() { return paramClass; }
     public void setParamClass(Class paramClass) { this.paramClass = paramClass; }
-    
+    public String getStringMessageByParamClass () {
+        if(Integer.class.equals(paramClass)) return "integer";
+        else if(Double.class.equals(paramClass)) return "decimal number";
+        else if(Date.class.equals(paramClass)) return "date";
+        return "N/A";
+    }
 }
