@@ -5,6 +5,8 @@
  */
 package org.nst.dms.controllers.rest;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
@@ -67,8 +69,11 @@ public class RestApiDocumentController {
     }
     
      private Long checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor, long activityID, String inputOutput) {
+        if(existingDescriptors == null || existingDescriptors.isEmpty()) return null;
         for (Descriptor existingDescriptor : existingDescriptors) {
-            if(existingDescriptor.equals(newDescriptor)) {
+            if(existingDescriptor.getValue() == null) continue;
+            if(existingDescriptor.equals(newDescriptor) ||
+                    (newDescriptor.getValue() instanceof Date) && isTheSameDate(existingDescriptor, newDescriptor)) {
                 Activity activity = activityService.find(activityID);
                 if(inputOutput.equals("input")) for (Document document : activity.getInputList()) if(document.getDescriptors().contains(existingDescriptor)) return document.getId();
                 else if (inputOutput.equals("output")) for (Document d : activity.getOutputList()) if(d.getDescriptors().contains(existingDescriptor)) return document.getId();
@@ -86,5 +91,16 @@ public class RestApiDocumentController {
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
+    private boolean isTheSameDate(Descriptor existingDescriptor, Descriptor newDescriptor) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        System.out.println("existing: " + existingDescriptor.getValue());
+        cal1.setTime((Date)existingDescriptor.getValue());
+        cal2.setTime((Date)newDescriptor.getValue());
+        
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) 
+                && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 }
