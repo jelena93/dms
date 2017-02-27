@@ -43,42 +43,138 @@ public class InitializingBeanImpl implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         if (isTest) {
-            Company company = new Company("Soko Stark d.o.o Beograd", "011111111", "01111111", "Vozdovac, Beograd");
+            // zadata kompanija
+            Company company = new Company("Silab d.o.o", "011111111", "01111111", "Vozdovac, Beograd");
             companyService.save(company);
-
-            Process process = new Process("Proces1", null, false);
-            company.getProcesses().add(process);
-            processService.save(process);
-            process = new Process("Dete", process, true);
-            process.getActivityList().add(new Activity("Aktivnost 1"));
-            processService.save(process);
-            company.getProcesses().add(process);
+            
+            //zadati procesi i aktivnosti
+            Process prodaja = new Process("Prodaja", null, false);
+            Process nabavka = new Process("Nabavka", null, false);
+            Process skladistenje = new Process("Skladistenje i oprema", null, false);
+            Process finansije = new Process("Regulisanje finansija", null, false);
+            
+            company.getProcesses().add(prodaja);
+            company.getProcesses().add(nabavka);
+            company.getProcesses().add(skladistenje);
+            company.getProcesses().add(finansije);
+            
+            prodaja = processService.save(prodaja);
+            nabavka = processService.save(nabavka);
+            skladistenje = processService.save(skladistenje);
+            finansije = processService.save(finansije);
+           
+            Process katalog = new Process("Formiranje i slanje kataloga", prodaja, true);
+            katalog.getActivityList().add(new Activity("Formiranje kataloga"));
+            katalog.getActivityList().add(new Activity("Slanje kataloga"));
+            
+            Process narudzbenica = new Process("Prijem narudzbenice", prodaja, false);
+            Process otprema = new Process("Formiranje naloga za otpremu", prodaja, false);
+            
+            Process profaktura = new Process("Formiranje profakture", prodaja, true);
+            profaktura.getActivityList().add(new Activity("Provera raspolozivosti"));
+            profaktura.getActivityList().add(new Activity("Formiranje profakture"));
+            profaktura.getActivityList().add(new Activity("Slanje profakture"));
+            
+            processService.save(prodaja);
+            company.getProcesses().add(katalog);
+            company.getProcesses().add(narudzbenica);
+            company.getProcesses().add(otprema);
+            company.getProcesses().add(profaktura);
+            
+            Process katalogP = new Process("Prijem kataloga", nabavka, false);
+            Process narucivanje = new Process("Narucivanje", nabavka, false);
+            
+            Process profakturaP = new Process("Prijem profakture", nabavka, true);
+            profakturaP.getActivityList().add(new Activity("Prijem profakture"));
+            profakturaP.getActivityList().add(new Activity("Formiranje naloga za placanje"));
+            
+            processService.save(nabavka);
+            company.getProcesses().add(katalogP);
+            company.getProcesses().add(narucivanje);
+            company.getProcesses().add(profakturaP);
+            
+            Process zalihe = new Process("Izvestavanje o stanju na zalihama", skladistenje, true);
+            zalihe.getActivityList().add(new Activity("Formiranje izvestaja o stanju na zalihama"));
+            zalihe.getActivityList().add(new Activity("Formiranje naloga za nabavku"));
+            
+            Process otpremanje = new Process("Otpremanje robe", skladistenje, true);
+            otpremanje.getActivityList().add(new Activity("Azuriranje stanja gotovih proizvoda i formiranje otpremnice"));
+            otpremanje.getActivityList().add(new Activity("Isporucivanje robe"));
+            
+            Process prijem = new Process("Projem robe", skladistenje, true);
+            prijem.getActivityList().add(new Activity("Prijem fakture"));
+            prijem.getActivityList().add(new Activity("Prijem otpremnice"));
+            prijem.getActivityList().add(new Activity("Azuriranje stanja gotovih proizvoda i formiranje prijemnice"));
+            prijem.getActivityList().add(new Activity("Overa otpremnice dobavljaca"));
+            
+            Process nalogZaNabavku = new Process("Formiranje naloga za nabavku", skladistenje, false);
+            processService.save(skladistenje);
+            company.getProcesses().add(zalihe);
+            company.getProcesses().add(otpremanje);
+            company.getProcesses().add(prijem);
+            company.getProcesses().add(nalogZaNabavku);
+            
+            Process obrada = new Process("Obrada izvoda stanja na racunu", finansije, true);
+            obrada.getActivityList().add(new Activity("Evidentiranje izvoda stanja sa racuna"));
+            obrada.getActivityList().add(new Activity("Evidentiranje uplate"));
+            obrada.getActivityList().add(new Activity("Evidentiranje isplate"));
+            obrada.getActivityList().add(new Activity("Obrada isplate"));
+            
+            Process uplata = new Process("Uplate profakture dobavljaca", finansije, true);
+            uplata.getActivityList().add(new Activity("Slanje naloga za prenos"));
+            uplata.getActivityList().add(new Activity("Formiranje naloga za prenos"));
+            uplata.getActivityList().add(new Activity("Evidentiranje overenih naloga za prenos"));
+            
+            processService.save(finansije);
+            company.getProcesses().add(obrada);
+            company.getProcesses().add(uplata);
+            
+            company.getProcesses().add(prodaja);
+            company.getProcesses().add(nabavka);
+            company.getProcesses().add(skladistenje);
+            company.getProcesses().add(finansije);
             companyService.save(company);
-            process = new Process("Random process", null, true);
-            processService.save(process);
-
-            List<Role> roles = new ArrayList<>();
-            roles.add(Role.ADMIN);
-            User user = new User("Pera", "Peric", "admin", "admin", null, roles);
-            userService.save(user);
-            roles.add(Role.USER);
-            roles.add(Role.UPLOADER);
-            user = new User("Zika", "Zikic", "asd", "asd", company, roles);
-            userService.save(user);
-
-            DocumentType documentType = new DocumentType("Racun");
+            
+            //zadata dokumenta
+            DocumentType documentType = new DocumentType("Nalog za placanje");
             documentType = documentTypeService.save(documentType);
-            DescriptorType descriptorType = new DescriptorType(Integer.class);
-            Descriptor descriptor = new Descriptor("broj racuna", documentType.getId(), descriptorType);
+            
+            Descriptor descriptor = new Descriptor("Broj naloga", documentType.getId(), new DescriptorType(Integer.class));
+            documentType.getDescriptors().add(descriptor);
+            descriptor = new Descriptor("Suma", documentType.getId(), new DescriptorType(Double.class));
+            documentType.getDescriptors().add(descriptor);
+            descriptor = new Descriptor("Datum", documentType.getId(), new DescriptorType(Date.class));
             documentType.getDescriptors().add(descriptor);
             documentTypeService.save(documentType);
             
-            descriptorType = new DescriptorType(Date.class);
-            documentType = new DocumentType("Porudzbenica");
+            documentType = new DocumentType("Otpremnica dobavljaca");
             documentType = documentTypeService.save(documentType);
-            descriptor = new Descriptor("datum porudzbenice", documentType.getId(), descriptorType);
+            descriptor = new Descriptor("Broj otpremnice", documentType.getId(), new DescriptorType(Integer.class));
+            documentType.getDescriptors().add(descriptor);
+            descriptor = new Descriptor("Datum", documentType.getId(), new DescriptorType(Date.class));
             documentType.getDescriptors().add(descriptor);
             documentTypeService.save(documentType);
+            
+            //uloge
+            List<Role> roles = new ArrayList<>();
+            roles.add(Role.ADMIN);
+            User sinisa = new User("Sinisa", "Vlajic", "admin", "admin", null, roles);
+            userService.save(sinisa);
+            
+            User milos = new User("Milos", "Milic", "milos", "milic", company, roles);
+            roles.clear();
+            roles.add(Role.USER);
+            userService.save(milos);
+            
+            User voja = new User("Voja", "Stanojevic", "voja", "voja", company, roles);
+            roles.clear();
+            roles.add(Role.UPLOADER);
+            userService.save(voja);
+            
+            roles.add(Role.USER);
+            roles.add(Role.ADMIN);
+            User dule = new User("DUULE", "SAVIC!", "dules", "dules", company, roles);
+            userService.save(dule);
         }
     }
 }
