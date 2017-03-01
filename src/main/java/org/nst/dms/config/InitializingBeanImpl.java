@@ -6,6 +6,7 @@
 package org.nst.dms.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.nst.dms.domain.Activity;
@@ -22,6 +23,7 @@ import org.nst.dms.service.ProcessService;
 import org.nst.dms.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.core.convert.TypeDescriptor.array;
 
 /**
  *
@@ -155,25 +157,17 @@ public class InitializingBeanImpl implements InitializingBean {
             documentType.getDescriptors().add(descriptor);
             documentTypeService.save(documentType);
             
-            //uloge
-            List<Role> roles = new ArrayList<>();
-            roles.add(Role.ADMIN);
-            User sinisa = new User("Sinisa", "Vlajic", "admin", "admin", null, roles);
+            //users
+            User sinisa = new User("Sinisa", "Vlajic", "admin", "admin", null, new ArrayList<>(Arrays.asList(new Role[]{Role.ADMIN})));
             userService.save(sinisa);
             
-            User milos = new User("Milos", "Milic", "milos", "milic", company, roles);
-            roles.clear();
-            roles.add(Role.USER);
+            User milos = new User("Milos", "Milic", "milos", "milic", company, new ArrayList<>(Arrays.asList(new Role[]{Role.USER})));
             userService.save(milos);
             
-            User voja = new User("Voja", "Stanojevic", "voja", "voja", company, roles);
-            roles.clear();
-            roles.add(Role.UPLOADER);
+            User voja = new User("Voja", "Stanojevic", "voja", "voja", company, new ArrayList<>(Arrays.asList(new Role[]{Role.UPLOADER})));
             userService.save(voja);
             
-            roles.add(Role.USER);
-            roles.add(Role.ADMIN);
-            User dule = new User("DUULE", "SAVIC!", "dules", "dules", company, roles);
+            User dule = new User("DUULE", "SAVIC!", "dules", "dules", company, new ArrayList<>(Arrays.asList(new Role[]{Role.ADMIN, Role.USER, Role.UPLOADER})));
             userService.save(dule);
         }
     }
