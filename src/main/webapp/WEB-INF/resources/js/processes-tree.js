@@ -27,12 +27,7 @@ function getProcessesForAddProcess() {
             "plugins": ["wholerow"]
         }}).on('activate_node.jstree', function (e, data) {
         if (selectedNode !== null && selectedNode.id === data.node.original.id) {
-            data.instance.deselect_node(data.node, true);
-            selectedNode = null;
-            $('#id').val(selectedNode);
-            $('#info').hide();
-            $("#btn-add-activity").prop("disabled", true);
-            $("#btn-add-process").prop("disabled", false);
+            reset(data);
             return;
         }
         selectedNode = data.node.original;
@@ -185,7 +180,14 @@ function addProcess() {
     mode = modeAddProcess;
     showFormForAdding(false);
 }
-
+function reset(data) {
+    data.instance.deselect_node(data.node, true);
+    selectedNode = null;
+    $('#id').val(selectedNode);
+    $('#info').hide();
+    $("#btn-add-activity").prop("disabled", true);
+    $("#btn-add-process").prop("disabled", false);
+}
 function disableForm() {
     $("#name").prop("disabled", true);
     $("#primitive").prop("disabled", true);

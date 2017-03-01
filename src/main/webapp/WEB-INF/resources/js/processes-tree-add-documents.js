@@ -21,13 +21,14 @@ function getProcessesForAddDocument() {
             "plugins": ["wholerow"]
         }}).on('activate_node.jstree', function (e, data) {
         if (data.node.original.activity) {
-            selectedNode = data.node.original;
-            getActivityInfo(selectedNode.id);
+            if (selectedNode !== null && selectedNode.id === data.node.original.id) {
+                reset(data);
+            } else {
+                selectedNode = data.node.original;
+                getActivityInfo(selectedNode.id);
+            }
         } else {
-            $("#activity-info").hide();
-            $("#form-document").hide();
-            $("#btn-add-document").hide();
-            data.instance.deselect_node(data.node, true);
+            reset(data);
         }
     });
 }
@@ -140,6 +141,14 @@ function documentValidation(params) {
             }
         }
     });
+}
+
+function reset(data) {
+    $("#activity-info").hide();
+    $("#form-document").hide();
+    $("#btn-add-document").hide();
+    selectedNode = null;
+    data.instance.deselect_node(data.node, true);
 }
 function showMessage(data, messageType) {
     $("#message-box").removeClass("alert-success");
