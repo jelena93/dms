@@ -1,8 +1,7 @@
 # Document management system
-Add the following code to tomcat server.xml
+Add the following code to tomcat server.xml in GlobalNamingResources:
 
 ```
-<GlobalNamingResources>
 <Resource
             name="jdbc/dms"
             auth="Container"
@@ -24,5 +23,4 @@ Add the following code to tomcat server.xml
             driverClassName="com.mysql.jdbc.Driver"
             url="jdbc:mysql://localhost:3306/dms?allowMultiQueries=true"
         />
-</GlobalNamingResources>
 ```
