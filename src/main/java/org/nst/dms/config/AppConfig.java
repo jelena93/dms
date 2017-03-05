@@ -6,11 +6,14 @@
 package org.nst.dms.config;
 
 import java.util.Properties;
+import java.util.UUID;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
+import org.elasticsearch.client.node.NodeClient;
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import org.nst.dms.config.security.SecurityConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,6 +27,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.web.multipart.MultipartResolver;
@@ -38,20 +43,31 @@ import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 @Configuration
 @ComponentScan(basePackages = {"org.nst.*"})
 @EnableTransactionManagement
-@EnableJpaRepositories("org.nst.*")
-@Import({SecurityConfig.class})
+@EnableJpaRepositories("org.nst.dms.repositories")
+@EnableElasticsearchRepositories("org.nst.elasticsearch.repositories")
+@Import(SecurityConfig.class)
 public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public boolean isTest() {
         return true;
     }
-    
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("WEB-INF/resources/");
     }
-    
+
+    @Bean
+    public ElasticsearchTemplate elasticsearchTemplate() {
+        return new ElasticsearchTemplate(getNodeClient());
+    }
+
+    private NodeClient getNodeClient() {
+        NodeClient nodeClient = (NodeClient) nodeBuilder().clusterName(UUID.randomUUID().toString()).local(true).node().client();
+        return nodeClient;
+    }
+
     @Bean
     public TilesConfigurer tilesConfigurer() {
         TilesConfigurer tilesConfigurer = new TilesConfigurer();
@@ -71,7 +87,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         em.setJpaVendorAdapter(eclipseLinkJpaVendorAdapter());
-        em.setPackagesToScan("org.nst.*");
+        em.setPackagesToScan("org.nst.dms.domain");
         em.setJpaProperties(jpaProperties());
         return em;
     }

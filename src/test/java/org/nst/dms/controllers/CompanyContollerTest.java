@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.nst.dms.domain.Company;
-import org.nst.dms.service.CompanyService;
+import org.nst.dms.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

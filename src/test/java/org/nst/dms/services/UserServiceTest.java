@@ -23,8 +23,7 @@ import org.junit.Test;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
 import org.nst.dms.repositories.UserRepository;
-import org.nst.dms.service.UserService;
-import org.nst.dms.service.impl.UserServiceImpl;
+import org.nst.dms.services.impl.UserServiceImpl;
 
 /**
  *

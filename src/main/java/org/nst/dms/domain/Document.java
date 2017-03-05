@@ -22,6 +22,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -29,11 +31,11 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table (name = "document")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "document")
 public class Document implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "document_id")
-//    @GeneratedValue
     @SequenceGenerator(name = "DocumentGen", sequenceName = "DOCUMENT_ID_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DocumentGen", strategy = GenerationType.SEQUENCE)
     @NotNull
@@ -49,6 +51,7 @@ public class Document implements Serializable {
     private byte[] fileContent;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "document_descriptors", joinColumns = @JoinColumn(name = "document"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
+    @Field(type = FieldType.Nested)
     private List<Descriptor> descriptors;
     public Document() { }
     public Long getId() { return id; }

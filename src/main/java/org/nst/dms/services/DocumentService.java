@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.nst.dms.service;
+package org.nst.dms.services;
 
+import java.util.List;
 import org.nst.dms.domain.Document;
 
 /**
@@ -13,4 +14,5 @@ import org.nst.dms.domain.Document;
  */
 public interface DocumentService {
     Document findOne(Long id);
+    List<Document> findAll();
 }
