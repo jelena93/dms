@@ -7,7 +7,7 @@ package org.nst.dms.config.security;
 
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.domain.User;
-import org.nst.dms.service.UserService;
+import org.nst.dms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

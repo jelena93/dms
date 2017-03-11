@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.nst.dms.service;
+package org.nst.dms.services;
 
-import org.nst.dms.domain.Document;
+import java.util.List;
+import org.nst.dms.domain.Descriptor;
 
 /**
  *
  * @author Hachiko
  */
-public interface DocumentService {
-    Document findOne(Long id);
+public interface DescriptorService {
+    List<Descriptor> findByDocumentType(Long documentType);
 }

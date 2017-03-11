@@ -9,7 +9,7 @@ import java.util.List;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.dto.MessageDto;
-import org.nst.dms.service.DocumentTypeService;
+import org.nst.dms.services.DocumentTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;

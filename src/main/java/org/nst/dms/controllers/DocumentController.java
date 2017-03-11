@@ -23,11 +23,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.nst.dms.service.DocumentTypeService;
+import org.nst.dms.services.DocumentTypeService;
 import org.springframework.web.multipart.MultipartFile;
-import org.nst.dms.service.ActivityService;
-import org.nst.dms.service.DocumentService;
-import org.nst.dms.service.UserService;
+import org.nst.dms.services.ActivityService;
+import org.nst.dms.services.DocumentService;
+import org.nst.dms.services.UserService;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -72,11 +72,13 @@ public class DocumentController {
         List<Descriptor> descriptors = documentType.getDescriptors();
         List<Descriptor> newDescriptors = new ArrayList<>();
         for (Descriptor descriptor : descriptors) {
-            String key = descriptor.getDescriptorKey();
-            String value = request.getParameter(key).trim();
-            descriptor.setValue(value);
-            Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
-            newDescriptors.add(newDescriptor);
+            if (descriptor.getValue() == null) {
+                String key = descriptor.getDescriptorKey();
+                String value = request.getParameter(key).trim();
+                descriptor.setValue(value);
+                Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
+                newDescriptors.add(newDescriptor);
+            }
         }
         Document document = new Document();
         boolean found = false;

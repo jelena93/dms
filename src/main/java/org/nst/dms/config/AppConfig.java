@@ -36,22 +36,27 @@ import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = {"org.nst.*"})
+@ComponentScan(basePackages = {"org.nst.dms.*"})
 @EnableTransactionManagement
-@EnableJpaRepositories("org.nst.*")
+@EnableJpaRepositories("org.nst.dms.repositories")
 @Import({SecurityConfig.class})
 public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
-    public boolean isTest() {
-        return true;
+    public boolean dropDatabase() {
+        return false;
     }
-    
+
+    @Bean
+    public boolean fillDatabase() {
+        return false;
+    }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("WEB-INF/resources/");
     }
-    
+
     @Bean
     public TilesConfigurer tilesConfigurer() {
         TilesConfigurer tilesConfigurer = new TilesConfigurer();
@@ -71,7 +76,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         em.setJpaVendorAdapter(eclipseLinkJpaVendorAdapter());
-        em.setPackagesToScan("org.nst.*");
+        em.setPackagesToScan("org.nst.dms.domain");
         em.setJpaProperties(jpaProperties());
         return em;
     }
@@ -110,7 +115,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public Properties jpaProperties() {
         Properties properties = new Properties();
         properties.put(PersistenceUnitProperties.WEAVING, "static");
-        if (isTest()) {
+        if (dropDatabase()) {
             properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
             properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
             properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");

@@ -17,9 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.mockito.Mockito;
 import org.nst.dms.repositories.ProcessRepository;
-import org.nst.dms.service.ProcessService;
 import org.nst.dms.domain.Process;
-import org.nst.dms.service.impl.ProcessServiceImpl;
+import org.nst.dms.services.impl.ProcessServiceImpl;
 
 /**
  *

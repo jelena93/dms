@@ -15,9 +15,9 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.dto.MessageDto;
-import org.nst.dms.service.ActivityService;
-import org.nst.dms.service.DescriptorService;
-import org.nst.dms.service.DocumentTypeService;
+import org.nst.dms.services.ActivityService;
+import org.nst.dms.services.DescriptorService;
+import org.nst.dms.services.DocumentTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
@@ -73,7 +73,7 @@ public class RestApiDocumentController {
         for (Descriptor existingDescriptor : existingDescriptors) {
             if(existingDescriptor.getValue() == null) continue;
             if(existingDescriptor.equals(newDescriptor) ||
-                    (newDescriptor.getValue() instanceof Date) && isTheSameDate(existingDescriptor, newDescriptor)) {
+                    ((newDescriptor.getValue() instanceof Date && (existingDescriptor.getValue() instanceof Date)) && isTheSameDate(existingDescriptor, newDescriptor))) {
                 Activity activity = activityService.find(activityID);
                 if(inputOutput.equals("input")) for (Document document : activity.getInputList()) if(document.getDescriptors().contains(existingDescriptor)) return document.getId();
                 else if (inputOutput.equals("output")) for (Document d : activity.getOutputList()) if(d.getDescriptors().contains(existingDescriptor)) return document.getId();
@@ -94,13 +94,8 @@ public class RestApiDocumentController {
     }
 
     private boolean isTheSameDate(Descriptor existingDescriptor, Descriptor newDescriptor) {
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        System.out.println("existing: " + existingDescriptor.getValue());
-        cal1.setTime((Date)existingDescriptor.getValue());
-        cal2.setTime((Date)newDescriptor.getValue());
-        
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) 
-                && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+        Date d1 = (Date) existingDescriptor.getValue();
+        Date d2 = (Date) newDescriptor.getValue();
+        return d1.equals(d2);
     }
 }

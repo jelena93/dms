@@ -8,7 +8,7 @@ package org.nst.dms.controllers.rest;
 import java.util.List;
 import org.nst.dms.domain.Company;
 import org.nst.dms.dto.MessageDto;
-import org.nst.dms.service.CompanyService;
+import org.nst.dms.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.repository.query.Param;

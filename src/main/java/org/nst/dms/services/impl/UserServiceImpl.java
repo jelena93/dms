@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.nst.dms.service.impl;
+package org.nst.dms.services.impl;
 
 import java.util.List;
 import org.nst.dms.domain.Company;
@@ -11,7 +11,7 @@ import org.nst.dms.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.nst.dms.repositories.UserRepository;
-import org.nst.dms.service.UserService;
+import org.nst.dms.services.UserService;
 
 /**
  *
