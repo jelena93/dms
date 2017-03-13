@@ -13,7 +13,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.elasticsearch.client.node.NodeClient;
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+import org.elasticsearch.node.NodeBuilder;
 import org.nst.dms.config.security.SecurityConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -50,7 +50,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public boolean isTest() {
-        return false;
+        return true;
     }
 
     @Override
@@ -64,8 +64,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     }
 
     private NodeClient getNodeClient() {
-        NodeClient nodeClient = (NodeClient) nodeBuilder().clusterName(UUID.randomUUID().toString()).local(true).node().client();
-        return nodeClient;
+        return (NodeClient) NodeBuilder.nodeBuilder().clusterName(UUID.randomUUID().toString()).local(true).node().client();
     }
 
     @Bean

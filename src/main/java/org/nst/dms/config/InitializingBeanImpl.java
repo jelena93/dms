@@ -21,9 +21,10 @@ import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.DocumentTypeService;
 import org.nst.dms.services.ProcessService;
 import org.nst.dms.services.UserService;
+import org.nst.elasticsearch.repositories.DocumentElasticSearchRepository;
+import org.nst.elasticsearch.services.DocumentElasticSearchService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
 /**
  *
@@ -42,9 +43,9 @@ public class InitializingBeanImpl implements InitializingBean {
     @Autowired
     DocumentService documentService;
     @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
-    @Autowired
     boolean isTest;
+    @Autowired
+    DocumentElasticSearchService documentElasticSearchService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -174,20 +175,8 @@ public class InitializingBeanImpl implements InitializingBean {
             User dule = new User("DUULE", "SAVIC!", "dules", "dules", company, new ArrayList<>(Arrays.asList(new Role[]{Role.ADMIN, Role.USER, Role.UPLOADER})));
             userService.save(dule);
 
-//            List<Document> docs = documentService.findAll();
-//            for (Document doc : docs) {
-//                elasticsearchTemplate.putMapping(Document.class);
-//                IndexQuery indexQuery = new IndexQuery();
-//                indexQuery.setId(doc.getId() + "");
-//                indexQuery.setObject(doc);
-//                elasticsearchTemplate.index(indexQuery);
-//                elasticsearchTemplate.refresh(Document.class, true);
-//                documentServiceElasticSearch.save(doc);
-//            }
-//            List<Document> findDocumentsById = documentServiceElasticSearch.findById(1L);
-//            for (Document document : findDocumentsById) {
-//                System.out.println("nssssssssssssss" + document);
-//            }
         }
+        
+        documentElasticSearchService.save(documentService.findAll());
     }
 }
