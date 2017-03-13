@@ -5,7 +5,6 @@
  */
 package org.nst.dms.controllers.rest;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -52,6 +51,7 @@ public class RestApiDocumentController {
         int numberOfIdenticalDescriptors = 0;
         Long existingDocumentID = null;
         for (Descriptor descriptor : descriptors) {
+            if (descriptor.getValue() == null) {
             String key = descriptor.getDescriptorKey();
             String value = request.getParameter(key).trim();
             descriptor.setValue(value);
@@ -63,6 +63,7 @@ public class RestApiDocumentController {
             else if(existingDocumentID == null) existingDocumentID = id;
             else if(!Objects.equals(id, existingDocumentID)) continue;
             numberOfIdenticalDescriptors += 1;
+            }
         }
         if(numberOfIdenticalDescriptors == descriptors.size() && existingDocumentID != null) return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, existingDocumentID+""), HttpStatus.OK);
         return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "ok"), HttpStatus.OK);
@@ -72,8 +73,8 @@ public class RestApiDocumentController {
         if(existingDescriptors == null || existingDescriptors.isEmpty()) return null;
         for (Descriptor existingDescriptor : existingDescriptors) {
             if(existingDescriptor.getValue() == null) continue;
-            if(existingDescriptor.equals(newDescriptor) ||
-                    (newDescriptor.getValue() instanceof Date) && isTheSameDate(existingDescriptor, newDescriptor)) {
+           if(existingDescriptor.equals(newDescriptor) ||
+                    ((newDescriptor.getValue() instanceof Date && (existingDescriptor.getValue() instanceof Date)) && isTheSameDate(existingDescriptor, newDescriptor))) {
                 Activity activity = activityService.find(activityID);
                 if(inputOutput.equals("input")) for (Document document : activity.getInputList()) if(document.getDescriptors().contains(existingDescriptor)) return document.getId();
                 else if (inputOutput.equals("output")) for (Document d : activity.getOutputList()) if(d.getDescriptors().contains(existingDescriptor)) return document.getId();
@@ -94,13 +95,8 @@ public class RestApiDocumentController {
     }
 
     private boolean isTheSameDate(Descriptor existingDescriptor, Descriptor newDescriptor) {
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        System.out.println("existing: " + existingDescriptor.getValue());
-        cal1.setTime((Date)existingDescriptor.getValue());
-        cal2.setTime((Date)newDescriptor.getValue());
-        
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) 
-                && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+        Date d1 = (Date) existingDescriptor.getValue();
+        Date d2 = (Date) newDescriptor.getValue();
+        return d1.equals(d2);
     }
 }

@@ -50,7 +50,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public boolean isTest() {
-        return true;
+        return false;
     }
 
     @Override

@@ -5,7 +5,6 @@
  */
 package org.nst.elasticsearch.services.impl;
 
-import java.util.List;
 import org.nst.dms.domain.Document;
 import org.nst.elasticsearch.repositories.DocumentElasticSearchRepository;
 import org.nst.elasticsearch.services.DocumentElasticSearchService;
@@ -23,7 +22,7 @@ public class DocumentElasticSearchServiceImpl implements DocumentElasticSearchSe
     private DocumentElasticSearchRepository documentElasticSearchRepository;
 
     @Override
-    public void save(List<Document> documents) {
-        documentElasticSearchRepository.save(documents);
+    public void save(Document document) {
+        documentElasticSearchRepository.save(document);
     }
 }

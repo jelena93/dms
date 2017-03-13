@@ -31,7 +31,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  */
 @Entity
 @Table (name = "document")
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "document", type = "documents")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "document")
 public class Document implements Serializable {
     @Id
     @Basic(optional = false)

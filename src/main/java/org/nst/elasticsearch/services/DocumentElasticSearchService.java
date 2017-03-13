@@ -5,7 +5,6 @@
  */
 package org.nst.elasticsearch.services;
 
-import java.util.List;
 import org.nst.dms.domain.Document;
 
 /**
@@ -14,5 +13,5 @@ import org.nst.dms.domain.Document;
  */
 public interface DocumentElasticSearchService {
 
-    void save(List<Document> documents);
+    void save(Document document);
 }

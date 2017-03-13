@@ -55,6 +55,10 @@
                     <groupId>org.springframework.data</groupId>
                     <artifactId>spring-data-commons</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

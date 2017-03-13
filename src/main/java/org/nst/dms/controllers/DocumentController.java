@@ -72,11 +72,13 @@ public class DocumentController {
         List<Descriptor> descriptors = documentType.getDescriptors();
         List<Descriptor> newDescriptors = new ArrayList<>();
         for (Descriptor descriptor : descriptors) {
-            String key = descriptor.getDescriptorKey();
-            String value = request.getParameter(key).trim();
-            descriptor.setValue(value);
-            Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
-            newDescriptors.add(newDescriptor);
+            if (descriptor.getValue() == null) {
+                String key = descriptor.getDescriptorKey();
+                String value = request.getParameter(key).trim();
+                descriptor.setValue(value);
+                Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
+                newDescriptors.add(newDescriptor);
+            }
         }
         Document document = new Document();
         boolean found = false;

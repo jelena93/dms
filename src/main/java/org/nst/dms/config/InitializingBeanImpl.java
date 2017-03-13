@@ -8,10 +8,12 @@ package org.nst.dms.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DescriptorType;
+import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
@@ -176,7 +178,9 @@ public class InitializingBeanImpl implements InitializingBean {
             userService.save(dule);
 
         }
-        
-        documentElasticSearchService.save(documentService.findAll());
+        List<Document> documents = documentService.findAll();
+        for (Document document : documents) {
+            documentElasticSearchService.save(document);
+        }
     }
 }
