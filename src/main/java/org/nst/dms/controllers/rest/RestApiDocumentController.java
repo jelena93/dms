@@ -10,15 +10,16 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.tika.Tika;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.dto.MessageDto;
+import org.nst.dms.repositories.DocumentRepository;
 import org.nst.dms.services.ActivityService;
 import org.nst.dms.services.DescriptorService;
 import org.nst.dms.services.DocumentTypeService;
@@ -60,13 +61,18 @@ public class RestApiDocumentController {
     private Tika tika;
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
+    @Autowired
+    private DocumentRepository documentRepository;
 
     @RequestMapping(path = "/validation", method = RequestMethod.POST)
     public ResponseEntity<MessageDto> checkIfDocumentExists(HttpServletRequest request, MultipartHttpServletRequest req, long docType, long activityID, String inputOutput) throws Exception {
         MultipartFile file = req.getFile("file");
         System.out.println("naziiiiv" + checkIfDocumentNameExists(file.getOriginalFilename()));
+
         System.out.println("sadrzaj" + checkIfDocumentContentExists(file));
+
         DocumentType documentType = documentTypeService.find(docType);
+
         for (Descriptor descriptor : documentType.getDescriptors()) {
             if (descriptor.getValue() == null) {
                 String key = descriptor.getDescriptorKey();
@@ -76,12 +82,8 @@ public class RestApiDocumentController {
                     throw new Exception("Value for descriptor " + descriptor.getDescriptorKey()
                             + "  is not correct. Expecting descriptor of type " + descriptor.getDescriptorType().getStringMessageByParamClass() + ".");
                 }
-//                Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
-                documentElasticSearchService.findByDescriptorsDescriptorKey(key);
-                System.out.println("later on");
-                System.out.println("");
-                System.out.println("");
-                test(key);
+                Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
+                test(newDescriptor);
             }
         }
         return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, ""), HttpStatus.OK);
@@ -109,25 +111,15 @@ public class RestApiDocumentController {
         return !documentElasticSearchService.findByFileName(fileName).isEmpty();
     }
 
-    private void test(String key) {
-//        QueryBuilder builder = matchAllQuery();
-//        FilterBuilder filterBuilder = boolFilter().must(termFilter("descriptors.descriptorKey", key));
-//        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-//                .withQuery(QueryBuilders.filteredQuery(builder, filterBuilder)).build();
-//        for (Document document : documents) {
-//            System.out.println("key " + key + document);
-//        }
-//        QueryBuilder builder = nestedQuery(
-//                "descriptors",
-//                boolQuery().must(termQuery("descriptors.descriptorKey", key)));
-
-//        SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(
-//                QueryBuilders.matchQuery("descriptors.descriptorKey", key)).build();
-        final QueryBuilder builder
-                = nestedQuery("descriptor", boolQuery().must(termQuery("descriptor.descriptorKey", key)));
-        final SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(QueryBuilders.matchQuery("descriptors.descriptorKey", key)).build();
+    private void test(Descriptor descriptor) {
+        BoolQueryBuilder builder = boolQuery();
+        builder.must(nestedQuery("descriptors", matchQuery("descriptors.descriptorKey", descriptor.getDescriptorKey())))
+                .must(nestedQuery("descriptors", termQuery("descriptors.documentType", descriptor.getDocumentType())));
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(builder)
+                .build();
         List<Document> documents = elasticsearchTemplate.queryForList(searchQuery, Document.class);
-        System.out.println("Document List : " + documents);
+        System.out.println(descriptor.getDescriptorKey() + ", " + descriptor.getValue() + " Document List : " + documents);
     }
 
     private boolean checkIfDocumentContentExists(MultipartFile file) throws IOException {

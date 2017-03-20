@@ -114,15 +114,14 @@ public class DocumentController {
         }
         activity = activityService.save(activity);
         if (inputOutput.equals("input")) {
-            System.out.println(activity.getInputList().get(activity.getInputList().size() - 1));
-            System.out.println("sacuvan " + documentElasticSearchService.save(activity.getInputList().get(activity.getInputList().size() - 1)));
+            documentElasticSearchService.save(activity.getInputList().get(activity.getInputList().size() - 1));
         } else {
-            System.out.println(activity.getOutputList().get(activity.getOutputList().size() - 1));
-            System.out.println("sacuvan " + documentElasticSearchService.save(activity.getOutputList().get(activity.getOutputList().size() - 1)));
+            documentElasticSearchService.save(activity.getOutputList().get(activity.getOutputList().size() - 1));
         }
         for (Document d : documentElasticSearchService.findAll()) {
             System.out.println("doc " + d);
         }
+        
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);

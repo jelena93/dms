@@ -5,6 +5,7 @@
  */
 package org.nst.dms.repositories;
 
+import java.util.List;
 import org.nst.dms.domain.Document;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,8 @@ import org.springframework.stereotype.Repository;
  * @author Hachiko
  */
 @Repository
-public interface DocumentRepository extends JpaRepository<Document, Long> { }
+public interface DocumentRepository extends JpaRepository<Document, Long> {
+
+    List<Document> findByDescriptorsDescriptorKey(String descriptorKey);
+
+}
