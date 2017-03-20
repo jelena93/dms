@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.nst.dms.services.ActivityService;
 import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.UserService;
+import org.nst.elasticsearch.services.DocumentElasticSearchService;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,10 @@ public class DocumentController {
     @Autowired
     private DocumentService documentService;
     @Autowired
+    private DocumentElasticSearchService documentElasticSearchService;
+    @Autowired
     private UserService userService;
+    
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save(Authentication authentication) {
         UserDto userDto = (UserDto) authentication.getPrincipal();
@@ -108,7 +112,17 @@ public class DocumentController {
             if (inputOutput.equals("input"))activity.getInputList().add(document);
             else activity.getOutputList().add(document);
         }
-        activityService.save(activity);
+        activity = activityService.save(activity);
+        if (inputOutput.equals("input")) {
+            System.out.println(activity.getInputList().get(activity.getInputList().size() - 1));
+            System.out.println("sacuvan " + documentElasticSearchService.save(activity.getInputList().get(activity.getInputList().size() - 1)));
+        } else {
+            System.out.println(activity.getOutputList().get(activity.getOutputList().size() - 1));
+            System.out.println("sacuvan " + documentElasticSearchService.save(activity.getOutputList().get(activity.getOutputList().size() - 1)));
+        }
+        for (Document d : documentElasticSearchService.findAll()) {
+            System.out.println("doc " + d);
+        }
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);

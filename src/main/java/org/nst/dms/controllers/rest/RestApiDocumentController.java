@@ -5,11 +5,16 @@
  */
 package org.nst.dms.controllers.rest;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
-import org.nst.dms.domain.Activity;
+import org.apache.tika.Tika;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
@@ -17,8 +22,12 @@ import org.nst.dms.dto.MessageDto;
 import org.nst.dms.services.ActivityService;
 import org.nst.dms.services.DescriptorService;
 import org.nst.dms.services.DocumentTypeService;
+import org.nst.elasticsearch.services.DocumentElasticSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -28,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  *
@@ -36,53 +47,46 @@ import org.springframework.web.context.request.WebRequest;
 @RestController
 @RequestMapping("/api/documents")
 public class RestApiDocumentController {
+
     @Autowired
     private ActivityService activityService;
     @Autowired
     private DescriptorService descriptorService;
     @Autowired
     private DocumentTypeService documentTypeService;
-    
+    @Autowired
+    private DocumentElasticSearchService documentElasticSearchService;
+    @Autowired
+    private Tika tika;
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
     @RequestMapping(path = "/validation", method = RequestMethod.POST)
-    public ResponseEntity<MessageDto> checkIfDocumentExists(HttpServletRequest request, long docType, long activityID, String inputOutput) throws Exception {
+    public ResponseEntity<MessageDto> checkIfDocumentExists(HttpServletRequest request, MultipartHttpServletRequest req, long docType, long activityID, String inputOutput) throws Exception {
+        MultipartFile file = req.getFile("file");
+        System.out.println("naziiiiv" + checkIfDocumentNameExists(file.getOriginalFilename()));
+        System.out.println("sadrzaj" + checkIfDocumentContentExists(file));
         DocumentType documentType = documentTypeService.find(docType);
-        List<Descriptor> descriptors = documentType.getDescriptors();
-        List<Descriptor> existingDescriptors = descriptorService.findByDocumentType(docType);
-        int numberOfIdenticalDescriptors = 0;
-        Long existingDocumentID = null;
-        for (Descriptor descriptor : descriptors) {
+        for (Descriptor descriptor : documentType.getDescriptors()) {
             if (descriptor.getValue() == null) {
-            String key = descriptor.getDescriptorKey();
-            String value = request.getParameter(key).trim();
-            descriptor.setValue(value);
-            if(descriptor.getValue() == null) throw new Exception("Value for descriptor " + descriptor.getDescriptorKey() 
-                    + "  is not correct. Expecting descriptor of type " + descriptor.getDescriptorType().getStringMessageByParamClass() + ".");
-            Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
-            Long id = checkIfFileAlreadyAdded(existingDescriptors, newDescriptor, activityID, inputOutput);
-            if(id == null) continue;
-            else if(existingDocumentID == null) existingDocumentID = id;
-            else if(!Objects.equals(id, existingDocumentID)) continue;
-            numberOfIdenticalDescriptors += 1;
+                String key = descriptor.getDescriptorKey();
+                String value = request.getParameter(key).trim();
+                descriptor.setValue(value);
+                if (descriptor.getValue() == null) {
+                    throw new Exception("Value for descriptor " + descriptor.getDescriptorKey()
+                            + "  is not correct. Expecting descriptor of type " + descriptor.getDescriptorType().getStringMessageByParamClass() + ".");
+                }
+//                Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
+                documentElasticSearchService.findByDescriptorsDescriptorKey(key);
+                System.out.println("later on");
+                System.out.println("");
+                System.out.println("");
+                test(key);
             }
         }
-        if(numberOfIdenticalDescriptors == descriptors.size() && existingDocumentID != null) return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, existingDocumentID+""), HttpStatus.OK);
-        return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "ok"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, ""), HttpStatus.OK);
     }
-    
-     private Long checkIfFileAlreadyAdded(List<Descriptor> existingDescriptors, Descriptor newDescriptor, long activityID, String inputOutput) {
-        if(existingDescriptors == null || existingDescriptors.isEmpty()) return null;
-        for (Descriptor existingDescriptor : existingDescriptors) {
-            if(existingDescriptor.getValue() == null) continue;
-           if(existingDescriptor.equals(newDescriptor) ||
-                    ((newDescriptor.getValue() instanceof Date && (existingDescriptor.getValue() instanceof Date)) && isTheSameDate(existingDescriptor, newDescriptor))) {
-                Activity activity = activityService.find(activityID);
-                if(inputOutput.equals("input")) for (Document document : activity.getInputList()) if(document.getDescriptors().contains(existingDescriptor)) return document.getId();
-                else if (inputOutput.equals("output")) for (Document d : activity.getOutputList()) if(d.getDescriptors().contains(existingDescriptor)) return document.getId();
-            }
-        }
-        return null;
-    }
-     
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageDto> handleError(Exception ex, WebRequest request) {
         ex.printStackTrace();
@@ -97,6 +101,40 @@ public class RestApiDocumentController {
     private boolean isTheSameDate(Descriptor existingDescriptor, Descriptor newDescriptor) {
         Date d1 = (Date) existingDescriptor.getValue();
         Date d2 = (Date) newDescriptor.getValue();
+        System.out.println("@@@@" + d1 + "--" + d2);
         return d1.equals(d2);
+    }
+
+    private boolean checkIfDocumentNameExists(String fileName) {
+        return !documentElasticSearchService.findByFileName(fileName).isEmpty();
+    }
+
+    private void test(String key) {
+//        QueryBuilder builder = matchAllQuery();
+//        FilterBuilder filterBuilder = boolFilter().must(termFilter("descriptors.descriptorKey", key));
+//        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+//                .withQuery(QueryBuilders.filteredQuery(builder, filterBuilder)).build();
+//        for (Document document : documents) {
+//            System.out.println("key " + key + document);
+//        }
+//        QueryBuilder builder = nestedQuery(
+//                "descriptors",
+//                boolQuery().must(termQuery("descriptors.descriptorKey", key)));
+
+//        SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(
+//                QueryBuilders.matchQuery("descriptors.descriptorKey", key)).build();
+        final QueryBuilder builder
+                = nestedQuery("descriptor", boolQuery().must(termQuery("descriptor.descriptorKey", key)));
+        final SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(QueryBuilders.matchQuery("descriptors.descriptorKey", key)).build();
+        List<Document> documents = elasticsearchTemplate.queryForList(searchQuery, Document.class);
+        System.out.println("Document List : " + documents);
+    }
+
+    private boolean checkIfDocumentContentExists(MultipartFile file) throws IOException {
+        List<Document> documents = documentElasticSearchService.findAll();
+        for (Document document : documents) {
+            return tika.detect(file.getInputStream()).equals(tika.detect(document.getFileContent()));
+        }
+        return false;
     }
 }

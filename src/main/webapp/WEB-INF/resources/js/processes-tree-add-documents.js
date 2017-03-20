@@ -93,21 +93,22 @@ function checkIfDocumentExists() {
     if (selectedNode !== null) {
         $("#activityID").val(selectedNode.id);
         var docType = $("#docType").val();
-        var params = {};
-        params["docType"] = docType;
-        params["activityID"] = selectedNode.id;
-        params["inputOutput"] = $("input[name='inputOutput']:checked").val();
+        var data = new FormData();
+        data.append("file", $("#file").prop('files')[0]);
+        data.append("docType", docType);
+        data.append("activityID", selectedNode.id);
+        data.append("inputOutput", $("input[name='inputOutput']:checked").val());
         var descriptors = $(".descriptors");
         var sendValidationRequest = true;
         for (var i = 0; i < descriptors.length; i++) {
-            params[descriptors[i].name] = descriptors[i].value;
+            data.append([descriptors[i].name], descriptors[i].value);
             if (descriptors[i].value === "") {
                 sendValidationRequest = false;
                 break;
             }
         }
         if (sendValidationRequest) {
-            documentValidation(params);
+            documentValidation(data);
         }
     }
 
@@ -117,6 +118,9 @@ function documentValidation(params) {
         type: "POST",
         url: action_url_document_validation_api,
         data: params,
+        processData: false,
+        enctype: 'multipart/form-data',
+        contentType: false,
         dataType: 'json',
         beforeSend: function (request) {
             request.setRequestHeader(header, token);

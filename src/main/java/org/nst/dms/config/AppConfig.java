@@ -11,6 +11,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import org.apache.tika.Tika;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.node.NodeBuilder;
@@ -50,7 +51,12 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public boolean isTest() {
-        return false;
+        return true;
+    }
+
+    @Bean
+    public Tika tika() {
+        return new Tika();
     }
 
     @Override

@@ -25,6 +25,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -64,6 +68,8 @@ public class Descriptor implements Serializable {
 
     @Column(name = "DATE_VALUE")
     @Temporal(TemporalType.DATE)
+    @Field(type = FieldType.Date, index = FieldIndex.not_analyzed, store = true,
+            format = DateFormat.custom, pattern = "dd.MM.yyyy")
     private Date dateValue;
 
     @Column(name = "STRING_VALUE")
@@ -150,7 +156,7 @@ public class Descriptor implements Serializable {
 
     @Override
     public String toString() {
-        return descriptorKey + ": " + getValue();
+        return "Descriptor{" + "id=" + id + ", documentType=" + documentType + ", descriptorKey=" + descriptorKey + ", descriptorType=" + descriptorType + ", longValue=" + longValue + ", doubleValue=" + doubleValue + ", dateValue=" + dateValue + ", stringValue=" + stringValue + ", DATE_FORMAT=" + DATE_FORMAT + '}';
     }
 
     public Object getValue() {

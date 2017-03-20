@@ -5,6 +5,7 @@
  */
 package org.nst.elasticsearch.repositories;
 
+import java.util.List;
 import org.nst.dms.domain.Document;
 import org.springframework.data.elasticsearch.repository.ElasticsearchCrudRepository;
 
@@ -13,5 +14,9 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchCrudReposi
  * @author jelenas
  */
 public interface DocumentElasticSearchRepository extends ElasticsearchCrudRepository<Document, Long> {
+
+    List<Document> findByFileName(String filename);
+
+    List<Document> findByDescriptorsDescriptorKey(String descriptorKey);
 
 }

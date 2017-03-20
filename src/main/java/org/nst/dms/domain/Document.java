@@ -87,8 +87,10 @@ public class Document implements Serializable {
         }
         return true;
     }
+
     @Override
     public String toString() {
-        return fileName;
+        return "Document{" + "id=" + id + ", fileType=" + fileType + ", fileName=" + fileName +  ", descriptors=" + descriptors + '}';
     }
+    
 }

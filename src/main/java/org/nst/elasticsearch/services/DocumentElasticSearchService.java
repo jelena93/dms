@@ -5,6 +5,7 @@
  */
 package org.nst.elasticsearch.services;
 
+import java.util.List;
 import org.nst.dms.domain.Document;
 
 /**
@@ -13,5 +14,12 @@ import org.nst.dms.domain.Document;
  */
 public interface DocumentElasticSearchService {
 
-    void save(Document document);
+    Document save(Document document);
+
+    List<Document> findAll();
+
+    List<Document> findByFileName(String filename);
+
+    List<Document> findByDescriptorsDescriptorKey(String descriptorKey);
+
 }

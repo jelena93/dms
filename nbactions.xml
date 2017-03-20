@@ -13,6 +13,7 @@
             <properties>
                 <netbeans.deploy>true</netbeans.deploy>
                 <netbeans.deploy.clientUrlPart>/login</netbeans.deploy.clientUrlPart>
+                <skipTests>true</skipTests>
             </properties>
         </action>
         <action>
