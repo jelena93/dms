@@ -127,8 +127,12 @@ function documentValidation(params) {
         },
         success: function (data) {
             if (data.messageType === "question") {
-                $("#existingDocumentID").val(data.messageText);
-                showPopUp("Document already exists. Are you sure you want to rewrite the file?");
+                if (data.messageAction === "edit") {
+                    $("#existingDocumentID").val(data.messageData);
+                } else {
+                    $("#existingDocumentID").val(null);
+                }
+                showPopUp(data.messageText);
             } else if (data.messageType === "alert-success") {
                 checked = true;
                 $("#register_form").submit();
@@ -176,8 +180,9 @@ function sendRequest() {
 }
 function closeModal() {
     isSure = false;
+    $("#existingDocumentID").val(null);
     $('#modal').modal('hide');
 }
-$('#register_form').on('keypress', function (e) {
-    return e.which !== 13;
-});
+//$('#register_form').on('keypress', function (e) {
+//    return e.which !== 13;
+//});

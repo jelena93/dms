@@ -174,6 +174,21 @@ public class Descriptor implements Serializable {
         }
         return null;
     }
+    public String getValueAsString() {
+        Class paramClass = descriptorType.getParamClass();
+        if (Integer.class.equals(paramClass)) {
+            return longValue != null ? longValue.toString() : null;
+        } else if (Long.class.equals(paramClass)) {
+            return longValue.toString();
+        } else if (Double.class.equals(paramClass)) {
+            return doubleValue.toString();
+        } else if (String.class.equals(paramClass)) {
+            return stringValue;
+        } else if (Date.class.equals(paramClass)) {
+            return new SimpleDateFormat(DATE_FORMAT).format(dateValue);
+        }
+        return null;
+    }
 
     public void setValue(Object value) {
         try { Class paramClass = descriptorType.getParamClass();

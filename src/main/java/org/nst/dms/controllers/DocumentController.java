@@ -17,6 +17,8 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.User;
+import org.nst.elasticsearch.domain.DescriptorElasticSearch;
+import org.nst.elasticsearch.domain.DocumentElasticSearch;
 import org.nst.dms.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -113,13 +115,38 @@ public class DocumentController {
             else activity.getOutputList().add(document);
         }
         activity = activityService.save(activity);
+            List<DescriptorElasticSearch> dto=new ArrayList<>();
         if (inputOutput.equals("input")) {
-            documentElasticSearchService.save(activity.getInputList().get(activity.getInputList().size() - 1));
+            Document d = activity.getInputList().get(activity.getInputList().size() - 1);
+            List<Descriptor> descriptors1 = d.getDescriptors();
+            for (Descriptor desc : descriptors1) {
+                dto.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(), desc.getValueAsString()));
+            }
+            DocumentElasticSearch doc = new DocumentElasticSearch(d.getId(), d.getFileType(), d.getFileName(), d.getFileContent(), dto);
+            try {
+            documentElasticSearchService.save(doc);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
-            documentElasticSearchService.save(activity.getOutputList().get(activity.getOutputList().size() - 1));
+            Document d = activity.getOutputList().get(activity.getOutputList().size() - 1);
+            List<Descriptor> descriptors1 = d.getDescriptors();
+            for (Descriptor desc : descriptors1) {
+                dto.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(), desc.getValueAsString()));
+            }
+            DocumentElasticSearch doc = new DocumentElasticSearch(d.getId(), d.getFileType(), d.getFileName(), d.getFileContent(), dto);
+            try {
+            documentElasticSearchService.save(doc);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        for (Document d : documentElasticSearchService.findAll()) {
-            System.out.println("doc " + d);
+        try {
+            for (DocumentElasticSearch d : documentElasticSearchService.findAll()) {
+                System.out.println("doc " + d);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         
         ModelAndView mv = new ModelAndView("add_document");

@@ -23,7 +23,8 @@ import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.DocumentTypeService;
 import org.nst.dms.services.ProcessService;
 import org.nst.dms.services.UserService;
-import org.nst.elasticsearch.repositories.DocumentElasticSearchRepository;
+import org.nst.elasticsearch.domain.DescriptorElasticSearch;
+import org.nst.elasticsearch.domain.DocumentElasticSearch;
 import org.nst.elasticsearch.services.DocumentElasticSearchService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,7 +180,13 @@ public class InitializingBeanImpl implements InitializingBean {
 
         }
         List<Document> documents = documentService.findAll();
-        for (Document document : documents) {
+        for (Document doc : documents) {
+            List<DescriptorElasticSearch> descriptors = new ArrayList<>();
+            for (Descriptor desc : doc.getDescriptors()) {
+                descriptors.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(),
+                        desc.getValueAsString()));
+            }
+            DocumentElasticSearch document = new DocumentElasticSearch(doc.getId(), doc.getFileType(), doc.getFileName(), doc.getFileContent(), descriptors);
             documentElasticSearchService.save(document);
         }
     }

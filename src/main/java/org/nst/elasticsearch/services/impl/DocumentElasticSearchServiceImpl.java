@@ -7,7 +7,7 @@ package org.nst.elasticsearch.services.impl;
 
 import java.util.List;
 import org.apache.commons.collections4.IteratorUtils;
-import org.nst.dms.domain.Document;
+import org.nst.elasticsearch.domain.DocumentElasticSearch;
 import org.nst.elasticsearch.repositories.DocumentElasticSearchRepository;
 import org.nst.elasticsearch.services.DocumentElasticSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,22 +24,22 @@ public class DocumentElasticSearchServiceImpl implements DocumentElasticSearchSe
     private DocumentElasticSearchRepository documentElasticSearchRepository;
 
     @Override
-    public Document save(Document document) {
+    public DocumentElasticSearch save(DocumentElasticSearch document) {
         return documentElasticSearchRepository.save(document);
     }
 
     @Override
-    public List<Document> findAll() {
+    public List<DocumentElasticSearch> findAll() {
         return IteratorUtils.toList(documentElasticSearchRepository.findAll().iterator());
     }
 
     @Override
-    public List<Document> findByFileName(String filename) {
+    public List<DocumentElasticSearch> findByFileName(String filename) {
         return documentElasticSearchRepository.findByFileName(filename);
     }
 
     @Override
-    public List<Document> findByDescriptorsDescriptorKey(String descriptorKey) {
+    public List<DocumentElasticSearch> findByDescriptorsDescriptorKey(String descriptorKey) {
         return documentElasticSearchRepository.findByDescriptorsDescriptorKey(descriptorKey);
     }
 

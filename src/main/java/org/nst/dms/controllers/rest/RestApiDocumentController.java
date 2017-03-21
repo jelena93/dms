@@ -6,7 +6,6 @@
 package org.nst.dms.controllers.rest;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.tika.Tika;
@@ -16,8 +15,9 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 import org.nst.dms.domain.Descriptor;
-import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
+import org.nst.elasticsearch.domain.DescriptorElasticSearch;
+import org.nst.elasticsearch.domain.DocumentElasticSearch;
 import org.nst.dms.dto.MessageDto;
 import org.nst.dms.repositories.DocumentRepository;
 import org.nst.dms.services.ActivityService;
@@ -65,14 +65,16 @@ public class RestApiDocumentController {
     private DocumentRepository documentRepository;
 
     @RequestMapping(path = "/validation", method = RequestMethod.POST)
-    public ResponseEntity<MessageDto> checkIfDocumentExists(HttpServletRequest request, MultipartHttpServletRequest req, long docType, long activityID, String inputOutput) throws Exception {
+    public ResponseEntity<MessageDto> validation(HttpServletRequest request, MultipartHttpServletRequest req, long docType, long activityID, String inputOutput) throws Exception {
         MultipartFile file = req.getFile("file");
-        System.out.println("naziiiiv" + checkIfDocumentNameExists(file.getOriginalFilename()));
-
-        System.out.println("sadrzaj" + checkIfDocumentContentExists(file));
-
+        DocumentElasticSearch document = checkIfDocumentNameExists(file.getOriginalFilename());
+        if (document != null) {
+            return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
+                    "Document with the same name already exists. Do you want to rewrite it?", document.getId(), MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+        }
         DocumentType documentType = documentTypeService.find(docType);
-
+        int numberOfExistingDescripotrs = 0;
+        int numberOfDefaultDescripotrs = 0;
         for (Descriptor descriptor : documentType.getDescriptors()) {
             if (descriptor.getValue() == null) {
                 String key = descriptor.getDescriptorKey();
@@ -80,13 +82,67 @@ public class RestApiDocumentController {
                 descriptor.setValue(value);
                 if (descriptor.getValue() == null) {
                     throw new Exception("Value for descriptor " + descriptor.getDescriptorKey()
-                            + "  is not correct. Expecting descriptor of type " + descriptor.getDescriptorType().getStringMessageByParamClass() + ".");
+                            + "  is not correct. Expecting descriptor of type "
+                            + descriptor.getDescriptorType().getStringMessageByParamClass() + ".");
                 }
-                Descriptor newDescriptor = new Descriptor(key, descriptor.getValue(), docType, descriptor.getDescriptorType());
-                test(newDescriptor);
+                numberOfDefaultDescripotrs++;
+                DescriptorElasticSearch newDescriptor = new DescriptorElasticSearch(descriptor.getId(), docType, key, descriptor.getDescriptorType(),
+                        descriptor.getValueAsString());
+                document = checkIfDescriptorsExists(newDescriptor);
+                if (document != null) {
+                    numberOfExistingDescripotrs++;
+                }
             }
         }
-        return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, ""), HttpStatus.OK);
+        if (numberOfDefaultDescripotrs == numberOfExistingDescripotrs) {
+            return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
+                    "Document with same descriptors already exists. Do you want to rewrite it?", document.getId(), MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+        }
+        document = checkIfDocumentContentExists(file);
+        if (document != null) {
+            return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, "Document: " + document.getFileName()
+                    + " with same content already exists. Do you want to save it anyway?", MessageDto.MESSAGE_ACTION_ADD), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "ok"), HttpStatus.OK);
+    }
+
+    private DocumentElasticSearch checkIfDocumentNameExists(String fileName) {
+        List<DocumentElasticSearch> documents = documentElasticSearchService.findByFileName(fileName);
+        if (!documents.isEmpty()) {
+            return documents.get(0);
+        }
+        return null;
+    }
+
+    private DocumentElasticSearch checkIfDocumentContentExists(MultipartFile file) throws IOException {
+        List<DocumentElasticSearch> documents = documentElasticSearchService.findAll();
+        for (DocumentElasticSearch document : documents) {
+            if (tika.detect(file.getInputStream()).equals(tika.detect(document.getFileContent()))) {
+                return document;
+            }
+        }
+        return null;
+    }
+
+    private DocumentElasticSearch checkIfDescriptorsExists(DescriptorElasticSearch descriptor) {
+        BoolQueryBuilder builder = boolQuery();
+        builder.must(nestedQuery("descriptors", matchQuery("descriptors.descriptorKey", descriptor.getDescriptorKey())))
+                .must(nestedQuery("descriptors", termQuery("descriptors.documentType", descriptor.getDocumentType())))
+                .must(nestedQuery("descriptors", matchQuery("descriptors.value", descriptor.getValue())));
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(builder)
+                .build();
+        List<DocumentElasticSearch> documents = elasticsearchTemplate.queryForList(searchQuery, DocumentElasticSearch.class);
+        System.out.println(descriptor.getDescriptorKey() + ", " + descriptor.getValue() + " Document List : " + documents);
+        if (!documents.isEmpty()) {
+            return documents.get(0);
+        }
+        return null;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
     @ExceptionHandler(Exception.class)
@@ -95,38 +151,4 @@ public class RestApiDocumentController {
         return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    private boolean isTheSameDate(Descriptor existingDescriptor, Descriptor newDescriptor) {
-        Date d1 = (Date) existingDescriptor.getValue();
-        Date d2 = (Date) newDescriptor.getValue();
-        System.out.println("@@@@" + d1 + "--" + d2);
-        return d1.equals(d2);
-    }
-
-    private boolean checkIfDocumentNameExists(String fileName) {
-        return !documentElasticSearchService.findByFileName(fileName).isEmpty();
-    }
-
-    private void test(Descriptor descriptor) {
-        BoolQueryBuilder builder = boolQuery();
-        builder.must(nestedQuery("descriptors", matchQuery("descriptors.descriptorKey", descriptor.getDescriptorKey())))
-                .must(nestedQuery("descriptors", termQuery("descriptors.documentType", descriptor.getDocumentType())));
-        SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(builder)
-                .build();
-        List<Document> documents = elasticsearchTemplate.queryForList(searchQuery, Document.class);
-        System.out.println(descriptor.getDescriptorKey() + ", " + descriptor.getValue() + " Document List : " + documents);
-    }
-
-    private boolean checkIfDocumentContentExists(MultipartFile file) throws IOException {
-        List<Document> documents = documentElasticSearchService.findAll();
-        for (Document document : documents) {
-            return tika.detect(file.getInputStream()).equals(tika.detect(document.getFileContent()));
-        }
-        return false;
-    }
 }
