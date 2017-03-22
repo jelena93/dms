@@ -77,6 +77,7 @@ function displayActivityInfo(activity) {
 }
 function showFormAddDocument() {
     $("#activity-info").hide();
+    $("#btn-add-document").hide();
     $("#form-document").show();
 }
 function onSubmitForm() {

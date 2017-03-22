@@ -131,7 +131,6 @@ public class DocumentController {
     
     private void saveDocumentToElasticSearch(Document document) {
         List<DescriptorElasticSearch> dto = new ArrayList<>();
-
         List<Descriptor> descriptors = document.getDescriptors();
         for (Descriptor desc : descriptors) {
             dto.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(), desc.getValueAsString()));

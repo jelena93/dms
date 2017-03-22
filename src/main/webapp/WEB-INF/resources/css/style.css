@@ -4943,3 +4943,10 @@ span.customSelect.changed {
 #table-companies-set-user{
     cursor: pointer;
 }
+#processes a {
+    white-space: normal !important;
+    height: auto;
+}
+#processes{
+    max-width: 200px;
+}

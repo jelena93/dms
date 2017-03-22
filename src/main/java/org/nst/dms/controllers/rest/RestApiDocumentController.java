@@ -19,7 +19,6 @@ import org.nst.dms.domain.DocumentType;
 import org.nst.elasticsearch.domain.DescriptorElasticSearch;
 import org.nst.elasticsearch.domain.DocumentElasticSearch;
 import org.nst.dms.dto.MessageDto;
-import org.nst.dms.repositories.DocumentRepository;
 import org.nst.dms.services.ActivityService;
 import org.nst.dms.services.DescriptorService;
 import org.nst.dms.services.DocumentTypeService;
@@ -74,6 +73,7 @@ public class RestApiDocumentController {
         DocumentType documentType = documentTypeService.find(docType);
         int numberOfExistingDescripotrs = 0;
         int numberOfDefaultDescripotrs = 0;
+        Long documentID = null;
         for (Descriptor descriptor : documentType.getDescriptors()) {
             if (descriptor.getValue() == null) {
                 String key = descriptor.getDescriptorKey();
@@ -90,12 +90,13 @@ public class RestApiDocumentController {
                 document = checkIfDescriptorsExists(newDescriptor);
                 if (document != null) {
                     numberOfExistingDescripotrs++;
+                    documentID = document.getId();
                 }
             }
         }
         if (numberOfDefaultDescripotrs == numberOfExistingDescripotrs) {
             return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
-                    "Document with same descriptors already exists. Do you want to rewrite it?", document.getId(), MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+                    "Document with same descriptors already exists. Do you want to rewrite it?", documentID, MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
         }
         document = checkIfDocumentContentExists(file);
         if (document != null) {
@@ -132,7 +133,6 @@ public class RestApiDocumentController {
                 .withQuery(builder)
                 .build();
         List<DocumentElasticSearch> documents = elasticsearchTemplate.queryForList(searchQuery, DocumentElasticSearch.class);
-        System.out.println(descriptor.getDescriptorKey() + ", " + descriptor.getValue() + " Document List : " + documents);
         if (!documents.isEmpty()) {
             return documents.get(0);
         }

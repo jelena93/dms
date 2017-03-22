@@ -69,7 +69,7 @@
         <input type="hidden" name="existingDocumentID" id="existingDocumentID"/>
         <div class="form-group">
             <div class="col-lg-offset-2 col-lg-10">
-                <button class="btn btn-primary" type="submit">${title}</button>
+                <button class="btn btn-primary pull-right" type="submit">${title}</button>
             </div>
         </div>
     </form>
