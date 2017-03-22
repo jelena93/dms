@@ -26,5 +26,7 @@ public class DocumentServiceImpl implements DocumentService {
     public Document findOne(Long id) { return documentRepository.findOne(id); }
     @Override
     public List<Document> findAll() { return documentRepository.findAll(); }
+    @Override
+    public Document save(Document document) { return documentRepository.save(document); }
 
 }

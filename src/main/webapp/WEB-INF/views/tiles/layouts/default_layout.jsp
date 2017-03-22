@@ -14,6 +14,36 @@
         <tiles:importAttribute name="title" scope="request"/>
         <sec:authentication var="user" property="principal" scope="request"/>
         <title>${title}</title>
+        <style>
+            /*            .jstree-default a { 
+                            white-space:normal !important; height: auto; 
+                        }
+                        .jstree-anchor {
+                            height: auto !important;
+                        }
+                        .jstree-default li > ins { 
+                            vertical-align:top!important; 
+                        }
+                        .jstree-leaf {
+                            height: auto!important;
+                        }
+                        .jstree-leaf a{
+                            height: auto !important;
+                        }*/
+            /*            .jstree-anchor {
+                            white-space : normal !important;
+                            height : auto !important;
+                            padding-right : 24px!important;
+                        }*/
+            #processes a {
+                white-space: normal !important;
+                height: auto;
+                padding: 1px 1px;
+            }
+            #processes{
+                max-width: 200px;
+            }
+        </style>
     </head>
     <body>
         <!-- container section start -->

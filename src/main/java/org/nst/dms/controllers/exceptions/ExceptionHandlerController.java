@@ -50,6 +50,7 @@ public class ExceptionHandlerController {
         ModelAndView mv = new ModelAndView("error");
         CustomException customException = new CustomException(ex.getMessage(), "500");
         mv.addObject("error", customException);
+        ex.printStackTrace();
         return mv;
     }
 

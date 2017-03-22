@@ -87,18 +87,8 @@ public class DocumentController {
             }
         }
         Document document = new Document();
-        boolean found = false;
-        if(existingDocumentID != null) {
-            List<Document> documents;
-            if(inputOutput.equals("input")) documents = activity.getInputList();
-            else documents = activity.getInputList();
-            for (Document doc : documents) {
-                if(Objects.equals(existingDocumentID, doc.getId())) {
-                    document = doc;
-                    found = true;
-                    break;
-                }
-            }
+        if (existingDocumentID != null) {
+            document = documentService.findOne(existingDocumentID);
         }
         document.setFileName(file.getOriginalFilename());
         document.setFileType(file.getContentType());
@@ -110,45 +100,20 @@ public class DocumentController {
             return mv;
         }
         document.setDescriptors(newDescriptors);
-        if (!found) {
-            if (inputOutput.equals("input"))activity.getInputList().add(document);
-            else activity.getOutputList().add(document);
-        }
-        activity = activityService.save(activity);
-            List<DescriptorElasticSearch> dto=new ArrayList<>();
+        if (existingDocumentID != null) {
+            document = documentService.save(document);
+        } 
         if (inputOutput.equals("input")) {
-            Document d = activity.getInputList().get(activity.getInputList().size() - 1);
-            List<Descriptor> descriptors1 = d.getDescriptors();
-            for (Descriptor desc : descriptors1) {
-                dto.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(), desc.getValueAsString()));
-            }
-            DocumentElasticSearch doc = new DocumentElasticSearch(d.getId(), d.getFileType(), d.getFileName(), d.getFileContent(), dto);
-            try {
-            documentElasticSearchService.save(doc);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            activity.getInputList().add(document);
+            activity = activityService.save(activity);
+            document = activity.getInputList().get((activity.getInputList().size() - 1));
         } else {
-            Document d = activity.getOutputList().get(activity.getOutputList().size() - 1);
-            List<Descriptor> descriptors1 = d.getDescriptors();
-            for (Descriptor desc : descriptors1) {
-                dto.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(), desc.getValueAsString()));
-            }
-            DocumentElasticSearch doc = new DocumentElasticSearch(d.getId(), d.getFileType(), d.getFileName(), d.getFileContent(), dto);
-            try {
-            documentElasticSearchService.save(doc);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            for (DocumentElasticSearch d : documentElasticSearchService.findAll()) {
-                System.out.println("doc " + d);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            activity.getOutputList().add(document);
+            activity = activityService.save(activity);
+            document = activity.getOutputList().get((activity.getOutputList().size() - 1));
         }
         
+        saveDocumentToElasticSearch(document);
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
@@ -156,9 +121,26 @@ public class DocumentController {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User loggedUser = userService.findOne(userDto.getUsername());
         mv.addObject("company", loggedUser.getCompany());
-        if(found) mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully edited"));
-        else mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added"));
+        if (existingDocumentID != null) {
+            mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully edited"));
+        } else {
+            mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully added"));
+        }
         return mv;
+    }
+    
+    private void saveDocumentToElasticSearch(Document document) {
+        List<DescriptorElasticSearch> dto = new ArrayList<>();
+
+        List<Descriptor> descriptors = document.getDescriptors();
+        for (Descriptor desc : descriptors) {
+            dto.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(), desc.getValueAsString()));
+        }
+        DocumentElasticSearch doc = new DocumentElasticSearch(document.getId(), document.getFileType(), document.getFileName(), document.getFileContent(), dto);
+        documentElasticSearchService.save(doc);
+        for (DocumentElasticSearch d : documentElasticSearchService.findAll()) {
+            System.out.println("doc " + d);
+        }
     }
 
     @RequestMapping(path = "/document/display/{id}", method = RequestMethod.GET)

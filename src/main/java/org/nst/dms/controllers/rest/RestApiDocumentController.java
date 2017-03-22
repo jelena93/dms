@@ -61,8 +61,6 @@ public class RestApiDocumentController {
     private Tika tika;
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
-    @Autowired
-    private DocumentRepository documentRepository;
 
     @RequestMapping(path = "/validation", method = RequestMethod.POST)
     public ResponseEntity<MessageDto> validation(HttpServletRequest request, MultipartHttpServletRequest req, long docType, long activityID, String inputOutput) throws Exception {
@@ -70,7 +68,8 @@ public class RestApiDocumentController {
         DocumentElasticSearch document = checkIfDocumentNameExists(file.getOriginalFilename());
         if (document != null) {
             return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
-                    "Document with the same name already exists. Do you want to rewrite it?", document.getId(), MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+                    "Document with the same name already exists. Do you want to rewrite it?", document.getId(),
+                    MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
         }
         DocumentType documentType = documentTypeService.find(docType);
         int numberOfExistingDescripotrs = 0;

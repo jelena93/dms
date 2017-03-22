@@ -126,6 +126,7 @@ function documentValidation(params) {
             request.setRequestHeader(header, token);
         },
         success: function (data) {
+            console.log(data)
             if (data.messageType === "question") {
                 if (data.messageAction === "edit") {
                     $("#existingDocumentID").val(data.messageData);
