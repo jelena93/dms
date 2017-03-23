@@ -49,10 +49,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public class RestApiDocumentController {
 
     @Autowired
-    private ActivityService activityService;
-    @Autowired
-    private DescriptorService descriptorService;
-    @Autowired
     private DocumentTypeService documentTypeService;
     @Autowired
     private DocumentElasticSearchService documentElasticSearchService;
@@ -65,10 +61,9 @@ public class RestApiDocumentController {
     public ResponseEntity<MessageDto> validation(HttpServletRequest request, MultipartHttpServletRequest req, long docType, long activityID, String inputOutput) throws Exception {
         MultipartFile file = req.getFile("file");
         DocumentElasticSearch document = checkIfDocumentNameExists(file.getOriginalFilename());
+        boolean sameName = false;
         if (document != null) {
-            return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
-                    "Document with the same name already exists. Do you want to rewrite it?", document.getId(),
-                    MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+            sameName = true;
         }
         DocumentType documentType = documentTypeService.find(docType);
         int numberOfExistingDescripotrs = 0;
@@ -95,8 +90,13 @@ public class RestApiDocumentController {
             }
         }
         if (numberOfDefaultDescripotrs == numberOfExistingDescripotrs) {
-            return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
-                    "Document with same descriptors already exists. Do you want to rewrite it?", documentID, MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+            if (sameName) {
+                return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
+                        "Document with same name and descriptors already exists. Do you want to rewrite it?", documentID, MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
+                        "Document with same descriptors already exists. Do you want to rewrite it?", documentID, MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+            }
         }
         document = checkIfDocumentContentExists(file);
         if (document != null) {

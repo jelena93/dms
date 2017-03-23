@@ -87,10 +87,10 @@ function onSubmitForm() {
     if (checked || isSure) {
         return true;
     }
-    checkIfDocumentExists();
+    validateDocument();
     return false;
 }
-function checkIfDocumentExists() {
+function validateDocument() {
     if (selectedNode !== null) {
         $("#activityID").val(selectedNode.id);
         var docType = $("#docType").val();
@@ -185,6 +185,3 @@ function closeModal() {
     $("#existingDocumentID").val(null);
     $('#modal').modal('hide');
 }
-//$('#register_form').on('keypress', function (e) {
-//    return e.which !== 13;
-//});

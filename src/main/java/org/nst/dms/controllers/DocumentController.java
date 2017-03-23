@@ -102,17 +102,18 @@ public class DocumentController {
         document.setDescriptors(newDescriptors);
         if (existingDocumentID != null) {
             document = documentService.save(document);
-        } 
-        if (inputOutput.equals("input")) {
+        }
+        if (inputOutput.equals("input") && !activity.getInputList().contains(document)) {
             activity.getInputList().add(document);
             activity = activityService.save(activity);
             document = activity.getInputList().get((activity.getInputList().size() - 1));
-        } else {
+        }
+        if (inputOutput.equals("output") && !activity.getOutputList().contains(document)) {
             activity.getOutputList().add(document);
             activity = activityService.save(activity);
             document = activity.getOutputList().get((activity.getOutputList().size() - 1));
         }
-        
+
         saveDocumentToElasticSearch(document);
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
