@@ -25,10 +25,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -68,8 +64,6 @@ public class Descriptor implements Serializable {
 
     @Column(name = "DATE_VALUE")
     @Temporal(TemporalType.DATE)
-    @Field(type = FieldType.Date, index = FieldIndex.not_analyzed, store = true,
-            format = DateFormat.custom, pattern = "dd.MM.yyyy")
     private Date dateValue;
 
     @Column(name = "STRING_VALUE")
@@ -148,10 +142,7 @@ public class Descriptor implements Serializable {
             return false;
         }
         final Descriptor other = (Descriptor) obj;
-        if (!Objects.equals(this.descriptorKey, other.descriptorKey) || !Objects.equals(this.getValue(), other.getValue())) {
-            return false;
-        }
-        return true;
+        return !(!Objects.equals(this.descriptorKey, other.descriptorKey) || !Objects.equals(this.getValue(), other.getValue()));
     }
 
     @Override
@@ -174,20 +165,23 @@ public class Descriptor implements Serializable {
         }
         return null;
     }
+    
     public String getValueAsString() {
-        Class paramClass = descriptorType.getParamClass();
-        if (Integer.class.equals(paramClass)) {
-            return longValue != null ? longValue.toString() : null;
-        } else if (Long.class.equals(paramClass)) {
-            return longValue.toString();
-        } else if (Double.class.equals(paramClass)) {
-            return doubleValue.toString();
-        } else if (String.class.equals(paramClass)) {
-            return stringValue;
-        } else if (Date.class.equals(paramClass)) {
-            return new SimpleDateFormat(DATE_FORMAT).format(dateValue);
+        if (getValue() != null) {
+            Class paramClass = descriptorType.getParamClass();
+            if (Integer.class.equals(paramClass)) {
+                return longValue != null ? longValue.toString() : null;
+            } else if (Long.class.equals(paramClass)) {
+                return longValue.toString();
+            } else if (Double.class.equals(paramClass)) {
+                return doubleValue.toString();
+            } else if (String.class.equals(paramClass)) {
+                return stringValue;
+            } else if (Date.class.equals(paramClass)) {
+                return new SimpleDateFormat(DATE_FORMAT).format(dateValue);
+            }
         }
-        return null;
+        return "";
     }
 
     public void setValue(Object value) {

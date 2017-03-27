@@ -70,7 +70,12 @@ public class DocumentController {
         mv.addObject("company", loggedUser.getCompany());
         return mv;
     }
-
+    
+    @RequestMapping(path = "/search", method = RequestMethod.GET)
+    public ModelAndView search() {
+        return new ModelAndView("search_documents", "documents", documentElasticSearchService.findAll());
+    }
+    
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(Authentication authentication, String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID, Long existingDocumentID) {
         Activity activity = activityService.find(activityID);
@@ -113,15 +118,14 @@ public class DocumentController {
             activity = activityService.save(activity);
             document = activity.getOutputList().get((activity.getOutputList().size() - 1));
         }
-
-        saveDocumentToElasticSearch(document);
+        UserDto userDto = (UserDto) authentication.getPrincipal();
+        User user = userService.findOne(userDto.getUsername());
+        saveDocumentToElasticSearch(document, user.getCompany().getId());
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
         mv.addObject("action_type_processes_search", "add_document");
-        UserDto userDto = (UserDto) authentication.getPrincipal();
-        User loggedUser = userService.findOne(userDto.getUsername());
-        mv.addObject("company", loggedUser.getCompany());
+        mv.addObject("company", user.getCompany());
         if (existingDocumentID != null) {
             mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Document successfully edited"));
         } else {
@@ -130,34 +134,28 @@ public class DocumentController {
         return mv;
     }
     
-    private void saveDocumentToElasticSearch(Document document) {
+    private void saveDocumentToElasticSearch(Document document, Long companyID) {
         List<DescriptorElasticSearch> dto = new ArrayList<>();
         List<Descriptor> descriptors = document.getDescriptors();
         for (Descriptor desc : descriptors) {
             dto.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(), desc.getValueAsString()));
         }
-        DocumentElasticSearch doc = new DocumentElasticSearch(document.getId(), document.getFileType(), document.getFileName(), document.getFileContent(), dto);
+        DocumentElasticSearch doc = new DocumentElasticSearch(document.getId(), companyID,  document.getFileType(), document.getFileName(), document.getFileContent(), dto);
         documentElasticSearchService.save(doc);
         for (DocumentElasticSearch d : documentElasticSearchService.findAll()) {
             System.out.println("doc " + d);
         }
     }
 
-    @RequestMapping(path = "/document/display/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> showFile(@PathVariable("id") long id) {
         Document document = documentService.findOne(id);
+        if(document==null) throw new CustomException("There is no document with id " + id, "400");
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.valueOf(document.getFileType()));
         header.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + document.getFileName());
         header.setContentLength(document.getFileContent().length);
         return new ResponseEntity<>(document.getFileContent(), header, HttpStatus.OK);
-    }
-    
-    @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
-    public ModelAndView showDocument(@PathVariable("id") long id) {
-        Document document = documentService.findOne(id);
-        if(document==null) throw new CustomException("There is no document with id "+id, "400");
-        return new ModelAndView("document_info", "document", document);
     }
     
     @RequestMapping(path = "/document/download/{id}", method = RequestMethod.GET)

@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <tiles:importAttribute name="action_url_add_document"/>
-<div id="sidebar"  class="nav-collapse ">
+<tiles:importAttribute name="action_url_search_documents"/>
+<div id="sidebar" class="nav-collapse ">
     <ul class="sidebar-menu">                
         <li>
             <a href="${pageContext.request.contextPath}">
@@ -18,6 +19,7 @@
             </a>
             <ul class="sub">
                 <li><a class="" href="${pageContext.request.contextPath}/${action_url_add_document}">Add document</a></li>                          
+                <li><a class="" href="${pageContext.request.contextPath}/${action_url_search_documents}">Search documents</a></li>                          
             </ul>
         </li> 
     </ul>

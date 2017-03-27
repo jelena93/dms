@@ -15,7 +15,11 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchCrudReposi
  */
 public interface DocumentElasticSearchRepository extends ElasticsearchCrudRepository<DocumentElasticSearch, Long> {
 
-    List<DocumentElasticSearch> findByFileName(String filename);
+    List<DocumentElasticSearch> findByCompanyIDAndFileName(Long companyID, String filename);
+
+    List<DocumentElasticSearch> findByCompanyIDAndFileNameContainingIgnoreCase(Long companyID, String filename);
+
+    List<DocumentElasticSearch> findByCompanyID(Long companyID);
 
     List<DocumentElasticSearch> findByDescriptorsDescriptorKey(String descriptorKey);
 

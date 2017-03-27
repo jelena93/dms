@@ -8,12 +8,10 @@ package org.nst.dms.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DescriptorType;
-import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
@@ -23,8 +21,6 @@ import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.DocumentTypeService;
 import org.nst.dms.services.ProcessService;
 import org.nst.dms.services.UserService;
-import org.nst.elasticsearch.domain.DescriptorElasticSearch;
-import org.nst.elasticsearch.domain.DocumentElasticSearch;
 import org.nst.elasticsearch.services.DocumentElasticSearchService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +43,6 @@ public class InitializingBeanImpl implements InitializingBean {
     DocumentService documentService;
     @Autowired
     boolean isTest;
-    @Autowired
-    DocumentElasticSearchService documentElasticSearchService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -178,16 +172,6 @@ public class InitializingBeanImpl implements InitializingBean {
             User dule = new User("DUULE", "SAVIC!", "dules", "dules", company, new ArrayList<>(Arrays.asList(new Role[]{Role.ADMIN, Role.USER, Role.UPLOADER})));
             userService.save(dule);
 
-        }
-        List<Document> documents = documentService.findAll();
-        for (Document doc : documents) {
-            List<DescriptorElasticSearch> descriptors = new ArrayList<>();
-            for (Descriptor desc : doc.getDescriptors()) {
-                descriptors.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(),
-                        desc.getValueAsString()));
-            }
-            DocumentElasticSearch document = new DocumentElasticSearch(doc.getId(), doc.getFileType(), doc.getFileName(), doc.getFileContent(), descriptors);
-            documentElasticSearchService.save(document);
         }
     }
 }

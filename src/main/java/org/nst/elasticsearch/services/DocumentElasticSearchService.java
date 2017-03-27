@@ -18,7 +18,11 @@ public interface DocumentElasticSearchService {
 
     List<DocumentElasticSearch> findAll();
 
-    List<DocumentElasticSearch> findByFileName(String filename);
+    List<DocumentElasticSearch> findByCompanyID(Long companyID);
+
+    List<DocumentElasticSearch> findByCompanyIDAndFileName(Long companyID, String filename);
+
+    List<DocumentElasticSearch> findByCompanyIDAndFileNameContainingIgnoreCase(Long companyID, String filename);
 
     List<DocumentElasticSearch> findByDescriptorsDescriptorKey(String descriptorKey);
 

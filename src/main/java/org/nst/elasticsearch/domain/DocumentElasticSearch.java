@@ -21,6 +21,7 @@ public class DocumentElasticSearch {
 
     @Id
     private Long id;
+    private Long companyID;
     private String fileType;
     private String fileName;
     private byte[] fileContent;
@@ -30,14 +31,14 @@ public class DocumentElasticSearch {
     public DocumentElasticSearch() {
     }
 
-    public DocumentElasticSearch(Long id, String fileType, String fileName, byte[] fileContent, List<DescriptorElasticSearch> descriptors) {
+    public DocumentElasticSearch(Long id, Long companyID, String fileType, String fileName, byte[] fileContent, List<DescriptorElasticSearch> descriptors) {
         this.id = id;
+        this.companyID = companyID;
         this.fileType = fileType;
         this.fileName = fileName;
         this.fileContent = fileContent;
         this.descriptors = descriptors;
     }
-    
 
     public Long getId() {
         return id;
@@ -45,6 +46,14 @@ public class DocumentElasticSearch {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCompanyID() {
+        return companyID;
+    }
+
+    public void setCompanyID(Long companyID) {
+        this.companyID = companyID;
     }
 
     public String getFileType() {
@@ -106,6 +115,7 @@ public class DocumentElasticSearch {
 
     @Override
     public String toString() {
-        return "DocumentDto {" + "id=" + id + ", fileType=" + fileType + ", fileName=" + fileName + ", descriptors=" + descriptors + '}';
+        return "DocumentElasticSearch{" + "id=" + id + ", companyID=" + companyID + ", fileType=" + fileType + ", fileName=" + fileName + ", descriptors=" + descriptors + '}';
     }
+
 }

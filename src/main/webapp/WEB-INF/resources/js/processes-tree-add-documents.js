@@ -4,7 +4,7 @@ var selectedNode = null;
 var checked = false;
 var isSure = false;
 var action_url_processes_api, action_url_show_activity_api, action_url_document_validation_api,
-        action_url_show_document_info, action_url_download_document, action_url_display_document;
+        action_url_download_document, action_url_display_document;
 function getProcessesForAddDocument() {
     $('#processes').jstree({
         'core': {
@@ -54,23 +54,53 @@ function getActivityInfo(id) {
     });
 }
 function displayActivityInfo(activity) {
-    $("#table-inputList tbody").html('');
-    $("#table-outputList tbody").html('');
+    var inputList = "";
     for (var i = 0; i < activity.inputList.length; i++) {
-        var inputList = "<tr><td><a target='_blank' href='" + action_url_display_document + "/" + activity.inputList[i].id + "'>" + activity.inputList[i].fileName + "</a></td><td>" +
-                "<a class='btn btn-default' href='" + action_url_download_document + "/" + activity.inputList[i].id +
-                "' title='Download'><span class='icon_cloud-download'></span> Download file</a></td><td><div class='btn-group'><a class='btn btn-success' target='_blank' title='Show document' href='"
-                + action_url_show_document_info + "/" + activity.inputList[i].id + "'><i class='icon_check_alt2'></i></a></div></td></tr>";
-        $('#table-inputList tbody').append(inputList);
-    }
+        inputList += '<div class="panel-group" id="accordion">' +
+                '<div class="panel panel-default">' +
+                '<div class="panel-heading">' +
+                '<h4 class="panel-title">' +
+                '<a data-toggle="collapse" data-parent="#accordion" href="#colapse' + activity.inputList[i].id + '">' + activity.inputList[i].fileName + '</a>' +
+                '</h4>' +
+                '</div>' +
+                '<div id="colapse' + activity.inputList[i].id + '" class="panel-collapse collapse">' +
+                '<div class="panel-body">';
+        for (var j = 0; j < activity.inputList[i].descriptors.length; j++) {
+            console.log(activity.inputList[i].descriptors[j]);
+            inputList += '<p><strong>' + activity.inputList[i].descriptors[j].descriptorKey + '</strong>: ' +
+                    activity.inputList[i].descriptors[j].valueAsString + '</p>';
+        }
+        inputList += "</div><div class='panel-footer clearfix'>";
+        inputList += "<a class='btn btn-default' target='_blank' href='" + action_url_display_document + "/" + activity.inputList[i].id 
+                + "' title='View file'><span class='icon_folder-open'></span> View file </a>" +
+                "<a class='btn btn-default pull-right' href='" + action_url_download_document + "/" + activity.inputList[i].id +
+                "' title='Download'><span class='icon_folder-download'></span> Download file</a>";
+        outputList += '</div></div></div></div> ';
 
-    for (var i = 0; i < activity.outputList.length; i++) {
-        var outputList = "<tr><td><a target='_blank' href='" + action_url_display_document + "/" + activity.outputList[i].id + "'>" + activity.outputList[i].fileName
-                + "</a></td><td>" + "<a class='btn btn-default' href='" + action_url_download_document + "/" + activity.outputList[i].id +
-                "' title='Download'><span class='icon_cloud-download'></span> Download file</a></td><td><div class='btn-group'><a class='btn btn-success' target='_blank' title='Show document' href='"
-                + action_url_show_document_info + "/" + activity.outputList[i].id + "'><i class='icon_check_alt2'></i></a></div></td></tr>";
-        $('#table-outputList tbody').append(outputList);
     }
+    $('#inputList').html(inputList);
+    var outputList = "";
+    for (var i = 0; i < activity.outputList.length; i++) {
+        outputList += '<div class="panel-group" id="accordion">' +
+                '<div class="panel panel-default">' +
+                '<div class="panel-heading">' +
+                '<h4 class="panel-title">' +
+                '<a data-toggle="collapse" data-parent="#accordion" href="#colapse' + activity.outputList[i].id + '">' + activity.outputList[i].fileName + '</a>' +
+                '</h4>' +
+                '</div>' +
+                '<div id="colapse' + activity.outputList[i].id + '" class="panel-collapse collapse">' +
+                '<div class="panel-body">';
+        for (var j = 0; j < activity.outputList[i].descriptors.length; j++) {
+            outputList += '<p><strong>' + activity.outputList[i].descriptors[j].descriptorKey + '</strong>: ' +
+                    activity.outputList[i].descriptors[j].valueAsString + '</p>';
+        }
+        outputList += "</div><div class='panel-footer'>";
+        outputList += "<a target='_blank' href='" + action_url_display_document + "/" + activity.outputList[i].id + "'>View file </a>" +
+                "<a class='btn btn-default pull-right' href='" + action_url_download_document + "/" + activity.outputList[i].id +
+                "' title='Download'><span class='icon_cloud-download'></span> Download file</a>";
+        outputList += '</div></div></div></div> ';
+    }
+    $('#outputList').html(outputList);
     $("#form-document").hide();
     $("#activity-info").show();
     $("#btn-add-document").show();
@@ -127,7 +157,6 @@ function documentValidation(params) {
             request.setRequestHeader(header, token);
         },
         success: function (data) {
-            console.log(data)
             if (data.messageType === "question") {
                 if (data.messageAction === "edit") {
                     $("#existingDocumentID").val(data.messageData);

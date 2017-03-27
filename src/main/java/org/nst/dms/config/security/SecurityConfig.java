@@ -6,6 +6,7 @@
 package org.nst.dms.config.security;
 
 import org.nst.dms.domain.Role;
+import org.nst.elasticsearch.handlers.ElasticSearchSuccessLoginHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private ElasticSearchSuccessLoginHandler elasticSearchSuccessLoginHandler;
 
     @Bean
     @Override
@@ -55,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and().exceptionHandling().accessDeniedPage("/403")
                 .and().formLogin().loginPage("/login").permitAll()
+                .successHandler(elasticSearchSuccessLoginHandler)
                 .and().logout().logoutUrl("/logout");
 
     }

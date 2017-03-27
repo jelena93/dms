@@ -34,8 +34,18 @@ public class DocumentElasticSearchServiceImpl implements DocumentElasticSearchSe
     }
 
     @Override
-    public List<DocumentElasticSearch> findByFileName(String filename) {
-        return documentElasticSearchRepository.findByFileName(filename);
+    public List<DocumentElasticSearch> findByCompanyID(Long companyID) {
+        return documentElasticSearchRepository.findByCompanyID(companyID);
+    }
+
+    @Override
+    public List<DocumentElasticSearch> findByCompanyIDAndFileName(Long companyID, String filename) {
+        return documentElasticSearchRepository.findByCompanyIDAndFileName(companyID, filename);
+    }
+
+    @Override
+    public List<DocumentElasticSearch> findByCompanyIDAndFileNameContainingIgnoreCase(Long companyID, String filename) {
+        return documentElasticSearchRepository.findByCompanyIDAndFileNameContainingIgnoreCase(companyID, filename);
     }
 
     @Override

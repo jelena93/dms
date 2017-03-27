@@ -6,7 +6,6 @@
 <tiles:importAttribute name="action_url_show_activity_api"/>
 <tiles:importAttribute name="action_url_document_validation_api"/>
 <tiles:importAttribute name="action_url_document_type_api"/>
-<tiles:importAttribute name="action_url_show_document_info"/>
 <tiles:importAttribute name="action_url_download_document"/>
 <tiles:importAttribute name="action_url_display_document"/>
 <script language=javascript>
@@ -14,7 +13,6 @@
         var action_url_show_activity_api = "${pageContext.request.contextPath}/${action_url_show_activity_api}";
             var action_url_document_validation_api = "${pageContext.request.contextPath}/${action_url_document_validation_api}";
                 var action_url_document_type_api = "${pageContext.request.contextPath}/${action_url_document_type_api}";
-                    var action_url_show_document_info = "${pageContext.request.contextPath}/${action_url_show_document_info}";
                         var action_url_download_document = "${pageContext.request.contextPath}/${action_url_download_document}";
                             var action_url_display_document = "${pageContext.request.contextPath}/${action_url_display_document}";
 </script>

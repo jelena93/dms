@@ -16,7 +16,6 @@ function showDescriptors() {
             for (var i = 0; i < data.length; i++) {
                 var placeholder = "Enter " + data[i].descriptorKey;
                 if (data[i].value === null) {
-                    console.log(data[i]);
                     if (data[i].descriptorType.paramClass === "java.util.Date") {
                         placeholder += " in format " + data[i].date_FORMAT;
                     }

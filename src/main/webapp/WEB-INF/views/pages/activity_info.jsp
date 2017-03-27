@@ -13,14 +13,8 @@
     <div class="panel-body">
         <div class="tab-content">
             <div id="inputList" class="tab-pane active">
-                <table class="table" id="table-inputList">
-                    <tbody></tbody>
-                </table>
             </div>
             <div id="outputList" class="tab-pane">
-                <table class="table" id="table-outputList">
-                    <tbody></tbody>
-                </table>
             </div>
         </div>
     </div>
