@@ -21,11 +21,10 @@
             <div class="panel-body">
                 <div class="col-lg-4">
                     <tiles:insertAttribute name="process_tree" />
-                    <button class="btn btn-primary" type="button" id="btn-add-process" onclick="addProcess()" style="display: none;">Add process</button>
-                    <button class="btn btn-primary" type="button" id="btn-add-activity" onclick="addActivity()" style="display: none;" disabled>Add activity</button>
+                    <button class="btn btn-primary" type="button" id="btn-add" onclick="add()" style="display: none;">Add process</button>
                 </div>
                 <div class="col-lg-8">
-                    <tiles:insertAttribute name="process" />
+                    <tiles:insertAttribute name="process_activity_form" />
                 </div>
             </div>
         </section>

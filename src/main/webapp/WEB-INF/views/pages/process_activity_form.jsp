@@ -11,6 +11,26 @@
                 <input class=" form-control" id="name" name="name" type="text" disabled />
             </div>
         </div>
+        <div class="form-group " id="form-input-document-types">
+            <label for="primitive" class="control-label col-lg-2">Input document types: <span class="required">*</span></label>
+            <div class="col-lg-8">
+                <select multiple class="form-control" id="input-document-types" name="inputActivityDocumentTypes" required>
+                    <c:forEach var="documentType" items="${documentTypes}">
+                        <option value="${documentType.id}">${documentType.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+        <div class="form-group " id="form-output-document-types">
+            <label for="primitive" class="control-label col-lg-2">Output document types: <span class="required">*</span></label>
+            <div class="col-lg-8">
+                <select multiple class="form-control" id="output-document-types" name="outputActivityDocumentTypes" required>
+                    <c:forEach var="documentType" items="${documentTypes}">
+                        <option value="${documentType.id}">${documentType.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
         <div class="form-group " id="form-primitive">
             <label for="primitive" class="control-label col-lg-2">Primitive </label>
             <div class="col-lg-8">

@@ -32,7 +32,6 @@ import javax.validation.constraints.NotNull;
 public class DocumentType implements Serializable {
     @Id
     @Basic(optional = false)
-//    @GeneratedValue
     @SequenceGenerator(name = "DocumentTypeGen", sequenceName = "DOCUMENT_TYPE_ID_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DocumentTypeGen", strategy = GenerationType.SEQUENCE)
     @Column(name = "document_type_id")

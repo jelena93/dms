@@ -70,5 +70,67 @@ var Script = function () {
                 }
             }
         });
+        $("#process-from").validate({
+            rules: {
+                name: {
+                    required: true
+                },
+                file: {
+                    required: true
+                },
+                company: {
+                    required: true
+                },
+                processId: {
+                    required: true
+                },
+                roles: "required"
+            },
+            messages: {
+                name: {
+                    required: "Please enter a name."
+                },
+                file: {
+                    required: "Please provide document."
+                },
+                company: {
+                    required: "Please provide a company."
+                },
+                processId: {
+                    required: "Please provide a primitive process."
+                }
+            }
+        });
+        $("#activity-from").validate({
+            rules: {
+                name: {
+                    required: true
+                },
+                file: {
+                    required: true
+                },
+                company: {
+                    required: true
+                },
+                processId: {
+                    required: true
+                },
+                roles: "required"
+            },
+            messages: {
+                name: {
+                    required: "Please enter a name."
+                },
+                file: {
+                    required: "Please provide document."
+                },
+                company: {
+                    required: "Please provide a company."
+                },
+                processId: {
+                    required: "Please provide a primitive process."
+                }
+            }
+        });
     });
 }();

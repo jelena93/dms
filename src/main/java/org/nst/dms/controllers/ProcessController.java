@@ -19,6 +19,7 @@ import org.nst.dms.domain.Company;
 import org.nst.dms.services.CompanyService;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.User;
+import org.nst.dms.services.DocumentTypeService;
 import org.nst.dms.services.UserService;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.Authentication;
@@ -40,6 +41,8 @@ public class ProcessController {
     private UserService userService;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private DocumentTypeService documentTypeService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView addProcess(Authentication authentication) {
@@ -47,12 +50,15 @@ public class ProcessController {
         ModelAndView mv = new ModelAndView("add_process");
         User loggedUser = userService.findOne(userDto.getUsername());
         mv.addObject("company", loggedUser.getCompany());
+        mv.addObject("documentTypes", documentTypeService.findAll());
         return mv;
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(Authentication authentication, String name, @RequestParam(name = "parent", required = false) Long parent,
-            @RequestParam(name = "primitive", required = false) boolean primitive, boolean isActivity) {
+            @RequestParam(name = "primitive", required = false) boolean primitive, boolean isActivity,
+            @RequestParam(name = "inputActivityDocumentTypes", required = false) int[] inputActivityDocumentTypes,
+            @RequestParam(name = "outputActivityDocumentTypes", required = false) int[] outputActivityDocumentTypes) {
         Process process = null;
         UserDto userDto = (UserDto) authentication.getPrincipal();
         String successMessage = "Process successfully added";
@@ -84,7 +90,7 @@ public class ProcessController {
         }
         return new ModelAndView("add_process", "message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, successMessage));
     }
-    
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
