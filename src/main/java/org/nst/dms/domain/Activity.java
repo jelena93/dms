@@ -58,12 +58,16 @@ public class Activity implements Serializable{
     public Activity() {
         this.inputList = new ArrayList<>();
         this.outputList = new ArrayList<>();
+        this.inputListDocumentTypes = new ArrayList<>();
+        this.outputListDocumentTypes = new ArrayList<>();
     }
 
     public Activity(String name) {
         this.name = name;
         this.inputList = new ArrayList<>();
         this.outputList = new ArrayList<>();
+        this.inputListDocumentTypes = new ArrayList<>();
+        this.outputListDocumentTypes = new ArrayList<>();
     }
 
     public Long getId() { return id; }

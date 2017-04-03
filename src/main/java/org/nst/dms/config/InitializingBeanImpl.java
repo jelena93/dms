@@ -51,6 +51,13 @@ public class InitializingBeanImpl implements InitializingBean {
             Company company = new Company("Silab d.o.o", "011111111", "01111111", "Vozdovac, Beograd");
             companyService.save(company);
 
+            Process test = new Process("test", null, true);
+            Activity testAct = new Activity("Test act");
+            testAct.getInputListDocumentTypes().add(new DocumentType("Test Doc Type inp"));
+            testAct.getOutputListDocumentTypes().add(new DocumentType("Test Doc Type out"));
+            test.getActivityList().add(testAct);
+            company.getProcesses().add(test);
+            
             //zadati procesi i aktivnosti
             Process prodaja = new Process("Prodaja", null, false);
             Process nabavka = new Process("Nabavka", null, false);

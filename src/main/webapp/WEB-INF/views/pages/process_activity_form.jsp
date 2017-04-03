@@ -3,7 +3,7 @@
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
 <tiles:importAttribute name="label_name"/>
 <tiles:importAttribute name="input_name"/>
-<div class="form" id="info" style="display: none">
+<div class="form" id="register_form" style="display: none">
     <form class="form-validate form-horizontal " id="register_form" method="POST">
         <div class="form-group ">
             <label for="name" class="control-label col-lg-2">Name <span class="required">*</span></label>
@@ -11,20 +11,20 @@
                 <input class=" form-control" id="name" name="name" type="text" disabled />
             </div>
         </div>
-        <div class="form-group " id="form-input-document-types">
+        <div class="form-group" id="form_input_document_types">
             <label for="primitive" class="control-label col-lg-2">Input document types: <span class="required">*</span></label>
             <div class="col-lg-8">
-                <select multiple class="form-control" id="input-document-types" name="inputActivityDocumentTypes" required>
+                <select multiple class="form-control" id="input_document_types" name="input_document_types" required>
                     <c:forEach var="documentType" items="${documentTypes}">
                         <option value="${documentType.id}">${documentType.name}</option>
                     </c:forEach>
                 </select>
             </div>
         </div>
-        <div class="form-group " id="form-output-document-types">
+        <div class="form-group " id="form_output_document_types" >
             <label for="primitive" class="control-label col-lg-2">Output document types: <span class="required">*</span></label>
             <div class="col-lg-8">
-                <select multiple class="form-control" id="output-document-types" name="outputActivityDocumentTypes" required>
+                <select multiple class="form-control" id="output_document_types" name="output_document_types" required>
                     <c:forEach var="documentType" items="${documentTypes}">
                         <option value="${documentType.id}">${documentType.name}</option>
                     </c:forEach>

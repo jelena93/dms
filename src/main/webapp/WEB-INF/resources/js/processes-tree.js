@@ -32,14 +32,14 @@ function getProcessesForAddProcess() {
         }
         selectedNode = data.node.original;
         if (data.node.original.primitive) {
-            getInfo(action_url_show_process_api + "/" + selectedNode.id, false);
-            $("#btn-add").prop("disabled");
+            getInfo(action_url_show_process_api + "/" + selectedNode.id);
+            $("#btn-add").prop("disabled", false);
         } else if (data.node.original.activity) {
-            getInfo(action_url_show_activity_api + "/" + selectedNode.id, true);
-            $("#btn-add").prop("disabled");
+            getInfo(action_url_show_activity_api + "/" + selectedNode.id);
+            $("#btn-add").prop("disabled", true);
         } else {
-            getInfo(action_url_show_process_api + "/" + selectedNode.id, false);
-            $("#btn-add").prop("disabled");
+            getInfo(action_url_show_process_api + "/" + selectedNode.id);
+            $("#btn-add").prop("disabled", false);
         }
     });
 }
@@ -57,7 +57,19 @@ function getInfo(url) {
             canEdit = false;
             if (selectedNode.activity) {
                 $("#form-primitive").hide();
+                for (var i = 0; i < data.inputListDocumentTypes.length; i++) {
+                    $("#input-document-types").find("option[value=" + data.inputListDocumentTypes[i].id + "]").
+                            prop("selected", "selected");
+                }
+                for (var i = 0; i < data.outputListDocumentTypes.length; i++) {
+                    $("#output-document-types").find("option[value=" + data.outputListDocumentTypes[i].id + "]").
+                            prop("selected", "selected");
+                }
+                $("#form-input-document-types").show();
+                $("#form-output-document-types").show();
             } else {
+                $("#form-input-document-types").hide();
+                $("#form-output-document-types").hide();
                 if (selectedNode.primitive) {
                     $("#btn-add").text("Add activty");
                 } else {
@@ -68,7 +80,7 @@ function getInfo(url) {
             }
             disableForm();
             $("#message-box-container").hide();
-            $('#info').show();
+            $('#register_form').show();
         },
         error: function (request, status, error) {
             try {
@@ -171,7 +183,7 @@ function reset(data) {
     data.instance.deselect_node(data.node, true);
     selectedNode = null;
     $('#id').val(selectedNode);
-    $('#info').hide();
+    $('#register_form').hide();
     $("#btn-add").prop("disabled", false);
 }
 function disableForm() {
@@ -193,15 +205,19 @@ function showFormForAdding() {
     hideErrorForName();
     $("#name").prop("disabled", false);
     $("#name").val("");
-    if (selectedNode !== null && selectedNode.activity) {
+    if (selectedNode !== null && selectedNode.primitive) {
         $("#form-primitive").hide();
+        $("#form-input-document-types").show();
+        $("#form-output-document-types").show();
     } else {
+        $("#form-input-document-types").hide();
+        $("#form-output-document-types").hide();
         $("#form-primitive").show();
         $("#primitive").prop("disabled", false);
         $('#primitive').prop("checked", false);
     }
     $("#btn-edit").text("Add");
-    $('#info').show();
+    $("#register_form").show();
 }
 function hideErrorForName() {
     if ($("label[for='name']").hasClass("error")) {

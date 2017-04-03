@@ -5,6 +5,7 @@
  */
 package org.nst.dms.controllers;
 
+import java.util.Arrays;
 import org.nst.dms.dto.MessageDto;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.services.ProcessService;
@@ -70,9 +71,11 @@ public class ProcessController {
             if (!process.isPrimitive()) {
                 throw new CustomException("Can't add activity to a non primitive process", "500");
             }
-            Activity activity = new Activity(name);
-            process.getActivityList().add(activity);
-            processService.save(process);
+            System.out.println(Arrays.toString(inputActivityDocumentTypes));
+            System.out.println(Arrays.toString(outputActivityDocumentTypes));
+//            Activity activity = new Activity(name);
+//            process.getActivityList().add(activity);
+//            processService.save(process);
             successMessage = "Activity successfully added";
         } else {
             if (parent != null) {
@@ -84,9 +87,9 @@ public class ProcessController {
             } else {
                 process = new Process(name, null, primitive);
             }
-            Company company = userService.findOne(userDto.getUsername()).getCompany();
-            company.getProcesses().add(process);
-            companyService.save(company);
+//            Company company = userService.findOne(userDto.getUsername()).getCompany();
+//            company.getProcesses().add(process);
+//            companyService.save(company);
         }
         return new ModelAndView("add_process", "message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, successMessage));
     }
