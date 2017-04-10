@@ -16,4 +16,5 @@ public interface DocumentTypeService {
     List<DocumentType> findAll();
     DocumentType save(DocumentType documentType);
     DocumentType find(Long id);
+    List<DocumentType> findByIdIn(List<Long> ids);
 }

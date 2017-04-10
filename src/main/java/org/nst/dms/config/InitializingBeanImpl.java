@@ -21,7 +21,6 @@ import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.DocumentTypeService;
 import org.nst.dms.services.ProcessService;
 import org.nst.dms.services.UserService;
-import org.nst.elasticsearch.services.DocumentElasticSearchService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -53,11 +52,19 @@ public class InitializingBeanImpl implements InitializingBean {
 
             Process test = new Process("test", null, true);
             Activity testAct = new Activity("Test act");
-            testAct.getInputListDocumentTypes().add(new DocumentType("Test Doc Type inp"));
-            testAct.getOutputListDocumentTypes().add(new DocumentType("Test Doc Type out"));
+            DocumentType d = new DocumentType("Test Doc Type inp");
+            d = documentTypeService.save(d);
+            Descriptor descriptort = new Descriptor("Broj test in", d.getId(), new DescriptorType(Integer.class));
+            d.getDescriptors().add(descriptort);
+            testAct.getInputListDocumentTypes().add(d);
+            d = new DocumentType("Test Doc Type out");
+            d = documentTypeService.save(d);
+            descriptort = new Descriptor("Broj test out", d.getId(), new DescriptorType(Integer.class));
+            d.getDescriptors().add(descriptort);
+            testAct.getInputListDocumentTypes().add(d);
             test.getActivityList().add(testAct);
             company.getProcesses().add(test);
-            
+
             //zadati procesi i aktivnosti
             Process prodaja = new Process("Prodaja", null, false);
             Process nabavka = new Process("Nabavka", null, false);

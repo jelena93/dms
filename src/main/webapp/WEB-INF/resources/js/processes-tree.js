@@ -3,10 +3,8 @@ var header = $("meta[name='_csrf_header']").attr("content");
 var selectedNode = null;
 var canEdit = false;
 var modeEdit = "edit";
-var modeAddProcess = "addProcess";
-var modeAddActivity = "addActivity";
-var mode = modeEdit;
 var modeAdd = "add";
+var mode = modeEdit;
 var isSure = false;
 var action_url_processes_api, action_url_show_process_api, action_url_show_activity_api, action_url_edit_process_api, action_url_edit_activity_api;
 function getProcessesForAddProcess() {
@@ -34,11 +32,13 @@ function getProcessesForAddProcess() {
         if (data.node.original.primitive) {
             getInfo(action_url_show_process_api + "/" + selectedNode.id);
             $("#btn-add").prop("disabled", false);
+            $("#btn-add").text("Add activity");
         } else if (data.node.original.activity) {
             getInfo(action_url_show_activity_api + "/" + selectedNode.id);
             $("#btn-add").prop("disabled", true);
         } else {
             getInfo(action_url_show_process_api + "/" + selectedNode.id);
+            $("#btn-add").text("Add process");
             $("#btn-add").prop("disabled", false);
         }
     });
@@ -55,32 +55,27 @@ function getInfo(url) {
             $('#id').val(data.id);
             $('#name').val(data.name);
             canEdit = false;
-            if (selectedNode.activity) {
+            if (selectedNode !== null && selectedNode.activity) {
                 $("#form-primitive").hide();
                 for (var i = 0; i < data.inputListDocumentTypes.length; i++) {
-                    $("#input-document-types").find("option[value=" + data.inputListDocumentTypes[i].id + "]").
+                    $("#input_document_types").find("option[value=" + data.inputListDocumentTypes[i].id + "]").
                             prop("selected", "selected");
                 }
                 for (var i = 0; i < data.outputListDocumentTypes.length; i++) {
-                    $("#output-document-types").find("option[value=" + data.outputListDocumentTypes[i].id + "]").
+                    $("#output_document_types").find("option[value=" + data.outputListDocumentTypes[i].id + "]").
                             prop("selected", "selected");
                 }
-                $("#form-input-document-types").show();
-                $("#form-output-document-types").show();
+                $("#form_output_document_types").show();
+                $("#form_input_document_types").show();
             } else {
-                $("#form-input-document-types").hide();
-                $("#form-output-document-types").hide();
-                if (selectedNode.primitive) {
-                    $("#btn-add").text("Add activty");
-                } else {
-                    $("#btn-add").text("Add process");
-                }
+                $("#form_output_document_types").hide();
+                $("#form_input_document_types").hide();
                 $("#form-primitive").show();
                 $('#primitive').prop("checked", data.primitive);
             }
             disableForm();
             $("#message-box-container").hide();
-            $('#register_form').show();
+            $('#info').show();
         },
         error: function (request, status, error) {
             try {
@@ -115,6 +110,7 @@ function checkData() {
                 url = action_url_edit_process_api;
                 params.primitive = $("#primitive").prop('checked');
             }
+            console.log("Params: " + params.id + " " + params.name + " " + params.primitive);
             if (!isSure && !selectedNode.activity && !selectedNode.primitive && params.primitive) {
                 showPopUp("Setting process to primitive will delete all child nodes of this process, are you sure?");
             } else if (!isSure && !selectedNode.activity && selectedNode.primitive && !params.primitive) {
@@ -124,8 +120,8 @@ function checkData() {
                 edit(url, params);
             }
         }
-    } else {
-        $("#isActivity").val(selectedNode.activity);
+    } else if (mode === modeAdd) {
+        $("#isActivity").val(selectedNode !== null ? selectedNode.primitive : false);
         $("#register_form").submit();
     }
 }
@@ -163,6 +159,13 @@ function edit(url, params) {
             selectedNode.name = params["name"];
             if (!selectedNode.activity) {
                 selectedNode.primitive = params["primitive"];
+                if (selectedNode.primitive) {
+                    $("#btn-add").prop("disabled", false);
+                } else {
+                    $("#btn-add").prop("disabled", false);
+                }
+            } else {
+                $("#btn-add").prop("disabled", true);
             }
         },
         error: function (request, status, error) {
@@ -183,7 +186,7 @@ function reset(data) {
     data.instance.deselect_node(data.node, true);
     selectedNode = null;
     $('#id').val(selectedNode);
-    $('#register_form').hide();
+    $('#info').hide();
     $("#btn-add").prop("disabled", false);
 }
 function disableForm() {
@@ -207,17 +210,20 @@ function showFormForAdding() {
     $("#name").val("");
     if (selectedNode !== null && selectedNode.primitive) {
         $("#form-primitive").hide();
-        $("#form-input-document-types").show();
-        $("#form-output-document-types").show();
+        $("#form_output_document_types").show();
+        $("#form_input_document_types").show();
+        $("#form_input_document_types option:selected").removeAttr("selected");
+        $("#form_output_document_types option:selected").removeAttr("selected");
+
     } else {
-        $("#form-input-document-types").hide();
-        $("#form-output-document-types").hide();
         $("#form-primitive").show();
+        $("#form_output_document_types").hide();
+        $("#form_input_document_types").hide();
         $("#primitive").prop("disabled", false);
         $('#primitive').prop("checked", false);
     }
     $("#btn-edit").text("Add");
-    $("#register_form").show();
+    $('#info').show();
 }
 function hideErrorForName() {
     if ($("label[for='name']").hasClass("error")) {
@@ -226,3 +232,6 @@ function hideErrorForName() {
         $("#name").removeClass("error");
     }
 }
+$('#register_form').on('keypress', function (e) {
+    return e.which !== 13;
+});
