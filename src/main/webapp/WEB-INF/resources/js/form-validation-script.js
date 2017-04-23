@@ -32,7 +32,9 @@ var Script = function () {
                 processId: {
                     required: true
                 },
-                roles: "required"
+                roles: "required",
+                input_document_types: "required",
+                ouput_document_types: "required"
             },
             messages: {
                 name: {
@@ -67,68 +69,12 @@ var Script = function () {
                 },
                 processId: {
                     required: "Please provide a primitive process."
-                }
-            }
-        });
-        $("#process-from").validate({
-            rules: {
-                name: {
-                    required: true
                 },
-                file: {
-                    required: true
+                input_document_types: {
+                    required: "Please provide document types for input."
                 },
-                company: {
-                    required: true
-                },
-                processId: {
-                    required: true
-                },
-                roles: "required"
-            },
-            messages: {
-                name: {
-                    required: "Please enter a name."
-                },
-                file: {
-                    required: "Please provide document."
-                },
-                company: {
-                    required: "Please provide a company."
-                },
-                processId: {
-                    required: "Please provide a primitive process."
-                }
-            }
-        });
-        $("#activity-from").validate({
-            rules: {
-                name: {
-                    required: true
-                },
-                file: {
-                    required: true
-                },
-                company: {
-                    required: true
-                },
-                processId: {
-                    required: true
-                },
-                roles: "required"
-            },
-            messages: {
-                name: {
-                    required: "Please enter a name."
-                },
-                file: {
-                    required: "Please provide document."
-                },
-                company: {
-                    required: "Please provide a company."
-                },
-                processId: {
-                    required: "Please provide a primitive process."
+                output_document_types: {
+                    required: "Please provide document types for output."
                 }
             }
         });

@@ -18,7 +18,7 @@ function search(value) {
                 documents += '<ul class="list-group">' +
                         '<li class="list-group-item clearfix">' +
                         '<a class="btn btn-default pull-right" href="' + action_url_download_document + '/' + data[i].id + '" title="Download">' +
-                        '<span class="icon_folder-download"></span> Download file</a>' +
+                        '<span class="icon_folder_download"></span> Download file</a>' +
                         '<a class="btn btn-default pull-right" href="' + action_url_display_document + '/' + data[i].id + '" target="_blank" title="View file">' +
                         '<span class="icon_folder-open"></span> View file</a>' +
                         '<h3 class="list-group-item-heading">' + data[i].fileName + '</h3>';

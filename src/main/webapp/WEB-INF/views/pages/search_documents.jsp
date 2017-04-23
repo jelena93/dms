@@ -28,7 +28,7 @@
                 <ul class="list-group">
                     <li class="list-group-item clearfix">
                         <a class='btn btn-default pull-right' href="${pageContext.request.contextPath}/${action_url_download_document}/${doc.id}" title='Download'>
-                            <span class='icon_folder-download'></span> Download file</a>
+                            <span class='icon_folder_download'></span> Download file</a>
                         <a class='btn btn-default pull-right' href="${pageContext.request.contextPath}/${action_url_display_document}/${doc.id}" target='_blank' title='View file'>
                             <span class='icon_folder-open'></span> View file</a>
                         <h3 class="list-group-item-heading">${doc.fileName}</h3>

@@ -3,8 +3,58 @@ var header = $("meta[name='_csrf_header']").attr("content");
 var selectedNode = null;
 var checked = false;
 var isSure = false;
+var inputListDocumentTypes = null;
+var outputListDocumentTypes = null;
 var action_url_processes_api, action_url_show_activity_api, action_url_document_validation_api,
-        action_url_download_document, action_url_display_document;
+        action_url_download_document, action_url_display_document, action_url_document_type_api;
+$(document).ready(function () {
+    $('#form-document input[type="radio"]').click(function () {
+        $("#docType").html("");
+        if ($(this).val() === "input") {
+            $("#docTypeLabel").text("Input document types");
+            for (var i = 0; i < inputListDocumentTypes.length; i++) {
+                $("#docType").append('<option value="' + inputListDocumentTypes[i].id + '">' + inputListDocumentTypes[i].name + '</option>');
+            }
+            if (inputListDocumentTypes.length > 0) {
+                showDescriptors(inputListDocumentTypes[0].descriptors);
+            } else {
+                showDescriptors(null);
+            }
+        } else if ($(this).val() === "output") {
+            $("#docTypeLabel").text("Output document types");
+            for (var i = 0; i < outputListDocumentTypes.length; i++) {
+                $("#docType").append('<option value="' + outputListDocumentTypes[i].id + '">' + outputListDocumentTypes[i].name + '</option>');
+            }
+            if (outputListDocumentTypes.length > 0) {
+                showDescriptors(outputListDocumentTypes[0].descriptors);
+            } else {
+                showDescriptors(null);
+            }
+        }
+    });
+});
+function setDescriptors(docType) {
+    $.ajax({
+        type: "GET",
+        url: action_url_document_type_api,
+        data: {id: docType.value},
+        beforeSend: function (request) {
+            request.setRequestHeader(header, token);
+        },
+        dataType: 'json',
+        success: function (data) {
+            showDescriptors(data);
+        },
+        error: function (request, status, error) {
+            try {
+                var message = jQuery.parseJSON(request.responseText);
+                showMessage(message.messageText, message.messageType);
+            } catch (e) {
+                console.log(request);
+            }
+        }
+    });
+}
 function getProcessesForAddDocument() {
     $('#processes').jstree({
         'core': {
@@ -66,17 +116,15 @@ function displayActivityInfo(activity) {
                 '<div id="colapse' + activity.inputList[i].id + '" class="panel-collapse collapse">' +
                 '<div class="panel-body">';
         for (var j = 0; j < activity.inputList[i].descriptors.length; j++) {
-            console.log(activity.inputList[i].descriptors[j]);
             inputList += '<p><strong>' + activity.inputList[i].descriptors[j].descriptorKey + '</strong>: ' +
                     activity.inputList[i].descriptors[j].valueAsString + '</p>';
         }
         inputList += "</div><div class='panel-footer clearfix'>";
-        inputList += "<a class='btn btn-default' target='_blank' href='" + action_url_display_document + "/" + activity.inputList[i].id 
+        inputList += "<a class='btn btn-default' target='_blank' href='" + action_url_display_document + "/" + activity.inputList[i].id
                 + "' title='View file'><span class='icon_folder-open'></span> View file </a>" +
                 "<a class='btn btn-default pull-right' href='" + action_url_download_document + "/" + activity.inputList[i].id +
-                "' title='Download'><span class='icon_folder-download'></span> Download file</a>";
-        outputList += '</div></div></div></div> ';
-
+                "' title='Download'><span class='icon_folder_download'></span> Download file</a>";
+        inputList += '</div></div></div></div> ';
     }
     $('#inputList').html(inputList);
     var outputList = "";
@@ -100,14 +148,48 @@ function displayActivityInfo(activity) {
                 "' title='Download'><span class='icon_cloud-download'></span> Download file</a>";
         outputList += '</div></div></div></div> ';
     }
+    inputListDocumentTypes = activity.inputListDocumentTypes;
+    outputListDocumentTypes = activity.outputListDocumentTypes;
+    $("#docType").html("");
+    for (var i = 0; i < activity.inputListDocumentTypes.length; i++) {
+        $("#docType").append('<option value="' + activity.inputListDocumentTypes[i].id + '">' + activity.inputListDocumentTypes[i].name + '</option>');
+    }
     $('#outputList').html(outputList);
     $("#form-document").hide();
+    showDescriptors(activity.inputListDocumentTypes[0].descriptors);
     $("#activity-info").show();
     $("#btn-add-document").show();
+}
+function showDescriptors(descriptors) {
+    $("#descriptors").html("");
+    var html = "";
+    if (descriptors !== null) {
+        for (var i = 0; i < descriptors.length; i++) {
+            if (descriptors[i].value === null) {
+                if (descriptors[i].descriptorType.paramClass.name === 'java.util.Date') {
+                    html = '<div class="form-group">' +
+                            '<label for="' + descriptors[i].id + '" class="control-label col-lg-4">' + descriptors[i].descriptorKey
+                            + '<span class="required">*</span></label><div class="col-lg-8">' +
+                            '<input type="text" class="form-control descriptors" name="' + descriptors[i].descriptorKey
+                            + '" id="' + descriptors[i].id + '" placeholder="Enter ' + descriptors[i].descriptorKey
+                            + ' in format ${desc.DATE_FORMAT}" required></div></div>';
+                } else {
+                    html = '<div class="form-group">' +
+                            '<label for="' + descriptors[i].id + '" class="control-label col-lg-4">' + descriptors[i].descriptorKey +
+                            ' <span class="required">*</span></label><div class="col-lg-8">' +
+                            '<input type="text" class="form-control descriptors" name="' + descriptors[i].descriptorKey +
+                            '" id="' + descriptors[i].id + '" placeholder="Enter ' + descriptors[i].descriptorKey + '" required>' +
+                            '</div></div>';
+                }
+                $("#descriptors").append(html);
+            }
+        }
+    }
 }
 function showFormAddDocument() {
     $("#activity-info").hide();
     $("#btn-add-document").hide();
+    $("#docTypeLabel").text("Input document types");
     $("#form-document").show();
 }
 function onSubmitForm() {

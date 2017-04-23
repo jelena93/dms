@@ -19,18 +19,22 @@ import org.nst.dms.services.DocumentTypeService;
 @Service
 public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Autowired
-    private DocumentTypeRepository documentRepository;
+    private DocumentTypeRepository documentTypeRepository;
     @Override
     public List<DocumentType> findAll() {
-        return documentRepository.findAll();
+        return documentTypeRepository.findAll();
     }
     @Override
     public DocumentType save(DocumentType documentType) {
-        return documentRepository.save(documentType);
+        return documentTypeRepository.save(documentType);
     }
     @Override
     public DocumentType find(Long id) {
-        return documentRepository.findOne(id);
+        return documentTypeRepository.findOne(id);
+    }
+    @Override
+    public List<DocumentType> findByIdIn(List<Long> ids) {
+        return documentTypeRepository.findByIdIn(ids);
     }
 
 }

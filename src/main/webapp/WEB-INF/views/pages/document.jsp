@@ -24,46 +24,16 @@
             <input type="file" id="file" name="file">
         </div>
         <div class="form-group">
-            <label for="docType" class="control-label col-lg-2">Document type </label>
+            <label for="docType" class="control-label col-lg-2"><div id="docTypeLabel"></div><span class="required">*</span></label>
             <div class="col-lg-10">
-                <select class="form-control" name="docType" id="docType" onchange="showDescriptors()">
-                    <c:forEach var="docType" items="${documentTypes}">
-                        <option value="${docType.id}">${docType.name}</option>
-                    </c:forEach>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-lg-offset-2 col-lg-10">
+                <select class="form-control" name="docType" id="docType" onchange="setDescriptors(this);"></select>
                 <section class="panel">
                     <header class="panel-heading"> Descriptors</header>
-                    <div class="panel-body" id="descriptors">
-                        <c:forEach var="desc" items="${documentTypes[0].descriptors}">
-                            <c:if test="${desc.value==null}">
-                                <c:choose>
-                                    <c:when test="${desc.descriptorType.paramClass.name eq 'java.util.Date'}">
-                                        <div class="form-group">
-                                            <label for="${desc.id}" class="control-label col-lg-4">${desc.descriptorKey} <span class="required">*</span></label>
-                                            <div class="col-lg-8">
-                                                <input type="text" class="form-control descriptors" name="${desc.descriptorKey}" id="${desc.id}" placeholder="Enter ${desc.descriptorKey} in format ${desc.DATE_FORMAT}" required>
-                                            </div>
-                                        </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="form-group">
-                                            <label for="${desc.id}" class="control-label col-lg-4">${desc.descriptorKey} <span class="required">*</span></label>
-                                            <div class="col-lg-8">
-                                                <input type="text" class="form-control descriptors" name="${desc.descriptorKey}" id="${desc.id}" placeholder="Enter ${desc.descriptorKey}" required>
-                                            </div>
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:if>
-                        </c:forEach>
-                    </div>
+                    <div class="panel-body" id="descriptors"></div>
                 </section>
             </div>
         </div>
+
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="hidden" name="activityID" id="activityID"/>
         <input type="hidden" name="existingDocumentID" id="existingDocumentID"/>

@@ -57,13 +57,11 @@ public class DocumentController {
     public ModelAndView save(Authentication authentication) {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         ModelAndView mv = new ModelAndView("add_document");
-        List<DocumentType> documentTypes = documentTypeService.findAll();
         User loggedUser = userService.findOne(userDto.getUsername());
-        mv.addObject("documentTypes", documentTypes);
         mv.addObject("action_type_processes_search", "add_document");
         mv.addObject("company", loggedUser.getCompany());
         return mv;
-    }
+    } 
     
     @RequestMapping(path = "/search", method = RequestMethod.GET)
     public ModelAndView search() {

@@ -58,8 +58,8 @@ public class ProcessController {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(Authentication authentication, String name, @RequestParam(name = "parent", required = false) Long parent,
             @RequestParam(name = "primitive", required = false) boolean primitive, boolean isActivity,
-            @RequestParam(name = "inputActivityDocumentTypes", required = false) int[] inputActivityDocumentTypes,
-            @RequestParam(name = "outputActivityDocumentTypes", required = false) int[] outputActivityDocumentTypes) {
+            @RequestParam(name = "inputActivityDocumentTypes", required = false) Long[] inputActivityDocumentTypes,
+            @RequestParam(name = "outputActivityDocumentTypes", required = false) Long[] outputActivityDocumentTypes) {
         Process process = null;
         UserDto userDto = (UserDto) authentication.getPrincipal();
         String successMessage = "Process successfully added";
@@ -71,11 +71,11 @@ public class ProcessController {
             if (!process.isPrimitive()) {
                 throw new CustomException("Can't add activity to a non primitive process", "500");
             }
-            System.out.println(Arrays.toString(inputActivityDocumentTypes));
-            System.out.println(Arrays.toString(outputActivityDocumentTypes));
-//            Activity activity = new Activity(name);
-//            process.getActivityList().add(activity);
-//            processService.save(process);
+            Activity activity = new Activity(name);
+            activity.setInputListDocumentTypes(documentTypeService.findByIdIn(Arrays.asList(inputActivityDocumentTypes)));
+            activity.setOutputListDocumentTypes(documentTypeService.findByIdIn(Arrays.asList(outputActivityDocumentTypes)));
+            process.getActivityList().add(activity);
+            processService.save(process);
             successMessage = "Activity successfully added";
         } else {
             if (parent != null) {
@@ -87,11 +87,14 @@ public class ProcessController {
             } else {
                 process = new Process(name, null, primitive);
             }
-//            Company company = userService.findOne(userDto.getUsername()).getCompany();
-//            company.getProcesses().add(process);
-//            companyService.save(company);
+            Company company = userService.findOne(userDto.getUsername()).getCompany();
+            company.getProcesses().add(process);
+            companyService.save(company);
         }
-        return new ModelAndView("add_process", "message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, successMessage));
+        ModelAndView mv = new ModelAndView("add_process");
+        mv.addObject("documentTypes", documentTypeService.findAll());
+        mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, successMessage));
+        return mv;
     }
 
     @InitBinder

@@ -6,7 +6,6 @@
 package org.nst.dms.services.impl;
 
 import java.util.List;
-import org.nst.dms.domain.Company;
 import org.nst.dms.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

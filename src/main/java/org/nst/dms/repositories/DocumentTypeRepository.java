@@ -5,6 +5,7 @@
  */
 package org.nst.dms.repositories;
 
+import java.util.List;
 import org.nst.dms.domain.DocumentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,7 @@ import org.springframework.stereotype.Repository;
  * @author Jelena
  */
 @Repository
-public interface DocumentTypeRepository extends JpaRepository<DocumentType, Long> { }
+public interface DocumentTypeRepository extends JpaRepository<DocumentType, Long> {
+
+    List<DocumentType> findByIdIn(List<Long> ids);
+}
