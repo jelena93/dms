@@ -22,8 +22,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  *
@@ -31,7 +29,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  */
 @Entity
 @Table (name = "document")
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "document")
 public class Document implements Serializable {
     @Id
     @Basic(optional = false)
@@ -51,8 +48,9 @@ public class Document implements Serializable {
     private byte[] fileContent;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "document_descriptors", joinColumns = @JoinColumn(name = "document"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
-    @Field(type = FieldType.Nested)
     private List<Descriptor> descriptors;
+    private long companyID;
+    
     public Document() { }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -64,6 +62,9 @@ public class Document implements Serializable {
     public void setFileContent(byte[] fileContent) { this.fileContent = fileContent;}
     public List<Descriptor> getDescriptors() { return descriptors; }
     public void setDescriptors(List<Descriptor> descriptors) { this.descriptors = descriptors; }
+    public long getCompanyID() { return companyID; }
+    public void setCompanyID(long companyID) {  this.companyID = companyID;  }
+
     @Override
     public int hashCode() {
         int hash = 7;

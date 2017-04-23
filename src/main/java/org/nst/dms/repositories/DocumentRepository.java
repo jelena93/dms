@@ -19,4 +19,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     List<Document> findByDescriptorsDescriptorKey(String descriptorKey);
 
+    List<Document> findByFileName(String fileName);
+
 }

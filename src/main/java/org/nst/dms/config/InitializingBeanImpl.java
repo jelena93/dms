@@ -21,7 +21,7 @@ import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.DocumentTypeService;
 import org.nst.dms.services.ProcessService;
 import org.nst.dms.services.UserService;
-import org.nst.elasticsearch.services.DocumentElasticSearchService;
+import org.nst.dms.elasticsearch.indexing.DocumentIndexer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,11 +42,13 @@ public class InitializingBeanImpl implements InitializingBean {
     @Autowired
     DocumentService documentService;
     @Autowired
-    boolean isTest;
+    boolean insertValuesInDB;
+    @Autowired
+    boolean createIndex;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (isTest) {
+        if (insertValuesInDB) {
             // zadata kompanija
             Company company = new Company("Silab d.o.o", "011111111", "01111111", "Vozdovac, Beograd");
             companyService.save(company);
@@ -57,7 +59,7 @@ public class InitializingBeanImpl implements InitializingBean {
             testAct.getOutputListDocumentTypes().add(new DocumentType("Test Doc Type out"));
             test.getActivityList().add(testAct);
             company.getProcesses().add(test);
-            
+
             //zadati procesi i aktivnosti
             Process prodaja = new Process("Prodaja", null, false);
             Process nabavka = new Process("Nabavka", null, false);
@@ -179,6 +181,10 @@ public class InitializingBeanImpl implements InitializingBean {
             User dule = new User("DUULE", "SAVIC!", "dules", "dules", company, new ArrayList<>(Arrays.asList(new Role[]{Role.ADMIN, Role.USER, Role.UPLOADER})));
             userService.save(dule);
 
+        }
+        if (createIndex) {
+            DocumentIndexer documentIndexer = new DocumentIndexer();
+            documentIndexer.indexDocuments(documentService.findAll());
         }
     }
 }

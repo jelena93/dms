@@ -6,17 +6,15 @@
 package org.nst.dms.config;
 
 import java.util.Properties;
-import java.util.UUID;
+import java.util.ResourceBundle;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.apache.tika.Tika;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
-import org.elasticsearch.client.node.NodeClient;
-import org.elasticsearch.node.NodeBuilder;
 import org.nst.dms.config.security.SecurityConfig;
-import org.nst.elasticsearch.handlers.ElasticSearchSuccessLoginHandler;
+import org.nst.dms.elasticsearch.indexing.ElasticClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -29,11 +27,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -47,13 +42,27 @@ import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 @ComponentScan(basePackages = {"org.nst.*"})
 @EnableTransactionManagement
 @EnableJpaRepositories("org.nst.dms.repositories")
-@EnableElasticsearchRepositories("org.nst.elasticsearch.repositories")
 @Import(SecurityConfig.class)
 public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
-    public boolean isTest() {
-        return true;
+    public boolean insertValuesInDB() {
+        return Boolean.getBoolean(ResourceBundle.getBundle("application").getString("insert_values_in_db"));
+    }
+
+    @Bean
+    public boolean dropAndCreateDB() {
+        return Boolean.getBoolean(ResourceBundle.getBundle("application").getString("drop_and_create_db"));
+    }
+
+    @Bean
+    public boolean createIndex() {
+        return Boolean.getBoolean(ResourceBundle.getBundle("application").getString("create_index"));
+    }
+
+    @Bean
+    public ElasticClient elasticClient() {
+        return new ElasticClient();
     }
 
     @Bean
@@ -64,15 +73,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("WEB-INF/resources/");
-    }
-
-    @Bean
-    public ElasticsearchTemplate elasticsearchTemplate() {
-        return new ElasticsearchTemplate(getNodeClient());
-    }
-
-    private NodeClient getNodeClient() {
-        return (NodeClient) NodeBuilder.nodeBuilder().clusterName(UUID.randomUUID().toString()).local(true).node().client();
     }
 
     @Bean
@@ -133,7 +133,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public Properties jpaProperties() {
         Properties properties = new Properties();
         properties.put(PersistenceUnitProperties.WEAVING, "static");
-        if (isTest()) {
+        if (dropAndCreateDB()) {
             properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.DROP_AND_CREATE);
             properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);
             properties.put(PersistenceUnitProperties.DEPLOY_ON_STARTUP, "true");

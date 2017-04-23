@@ -16,4 +16,6 @@ public interface DocumentService {
     Document findOne(Long id);
     List<Document> findAll();
     Document save(Document document);
+    List<Document> findByFileName(String fileName);
+
 }

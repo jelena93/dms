@@ -9,7 +9,6 @@ import org.nst.dms.dto.MessageDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Activity;
@@ -17,8 +16,6 @@ import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.User;
-import org.nst.elasticsearch.domain.DescriptorElasticSearch;
-import org.nst.elasticsearch.domain.DocumentElasticSearch;
 import org.nst.dms.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.nst.dms.services.ActivityService;
 import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.UserService;
-import org.nst.elasticsearch.services.DocumentElasticSearchService;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -55,8 +51,6 @@ public class DocumentController {
     @Autowired
     private DocumentService documentService;
     @Autowired
-    private DocumentElasticSearchService documentElasticSearchService;
-    @Autowired
     private UserService userService;
     
     @RequestMapping(path = "/add", method = RequestMethod.GET)
@@ -73,7 +67,9 @@ public class DocumentController {
     
     @RequestMapping(path = "/search", method = RequestMethod.GET)
     public ModelAndView search() {
-        return new ModelAndView("search_documents", "documents", documentElasticSearchService.findAll());
+//        return new ModelAndView("search_documents", "documents", documentElasticSearchService.findAll());
+//        vrati sve od ovog
+        return new ModelAndView("search_documents");
     }
     
     @RequestMapping(path = "/add", method = RequestMethod.POST)
@@ -120,7 +116,8 @@ public class DocumentController {
         }
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
-        saveDocumentToElasticSearch(document, user.getCompany().getId());
+        document.setCompanyID(user.getCompany().getId());
+        saveDocumentToElasticSearch(document);
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
@@ -134,17 +131,8 @@ public class DocumentController {
         return mv;
     }
     
-    private void saveDocumentToElasticSearch(Document document, Long companyID) {
-        List<DescriptorElasticSearch> dto = new ArrayList<>();
-        List<Descriptor> descriptors = document.getDescriptors();
-        for (Descriptor desc : descriptors) {
-            dto.add(new DescriptorElasticSearch(desc.getId(), desc.getDocumentType(), desc.getDescriptorKey(), desc.getDescriptorType(), desc.getValueAsString()));
-        }
-        DocumentElasticSearch doc = new DocumentElasticSearch(document.getId(), companyID,  document.getFileType(), document.getFileName(), document.getFileContent(), dto);
-        documentElasticSearchService.save(doc);
-        for (DocumentElasticSearch d : documentElasticSearchService.findAll()) {
-            System.out.println("doc " + d);
-        }
+    private void saveDocumentToElasticSearch(Document document) {
+        //sacuvaj
     }
 
     @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
