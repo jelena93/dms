@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import org.apache.tika.Tika;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.nst.dms.config.security.SecurityConfig;
+import org.nst.dms.elasticsearch.indexing.DocumentIndexer;
 import org.nst.dms.elasticsearch.indexing.ElasticClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,22 +48,27 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public boolean insertValuesInDB() {
-        return Boolean.getBoolean(ResourceBundle.getBundle("application").getString("insert_values_in_db"));
+        return Boolean.valueOf(ResourceBundle.getBundle("application").getString("insert_values_in_db"));
     }
 
     @Bean
     public boolean dropAndCreateDB() {
-        return Boolean.getBoolean(ResourceBundle.getBundle("application").getString("drop_and_create_db"));
+        return Boolean.valueOf(ResourceBundle.getBundle("application").getString("drop_and_create_db"));
     }
 
     @Bean
     public boolean createIndex() {
-        return Boolean.getBoolean(ResourceBundle.getBundle("application").getString("create_index"));
+        return Boolean.valueOf(ResourceBundle.getBundle("application").getString("create_index"));
     }
 
     @Bean
     public ElasticClient elasticClient() {
         return new ElasticClient();
+    }
+
+    @Bean
+    public DocumentIndexer documentIndexer() {
+        return new DocumentIndexer();
     }
 
     @Bean

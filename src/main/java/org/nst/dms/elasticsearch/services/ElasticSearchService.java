@@ -1,5 +1,7 @@
 package org.nst.dms.elasticsearch.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class ElasticSearchService {
     @Autowired
     private ElasticClient elasticClient;
 
-    public List<Document> searchDocumentsForCompany(String query, int limit, int page) {
+    public List<Document> searchDocumentsForCompany(String query, int limit, int page) throws IOException {
         int offset = (page - 1) * limit;
         QueryBuilder qb;
         if ("".equals(query)) {
@@ -36,11 +38,10 @@ public class ElasticSearchService {
                 .setSize(limit)
                 .execute().actionGet();
         List<Document> documents = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
         for (SearchHit hit : searchResponse.getHits()) {
-
-//            documents.add(Long.parseLong(hit.getId()));
+            documents.add(mapper.readValue(hit.getSourceAsString(), Document.class));
         }
-
         return documents;
     }
 

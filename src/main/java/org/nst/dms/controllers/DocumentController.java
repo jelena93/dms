@@ -17,6 +17,8 @@ import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.User;
 import org.nst.dms.dto.UserDto;
+import org.nst.dms.elasticsearch.indexing.DocumentIndexer;
+import org.nst.dms.elasticsearch.services.ElasticSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +46,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 @RequestMapping("/documents")
 public class DocumentController {
+
     @Autowired
     private DocumentTypeService documentTypeService;
     @Autowired
@@ -51,8 +54,12 @@ public class DocumentController {
     @Autowired
     private DocumentService documentService;
     @Autowired
+    private DocumentIndexer documentIndexer;
+    @Autowired
     private UserService userService;
-    
+    @Autowired
+    private ElasticSearchService elasticSearchService;
+
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public ModelAndView save(Authentication authentication) {
         UserDto userDto = (UserDto) authentication.getPrincipal();
@@ -61,15 +68,16 @@ public class DocumentController {
         mv.addObject("action_type_processes_search", "add_document");
         mv.addObject("company", loggedUser.getCompany());
         return mv;
-    } 
-    
-    @RequestMapping(path = "/search", method = RequestMethod.GET)
-    public ModelAndView search() {
-//        return new ModelAndView("search_documents", "documents", documentElasticSearchService.findAll());
-//        vrati sve od ovog
-        return new ModelAndView("search_documents");
     }
-    
+
+    @RequestMapping(path = "/search", method = RequestMethod.GET)
+    public ModelAndView search(Authentication authentication) throws IOException {
+        UserDto userDto = (UserDto) authentication.getPrincipal();
+        User user = userService.findOne(userDto.getUsername());
+        List<Document> documents = elasticSearchService.searchDocumentsForCompany("", 10, 1);
+        return new ModelAndView("search_documents", "documents", documents);
+    }
+
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(Authentication authentication, String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID, Long existingDocumentID) {
         Activity activity = activityService.find(activityID);
@@ -128,22 +136,24 @@ public class DocumentController {
         }
         return mv;
     }
-    
+
     private void saveDocumentToElasticSearch(Document document) {
-        //sacuvaj
+        documentIndexer.indexDocument(document);
     }
 
     @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> showFile(@PathVariable("id") long id) {
         Document document = documentService.findOne(id);
-        if(document==null) throw new CustomException("There is no document with id " + id, "400");
+        if (document == null) {
+            throw new CustomException("There is no document with id " + id, "400");
+        }
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.valueOf(document.getFileType()));
         header.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + document.getFileName());
         header.setContentLength(document.getFileContent().length);
         return new ResponseEntity<>(document.getFileContent(), header, HttpStatus.OK);
     }
-    
+
     @RequestMapping(path = "/document/download/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> downloadFile(@PathVariable("id") long id) {
         Document document = documentService.findOne(id);
@@ -153,7 +163,7 @@ public class DocumentController {
         header.setContentLength(document.getFileContent().length);
         return new ResponseEntity<>(document.getFileContent(), header, HttpStatus.OK);
     }
-    
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));

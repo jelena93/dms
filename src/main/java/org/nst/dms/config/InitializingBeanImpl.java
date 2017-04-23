@@ -55,16 +55,13 @@ public class InitializingBeanImpl implements InitializingBean {
 
             Process test = new Process("test", null, true);
             Activity testAct = new Activity("Test act");
-            DocumentType d = new DocumentType("Test Doc Type inp");
-            d = documentTypeService.save(d);
-            Descriptor descriptort = new Descriptor("Broj test in", d.getId(), new DescriptorType(Integer.class));
-            d.getDescriptors().add(descriptort);
-            testAct.getInputListDocumentTypes().add(d);
-            d = new DocumentType("Test Doc Type out");
-            d = documentTypeService.save(d);
-            descriptort = new Descriptor("Broj test out", d.getId(), new DescriptorType(Integer.class));
-            d.getDescriptors().add(descriptort);
-            testAct.getInputListDocumentTypes().add(d);
+            DocumentType documentType = new DocumentType("test desc");
+            documentType = documentTypeService.save(documentType);
+            Descriptor descriptor = new Descriptor("Broj test", documentType.getId(), new DescriptorType(Integer.class));
+            documentType.getDescriptors().add(descriptor);
+            documentType = documentTypeService.save(documentType);
+            testAct.getInputListDocumentTypes().add(documentType);
+            testAct.getOutputListDocumentTypes().add(documentType);
             test.getActivityList().add(testAct);
             company.getProcesses().add(test);
 
@@ -157,10 +154,10 @@ public class InitializingBeanImpl implements InitializingBean {
             companyService.save(company);
 
             //zadata dokumenta
-            DocumentType documentType = new DocumentType("Nalog za placanje");
+            documentType = new DocumentType("Nalog za placanje");
             documentType = documentTypeService.save(documentType);
 
-            Descriptor descriptor = new Descriptor("Broj naloga", documentType.getId(), new DescriptorType(Integer.class));
+            descriptor = new Descriptor("Broj naloga", documentType.getId(), new DescriptorType(Integer.class));
             documentType.getDescriptors().add(descriptor);
             descriptor = new Descriptor("Suma", documentType.getId(), new DescriptorType(Double.class));
             documentType.getDescriptors().add(descriptor);

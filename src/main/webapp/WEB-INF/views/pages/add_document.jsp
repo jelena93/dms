@@ -27,7 +27,7 @@
                 <div class="col-lg-8">
                     <tiles:insertAttribute name="activity_info" />
                     <tiles:insertAttribute name="document" />
-                    <button class="btn btn-primary pull-right" type="button" id="btn-add-document" onclick="showFormAddDocument()" style="display: none;">Add document</button>
+                    <button class="btn btn-primary pull-right" type="button" id="btn-add-document" onclick="showFormAddDocument()" style="display: none;">${title}</button>
                 </div>
             </div>
         </section>
