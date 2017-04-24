@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.nst.dms.domain.Document;
 import org.nst.dms.elasticsearch.indexing.ElasticClient;
-import org.nst.dms.elasticsearch.indexing.IndexName;
-import org.nst.dms.elasticsearch.indexing.IndexType;
+import org.nst.dms.elasticsearch.indexing.ElasticSearchUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +21,21 @@ public class ElasticSearchService {
     @Autowired
     private ElasticClient elasticClient;
 
-    public List<Document> searchDocumentsForCompany(String query, int limit, int page) throws IOException {
+    public List<Document> searchDocumentsForCompany(long companyID, String query, int limit, int page) throws IOException {
         int offset = (page - 1) * limit;
-        QueryBuilder qb;
-        if ("".equals(query)) {
-            qb = QueryBuilders.matchAllQuery();
-        } else {
-            qb = QueryBuilders.queryStringQuery(query + "*").field("companyID");
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        boolQuery.must(QueryBuilders.termQuery("companyID", companyID));
+        if (query != null && !query.isEmpty()) {
+            boolQuery.should(QueryBuilders.queryStringQuery("*" + query + "*").field("fileName"))
+                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.descriptorKey"))
+                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.valueAsString"))
+                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.fileContent"))
+                    .minimumNumberShouldMatch(1);
         }
         SearchResponse searchResponse = elasticClient.getClient()
-                .prepareSearch(IndexName.DOCUMENT_INDEX.value())
-                .setTypes(IndexType.DOCUMENT.name())
-                .setQuery(qb)
+                .prepareSearch(ElasticSearchUtil.DOCUMENT_INDEX)
+                .setTypes(ElasticSearchUtil.DOCUMENT_TYPE)
+                .setQuery(boolQuery)
                 .setFrom(offset)
                 .setSize(limit)
                 .execute().actionGet();

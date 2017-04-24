@@ -113,7 +113,7 @@ public class RestApiDocumentController {
     public ResponseEntity<List<Document>> search(Authentication authentication, String query) throws IOException, TikaException, TikaException {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
-        List<Document> documents = find(user.getCompany().getId(), query);
+        List<Document> documents = searchDocumentsForCompany(user.getCompany().getId(), query);
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
 
@@ -162,7 +162,6 @@ public class RestApiDocumentController {
 //        }
 //        return null;
 //    }
-
 //    private List<Document> findByDescriptorKeyOrValue(Long companyID, String descriptorKey, String descriptorValue) {
 //        BoolQueryBuilder builder = boolQuery();
 //        builder.must(termQuery("companyID", companyID));
@@ -178,16 +177,8 @@ public class RestApiDocumentController {
 //        List<Document> documents = elasticsearchTemplate.queryForList(searchQuery, DocumentElasticSearch.class);
 //        return documents;
 //    }
-
-    private List<Document> find(long companyID, String query) {
-        List<Document> documents = new ArrayList<>();
-        return documents;
-    }
-
-    private List<Document> searchDocumentsForCompany(long companyID) {
-        elasticSearchService.searchDocumentsForCompany(companyID + "", 10, 1);
-        List<Document> documents = new ArrayList<>();
-        return documents;
+    private List<Document> searchDocumentsForCompany(long companyID, String query) throws IOException {
+        return elasticSearchService.searchDocumentsForCompany(companyID, query, 10, 1);
     }
 
     @InitBinder

@@ -150,13 +150,8 @@ function displayActivityInfo(activity) {
     }
     inputListDocumentTypes = activity.inputListDocumentTypes;
     outputListDocumentTypes = activity.outputListDocumentTypes;
-    $("#docType").html("");
-    for (var i = 0; i < activity.inputListDocumentTypes.length; i++) {
-        $("#docType").append('<option value="' + activity.inputListDocumentTypes[i].id + '">' + activity.inputListDocumentTypes[i].name + '</option>');
-    }
     $('#outputList').html(outputList);
     $("#form-document").hide();
-    showDescriptors(activity.inputListDocumentTypes[0].descriptors);
     $("#activity-info").show();
     $("#btn-add-document").show();
 }
@@ -165,7 +160,7 @@ function showDescriptors(descriptors) {
     var html = "";
     if (descriptors !== null) {
         for (var i = 0; i < descriptors.length; i++) {
-            if (descriptors[i].value === null) {
+            if (descriptors[i].valueAsString === null) {
                 if (descriptors[i].descriptorType.paramClass.name === 'java.util.Date') {
                     html = '<div class="form-group">' +
                             '<label for="' + descriptors[i].id + '" class="control-label col-lg-4">' + descriptors[i].descriptorKey
@@ -190,6 +185,11 @@ function showFormAddDocument() {
     $("#activity-info").hide();
     $("#btn-add-document").hide();
     $("#docTypeLabel").text("Input document types");
+    $("#docType").html("");
+    for (var i = 0; i < inputListDocumentTypes.length; i++) {
+        $("#docType").append('<option value="' + inputListDocumentTypes[i].id + '">' + inputListDocumentTypes[i].name + '</option>');
+    }
+    showDescriptors(inputListDocumentTypes[0].descriptors);
     $("#form-document").show();
 }
 function onSubmitForm() {

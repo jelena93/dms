@@ -57,8 +57,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public boolean createIndex() {
-        return Boolean.valueOf(ResourceBundle.getBundle("application").getString("create_index"));
+    public boolean createAndAddInIndex() {
+        return Boolean.valueOf(ResourceBundle.getBundle("application").getString("create_and_add_in_index"));
     }
 
     @Bean

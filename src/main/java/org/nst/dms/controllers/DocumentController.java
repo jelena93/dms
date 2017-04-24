@@ -74,7 +74,10 @@ public class DocumentController {
     public ModelAndView search(Authentication authentication) throws IOException {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
-        List<Document> documents = elasticSearchService.searchDocumentsForCompany("", 10, 1);
+        List<Document> documents = elasticSearchService.searchDocumentsForCompany(user.getCompany().getId(), "", 10, 1);
+        for (Document document : documents) {
+            System.out.println(document);
+        }
         return new ModelAndView("search_documents", "documents", documents);
     }
 
@@ -138,6 +141,9 @@ public class DocumentController {
     }
 
     private void saveDocumentToElasticSearch(Document document) {
+        for (Descriptor descriptor : document.getDescriptors()) {
+            System.out.println(descriptor.getValueAsString());
+        }
         documentIndexer.indexDocument(document);
     }
 

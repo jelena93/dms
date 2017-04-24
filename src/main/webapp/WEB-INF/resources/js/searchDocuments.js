@@ -3,11 +3,10 @@ var header = $("meta[name='_csrf_header']").attr("content");
 var action_url_search_documents_api, action_url_display_document, action_url_download_document;
 var filter = null;
 function search(value) {
-    filter = $("#filter").val();
     $.ajax({
         type: "GET",
         url: action_url_search_documents_api,
-        data: {filter: filter, value: value},
+        data: {query: value},
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
@@ -25,7 +24,7 @@ function search(value) {
                 for (var j = 0; j < data[i].descriptors.length; j++) {
                     documents += '<p class="list-group-item-text">' +
                             '<strong>' + data[i].descriptors[j].descriptorKey + ': </strong>' +
-                            data[i].descriptors[j].value + '</p>';
+                            data[i].descriptors[j].valueAsString + '</p>';
                 }
                 documents += ' </li> </ul>';
             }

@@ -5,6 +5,8 @@
  */
 package org.nst.dms.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +26,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -68,7 +71,11 @@ public class Descriptor implements Serializable {
 
     @Column(name = "STRING_VALUE")
     private String stringValue;
-    
+
+    @JsonInclude()
+    @Transient
+    private String valueAsString;
+
     private final String DATE_FORMAT = "dd.MM.yyyy";
 
     public Descriptor() {
@@ -110,7 +117,7 @@ public class Descriptor implements Serializable {
     public String getDATE_FORMAT() {
         return DATE_FORMAT;
     }
-    
+
     public void setDocumentType(Long documentType) {
         this.documentType = documentType;
     }
@@ -149,7 +156,9 @@ public class Descriptor implements Serializable {
     public String toString() {
         return "Descriptor{" + "id=" + id + ", documentType=" + documentType + ", descriptorKey=" + descriptorKey + ", descriptorType=" + descriptorType + ", longValue=" + longValue + ", doubleValue=" + doubleValue + ", dateValue=" + dateValue + ", stringValue=" + stringValue + ", DATE_FORMAT=" + DATE_FORMAT + '}';
     }
-
+    
+    @JsonInclude(Include.NON_EMPTY)
+//    @JsonSerialize(include = Inclusion.NON_NULL)
     public Object getValue() {
         Class paramClass = descriptorType.getParamClass();
         if (Integer.class.equals(paramClass)) {
@@ -165,58 +174,75 @@ public class Descriptor implements Serializable {
         }
         return null;
     }
-    
+
+    public void setValueAsString(String valueAsString) {
+        this.valueAsString = valueAsString;
+    }
+
     public String getValueAsString() {
-        if (getValue() != null) {
-            Class paramClass = descriptorType.getParamClass();
-            if (Integer.class.equals(paramClass)) {
-                return longValue != null ? longValue.toString() : null;
-            } else if (Long.class.equals(paramClass)) {
-                return longValue.toString();
-            } else if (Double.class.equals(paramClass)) {
-                return doubleValue.toString();
-            } else if (String.class.equals(paramClass)) {
-                return stringValue;
-            } else if (Date.class.equals(paramClass)) {
-                return new SimpleDateFormat(DATE_FORMAT).format(dateValue);
-            }
+        return valueAsString;
+    }
+
+    public String asd() {
+        if (Date.class.equals(descriptorType.getParamClass())) {
+            return new SimpleDateFormat(DATE_FORMAT).format(dateValue);
+        } else {
+            this.valueAsString = getValue().toString();
         }
-        return "";
+        return valueAsString;
     }
 
     public void setValue(Object value) {
-        try { Class paramClass = descriptorType.getParamClass();
+        try {
+            Class paramClass = descriptorType.getParamClass();
             if (value == null) {
                 longValue = null;
                 doubleValue = null;
                 stringValue = null;
                 dateValue = null;
+                valueAsString = null;
             } else {
                 if (Integer.class.equals(paramClass)) {
                     if (value instanceof String) {
                         Integer valueInt = Integer.parseInt(value.toString());
                         longValue = (valueInt).longValue();
-                    } else longValue = ((Integer) value).longValue();
+                    } else {
+                        longValue = ((Integer) value).longValue();
+                    }
                     doubleValue = longValue.doubleValue();
                 } else if (Long.class.equals(paramClass)) {
                     if (value instanceof String) {
                         Long valueLong = Long.parseLong(value.toString());
                         longValue = (valueLong);
-                    } else longValue = ((Long) value);
+                    } else {
+                        longValue = ((Long) value);
+                    }
                     doubleValue = longValue.doubleValue();
                 } else if (Double.class.equals(paramClass)) {
                     if (value instanceof String) {
                         Double valueDouble = Double.parseDouble(value.toString());
                         doubleValue = (valueDouble);
-                    } else doubleValue = ((Double) value);
+                    } else {
+                        doubleValue = ((Double) value);
+                    }
                     longValue = doubleValue.longValue();
-                } else if (String.class.equals(paramClass)) stringValue = (String) value;
-                else if (Date.class.equals(paramClass)) try { dateValue = new SimpleDateFormat(DATE_FORMAT).parse(value.toString()); } catch (ParseException ex) { dateValue = (Date) value; }
-            }} catch (Exception ex) {
-                longValue = null;
-                doubleValue = null;
-                stringValue = null;
-                dateValue = null;
+                } else if (String.class.equals(paramClass)) {
+                    stringValue = (String) value;
+                } else if (Date.class.equals(paramClass)) {
+                    try {
+                        dateValue = new SimpleDateFormat(DATE_FORMAT).parse(value.toString());
+                    } catch (ParseException ex) {
+                        dateValue = (Date) value;
+                    }
+                }
+                valueAsString = value.toString();
             }
+        } catch (Exception ex) {
+            longValue = null;
+            doubleValue = null;
+            stringValue = null;
+            dateValue = null;
+            valueAsString = null;
+        }
     }
 }

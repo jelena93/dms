@@ -6,19 +6,13 @@
 <tiles:importAttribute name="action_url_display_document"/>
 <div class="input-group">
     <div class="input-group-addon">
-        <select class="" id="filter" name="filter">
-            <option value="name">Search by Name</option>
-            <option value="descriptorKey">Search by Descriptor key</option>
-            <option value="descriptorValue">Search by Descriptor value</option>
-            <option value="content">Search by Content</option>
-        </select>
+        <input type="text" class="form-control" onkeyup="search(this.value)" placeholder="Search documents..." >
     </div>
-    <input type="text" class="form-control" onkeyup="search(this.value)" placeholder="Search ..." aria-describedby="filter">
 </div>
 <script language=javascript>
     var action_url_search_documents_api = "${pageContext.request.contextPath}/${action_url_search_documents_api}";
-    var action_url_display_document = "${pageContext.request.contextPath}/${action_url_display_document}";
-    var action_url_download_document = "${pageContext.request.contextPath}/${action_url_download_document}";
+        var action_url_display_document = "${pageContext.request.contextPath}/${action_url_display_document}";
+            var action_url_download_document = "${pageContext.request.contextPath}/${action_url_download_document}";
 </script>
 <section class="panel">
     <div class="panel panel-default">
@@ -33,7 +27,7 @@
                             <span class='icon_folder-open'></span> View file</a>
                         <h3 class="list-group-item-heading">${doc.fileName}</h3>
                         <c:forEach var="desc" items="${doc.descriptors}">
-                            <p class="list-group-item-text"><strong>${desc.descriptorKey}: </strong>${desc.value}</p>
+                            <p class="list-group-item-text"><strong>${desc.descriptorKey}: </strong>${desc.valueAsString}</p>
                         </c:forEach>
                     </li> 
                 </ul>

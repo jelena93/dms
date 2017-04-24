@@ -23,7 +23,7 @@ public class DisposableBeanImpl implements DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        documentIndexer.deleteDocumentIndexes();
+//        documentIndexer.deleteDocumentIndexes();
         elasticClient.getClient().close();
     }
 
