@@ -1,12 +1,12 @@
 package org.nst.dms.elasticsearch.indexing;
 
+import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
 import java.io.IOException;
 import java.util.List;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.client.Requests;
 import static org.elasticsearch.client.Requests.createIndexRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -20,43 +20,22 @@ public class DocumentIndexer {
     private ElasticClient elasticClient;
     private final Logger log = LogManager.getLogger(ElasticClient.class);
 
-    public void indexDocuments(List<Document> documents) {
+    public void indexDocuments(List<Document> documents) throws Exception {
         for (Document document : documents) {
             indexDocument(document);
         }
     }
 
-    public void indexDocument(Document document) {
-        try {
-            XContentBuilder builder = XContentFactory.jsonBuilder();
-            builder.startObject();
-            builder.field("id", document.getId());
-            builder.field("companyID", document.getCompanyID());
-            builder.field("fileName", document.getFileName());
-            builder.field("fileContent", document.getFileContent());
+    public void indexDocument(Document document) throws Exception {
+        elasticClient.getClient().prepareIndex(
+                ElasticSearchUtil.DOCUMENT_INDEX, ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId()))
+                .setSource(buildDocument(document)).get();
+    }
 
-            List<Descriptor> descriptors = document.getDescriptors();
-            builder.startArray("descriptors");
-
-            for (Descriptor d : descriptors) {
-                builder.startObject();
-                builder.field("id", d.getId());
-                builder.field("documentType", d.getDocumentType());
-                builder.field("descriptorKey", d.getDescriptorKey());
-                String valueAsString = d.asd();
-                builder.field("valueAsString", valueAsString);
-                builder.endObject();
-            }
-            builder.endArray();
-            builder.endObject();
-
-            elasticClient.getClient().prepareIndex(
-                    ElasticSearchUtil.DOCUMENT_INDEX, ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId()))
-                    .setSource(builder)
-                    .get();
-        } catch (IOException e) {
-            System.err.println(e);
-        }
+    public void updateDocument(Document document) throws Exception {
+        elasticClient.getClient().prepareUpdate(
+                ElasticSearchUtil.DOCUMENT_INDEX, ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId()))
+                .setDoc(buildDocument(document)).get();
     }
 
     public void createDocumentIndexIfNotExists() {
@@ -83,31 +62,26 @@ public class DocumentIndexer {
         elasticClient.getClient().prepareDelete(ElasticSearchUtil.DOCUMENT_INDEX,
                 ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId())).get();
     }
-//    public void updateDocument(Document document) {
-//UpdateRequest updateRequest = new UpdateRequest(IndexName.DOCUMENT_INDEX.value(),  IndexType.DOCUMENT.name(), 
-//String.valueOf(document.getId()));
-//        .doc(jsonBuilder()
-//            .startObject()
-//                .field("gender", "male")
-//            .endObject());
-//client.update(updateRequest).get();
 
-//    }
-//    public void insertOrUpdateDocument(Document document) {
-//IndexRequest indexRequest = new IndexRequest(IndexName.DOCUMENT_INDEX.value(),  IndexType.DOCUMENT.name(), 
-//String.valueOf(document.getId()))
-//        .source(jsonBuilder()
-//            .startObject()
-//                .field("name", "Joe Smith")
-//                .field("gender", "male")
-//            .endObject());
-//UpdateRequest updateRequest = new UpdateRequest(IndexName.DOCUMENT_INDEX.value(),  IndexType.DOCUMENT.name(), 
-//String.valueOf(document.getId()))
-//        .doc(jsonBuilder()
-//            .startObject()
-//                .field("gender", "male")
-//            .endObject())
-//        .upsert(indexRequest);              
-//client.update(updateRequest).get();
-//    }
+    private XContentBuilder buildDocument(Document document) throws Exception {
+        XContentBuilder builder = XContentFactory.jsonBuilder();
+        builder.startObject();
+        builder.field("id", document.getId());
+        builder.field("companyID", document.getCompanyID());
+        builder.field("fileName", document.getFileName());
+        builder.field("fileContent", Base64.encodeBase64String(document.getFileContent()));
+        List<Descriptor> descriptors = document.getDescriptors();
+        builder.startArray("descriptors");
+        for (Descriptor d : descriptors) {
+            builder.startObject();
+            builder.field("id", d.getId());
+            builder.field("documentType", d.getDocumentType());
+            builder.field("descriptorKey", d.getDescriptorKey());
+            builder.field("valueAsString", d.asd());
+            builder.endObject();
+        }
+        builder.endArray();
+        builder.endObject();
+        return builder;
+    }
 }

@@ -1,5 +1,6 @@
 package org.nst.dms.elasticsearch.indexing;
 
+import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 

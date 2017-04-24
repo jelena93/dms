@@ -5,8 +5,8 @@
  */
 package org.nst.dms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -157,8 +157,9 @@ public class Descriptor implements Serializable {
         return "Descriptor{" + "id=" + id + ", documentType=" + documentType + ", descriptorKey=" + descriptorKey + ", descriptorType=" + descriptorType + ", longValue=" + longValue + ", doubleValue=" + doubleValue + ", dateValue=" + dateValue + ", stringValue=" + stringValue + ", DATE_FORMAT=" + DATE_FORMAT + '}';
     }
     
-    @JsonInclude(Include.NON_EMPTY)
+//    @JsonInclude(Include.NON_EMPTY)
 //    @JsonSerialize(include = Inclusion.NON_NULL)
+    @JsonIgnore
     public Object getValue() {
         Class paramClass = descriptorType.getParamClass();
         if (Integer.class.equals(paramClass)) {

@@ -82,7 +82,7 @@ public class DocumentController {
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(Authentication authentication, String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID, Long existingDocumentID) {
+    public ModelAndView save(Authentication authentication, String inputOutput, MultipartFile file, long docType, HttpServletRequest request, long activityID, Long existingDocumentID) throws Exception {
         Activity activity = activityService.find(activityID);
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
@@ -105,13 +105,12 @@ public class DocumentController {
         try {
             document.setFileContent(file.getBytes());
         } catch (IOException ex) {
-            ModelAndView mv = new ModelAndView("add_document");
-            mv.addObject("message", new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, ex.getMessage()));
-            return mv;
+            return new ModelAndView("add_document", "message", new MessageDto(MessageDto.MESSAGE_TYPE_ERROR, ex.getMessage()));
         }
         document.setDescriptors(newDescriptors);
         if (existingDocumentID != null) {
             document = documentService.save(document);
+            documentIndexer.updateDocument(document);
         }
         if (inputOutput.equals("input") && !activity.getInputList().contains(document)) {
             activity.getInputList().add(document);
@@ -140,10 +139,7 @@ public class DocumentController {
         return mv;
     }
 
-    private void saveDocumentToElasticSearch(Document document) {
-        for (Descriptor descriptor : document.getDescriptors()) {
-            System.out.println(descriptor.getValueAsString());
-        }
+    private void saveDocumentToElasticSearch(Document document) throws Exception {
         documentIndexer.indexDocument(document);
     }
 

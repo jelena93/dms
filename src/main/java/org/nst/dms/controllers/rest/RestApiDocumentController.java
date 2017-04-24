@@ -5,8 +5,8 @@
  */
 package org.nst.dms.controllers.rest;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.tika.Tika;
@@ -17,7 +17,6 @@ import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.User;
 import org.nst.dms.dto.MessageDto;
 import org.nst.dms.dto.UserDto;
-import org.nst.dms.elasticsearch.indexing.ElasticClient;
 import org.nst.dms.elasticsearch.services.ElasticSearchService;
 import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.DocumentTypeService;
@@ -83,13 +82,11 @@ public class RestApiDocumentController {
                             + descriptor.getDescriptorType().getStringMessageByParamClass() + ".");
                 }
                 numberOfDefaultDescripotrs++;
-//                DescriptorElasticSearch newDescriptor = new DescriptorElasticSearch(descriptor.getId(), docType, key, descriptor.getDescriptorType(),
-//                        descriptor.getValueAsString());
-//                document = findByDescriptors(user.getCompany().getId(), newDescriptor);
-//                if (document != null) {
-//                    numberOfExistingDescripotrs++;
-//                    documentID = document.getId();
-//                }
+                document = findByDescriptors(user.getCompany().getId(), key, docType, descriptor.getValueAsString(), 10, 1);
+                if (document != null) {
+                    numberOfExistingDescripotrs++;
+                    documentID = document.getId();
+                }
             }
         }
         if (numberOfDefaultDescripotrs == numberOfExistingDescripotrs) {
@@ -123,60 +120,24 @@ public class RestApiDocumentController {
     }
 
     private Document checkIfDocumentContentExists(Long companyID, MultipartFile file) throws IOException, TikaException {
-//        List<Document> documents = documentService.findAll();
-//        for (Document document : documents) {
-//            if (document.getCompanyID().equals(companyID)
-//                    && tika.parseToString(file.getInputStream())
-//                            .equals(tika.parseToString(new ByteArrayInputStream(document.getFileContent())))) {
-//                return document;
-//            }
-//        }
+        List<Document> documents = documentService.findAll();
+        for (Document document : documents) {
+            if (document.getCompanyID() == companyID
+                    && tika.parseToString(file.getInputStream()).equals(tika.parseToString(new ByteArrayInputStream(document.getFileContent())))) {
+                return document;
+            }
+        }
         return null;
     }
 
-    private List<Document> searchContent(Long companyID, String value) throws IOException, TikaException {
-//        List<Document> allDocuments = documentElasticSearchService.findByCompanyID(companyID);
-//        List<Document> documents = new ArrayList<>();
-//        for (Document document : allDocuments) {
-//            if (tika.parseToString(new ByteArrayInputStream(document.getFileContent()))
-//                    .toLowerCase().contains(value.toLowerCase())) {
-//                documents.add(document);
-//            }
-//        }
-//        return documents;
-        return new ArrayList<>();
+    private Document findByDescriptors(long companyID, String descriptorKey, long docType, String value, int limit, int page) throws IOException {
+        List<Document> documents = elasticSearchService.findDocumentsForCompany(companyID, descriptorKey, docType, value, limit, page);
+        if (!documents.isEmpty()) {
+            return documents.get(0);
+        }
+        return null;
     }
 
-//    private Document findByDescriptors(Long companyID, DescriptorElasticSearch descriptor) {
-//        BoolQueryBuilder builder = boolQuery();
-//        builder.must(nestedQuery("descriptors", matchQuery("descriptors.descriptorKey", descriptor.getDescriptorKey())))
-//                .must(nestedQuery("descriptors", termQuery("descriptors.documentType", descriptor.getDocumentType())))
-//                .must(nestedQuery("descriptors", matchQuery("descriptors.value", descriptor.getValue())))
-//                .must(termQuery("companyID", companyID));
-//        SearchQuery searchQuery = new NativeSearchQueryBuilder()
-//                .withQuery(builder)
-//                .build();
-//        List<DocumentElasticSearch> documents = elasticsearchTemplate.queryForList(searchQuery, DocumentElasticSearch.class);
-//        if (!documents.isEmpty()) {
-//            return documents.get(0);
-//        }
-//        return null;
-//    }
-//    private List<Document> findByDescriptorKeyOrValue(Long companyID, String descriptorKey, String descriptorValue) {
-//        BoolQueryBuilder builder = boolQuery();
-//        builder.must(termQuery("companyID", companyID));
-//        if (descriptorKey != null) {
-//            builder.must(nestedQuery("descriptors", matchQuery("descriptors.descriptorKey", descriptorKey)));
-//        }
-//        if (descriptorValue != null) {
-//            builder.must(nestedQuery("descriptors", matchQuery("descriptors.value", descriptorValue)));
-//        }
-//        SearchQuery searchQuery = new NativeSearchQueryBuilder()
-//                .withQuery(builder)
-//                .build();
-//        List<Document> documents = elasticsearchTemplate.queryForList(searchQuery, DocumentElasticSearch.class);
-//        return documents;
-//    }
     private List<Document> searchDocumentsForCompany(long companyID, String query) throws IOException {
         return elasticSearchService.searchDocumentsForCompany(companyID, query, 10, 1);
     }

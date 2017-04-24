@@ -25,7 +25,7 @@ import org.nst.dms.services.ProcessService;
 import org.nst.dms.services.UserService;
 import org.nst.dms.elasticsearch.indexing.DocumentIndexer;
 import org.nst.dms.elasticsearch.indexing.ElasticClient;
-import org.nst.dms.elasticsearch.indexing.ElasticSearchUtil;
+import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
