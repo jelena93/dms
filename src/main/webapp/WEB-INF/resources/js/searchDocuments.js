@@ -1,7 +1,27 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
-var action_url_search_documents_api, action_url_display_document, action_url_download_document;
-var filter = null;
+var action_url_search_documents_api, action_url_display_document, action_url_download_document, total_pages;
+$(document).ready(function () {
+    $('#pagination-demo').twbsPagination({
+        totalPages: "3",
+        visiblePages: "3",
+        onPageClick: function (event, page) {
+            $('#page-content').text('Page ' + page);
+        }
+    });
+
+//    $('#visible-pages-example').twbsPagination({
+//        totalPages: 35,
+//        visiblePages: 10
+//    });
+
+//    $('.sync-pagination').twbsPagination({
+//        totalPages: 20,
+//        onPageClick: function (evt, page) {
+//            $('#sync-example-page-content').text('Page ' + page);
+//        }
+//    });
+});
 function search(value) {
     $.ajax({
         type: "GET",

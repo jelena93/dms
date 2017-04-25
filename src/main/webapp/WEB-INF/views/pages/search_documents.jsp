@@ -4,6 +4,8 @@
 <tiles:importAttribute name="action_url_search_documents_api" />
 <tiles:importAttribute name="action_url_download_document" />
 <tiles:importAttribute name="action_url_display_document"/>
+<script src="<c:url value="/resources/js/jquery.twbsPagination.js" />"></script>
+
 <div class="input-group">
     <div class="input-group-addon">
         <input type="text" class="form-control" onkeyup="search(this.value)" placeholder="Search documents..." >
@@ -35,4 +37,17 @@
         </div>
     </div>
 </section>
+<br/>
+<br/>
+<br/>
+<div id="content-wrapper">
+    <div class="inner clearfix">
+        <section id="main-content">
+            <div id="page-content" class="well">Page 1</div>
+            <div class="text-center">
+                <ul id="pagination-demo" class="pagination-sm"></ul>
+            </div>
+        </section>
+    </div>
+</div>
 <script src="<c:url value="/resources/js/searchDocuments.js" />"></script>

@@ -175,7 +175,8 @@ public class Descriptor implements Serializable {
         }
         return null;
     }
-
+    
+//    @JsonIgnore
     public void setValueAsString(String valueAsString) {
         this.valueAsString = valueAsString;
     }

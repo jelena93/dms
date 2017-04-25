@@ -1,11 +1,11 @@
 package org.nst.dms.elasticsearch.indexing;
 
+import java.io.ByteArrayInputStream;
 import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
-import java.io.IOException;
 import java.util.List;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tika.Tika;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import static org.elasticsearch.client.Requests.createIndexRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -18,7 +18,9 @@ public class DocumentIndexer {
 
     @Autowired
     private ElasticClient elasticClient;
-    private final Logger log = LogManager.getLogger(ElasticClient.class);
+    @Autowired
+    private Tika tika;
+    private final Logger logger = LogManager.getLogger(ElasticClient.class);
 
     public void indexDocuments(List<Document> documents) throws Exception {
         for (Document document : documents) {
@@ -63,13 +65,13 @@ public class DocumentIndexer {
                 ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId())).get();
     }
 
-    private XContentBuilder buildDocument(Document document) throws Exception {
+    public XContentBuilder buildDocument(Document document) throws Exception {
+        String parsedContent = tika.parseToString(new ByteArrayInputStream(document.getFileContent()));
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         builder.field("id", document.getId());
         builder.field("companyID", document.getCompanyID());
         builder.field("fileName", document.getFileName());
-        builder.field("fileContent", Base64.encodeBase64String(document.getFileContent()));
         List<Descriptor> descriptors = document.getDescriptors();
         builder.startArray("descriptors");
         for (Descriptor d : descriptors) {
@@ -81,6 +83,8 @@ public class DocumentIndexer {
             builder.endObject();
         }
         builder.endArray();
+        builder.field("content", parsedContent);
+        builder.field("fileContent", document.getFileContent());
         builder.endObject();
         return builder;
     }

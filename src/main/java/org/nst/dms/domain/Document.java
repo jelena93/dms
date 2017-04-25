@@ -5,6 +5,8 @@
  */
 package org.nst.dms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +31,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table (name = "document")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Document implements Serializable {
     @Id
     @Basic(optional = false)
@@ -43,6 +46,7 @@ public class Document implements Serializable {
     @Column(name = "file_name")
     @NotNull
     private String fileName;
+    @JsonIgnore
     @Column(name = "file_content", length = 1024 * 1024 * 25)
     @NotNull
     private byte[] fileContent;

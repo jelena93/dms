@@ -18,6 +18,7 @@ import org.nst.dms.domain.User;
 import org.nst.dms.dto.MessageDto;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.elasticsearch.services.ElasticSearchService;
+import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
 import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.DocumentTypeService;
 import org.nst.dms.services.UserService;
@@ -107,10 +108,11 @@ public class RestApiDocumentController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<List<Document>> search(Authentication authentication, String query) throws IOException, TikaException, TikaException {
+    public ResponseEntity<List<Document>> search(Authentication authentication, String query, int page) throws IOException, TikaException, TikaException {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
-        List<Document> documents = searchDocumentsForCompany(user.getCompany().getId(), query);
+        System.out.println("@@@ page " + page);
+        List<Document> documents = searchDocumentsForCompany(user.getCompany().getId(), query, ElasticSearchUtil.SIZE_LIMIT, page);
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
 
@@ -138,8 +140,8 @@ public class RestApiDocumentController {
         return null;
     }
 
-    private List<Document> searchDocumentsForCompany(long companyID, String query) throws IOException {
-        return elasticSearchService.searchDocumentsForCompany(companyID, query, 10, 1);
+    private List<Document> searchDocumentsForCompany(long companyID, String query, int limit, int page) throws IOException {
+        return elasticSearchService.searchDocumentsForCompany(companyID, query, limit, page);
     }
 
     @InitBinder

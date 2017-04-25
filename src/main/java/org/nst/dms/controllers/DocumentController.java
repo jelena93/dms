@@ -75,9 +75,6 @@ public class DocumentController {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
         List<Document> documents = elasticSearchService.searchDocumentsForCompany(user.getCompany().getId(), "", 10, 1);
-        for (Document document : documents) {
-            System.out.println(document);
-        }
         return new ModelAndView("search_documents", "documents", documents);
     }
 
@@ -125,7 +122,7 @@ public class DocumentController {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
         document.setCompanyID(user.getCompany().getId());
-        saveDocumentToElasticSearch(document);
+        saveDocumentToElasticSearch(file, document);
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
@@ -139,8 +136,11 @@ public class DocumentController {
         return mv;
     }
 
-    private void saveDocumentToElasticSearch(Document document) throws Exception {
+    private void saveDocumentToElasticSearch(MultipartFile file, Document document) throws Exception {
         documentIndexer.indexDocument(document);
+    }
+    private List<Document> searchDocumentsForCompany(long companyID, String query, int limit, int page) throws IOException{
+        return elasticSearchService.searchDocumentsForCompany(companyID, query, limit, page);
     }
 
     @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)

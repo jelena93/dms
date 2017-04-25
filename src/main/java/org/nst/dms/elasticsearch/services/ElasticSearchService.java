@@ -27,7 +27,7 @@ public class ElasticSearchService {
         boolQuery.must(QueryBuilders.termQuery("companyID", companyID));
         if (query != null && !query.isEmpty()) {
             boolQuery.should(QueryBuilders.queryStringQuery("*" + query + "*").field("fileName"))
-                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("fileContent"))
+                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("content"))
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.descriptorKey"))
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.valueAsString"))
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.fileContent"))
@@ -54,7 +54,8 @@ public class ElasticSearchService {
         boolQuery.must(QueryBuilders.termQuery("companyID", companyID)).
                 must(QueryBuilders.termQuery("descriptors.documentType", docType))
                 .must(QueryBuilders.matchQuery("descriptors.descriptorKey", descriptorKey))
-                .must(QueryBuilders.matchQuery("descriptors.valueAsString", value));
+                .must(QueryBuilders.matchQuery("descriptors.valueAsString", value))
+                .must(QueryBuilders.matchQuery("content", value));
 
         SearchResponse searchResponse = elasticClient.getClient()
                 .prepareSearch(ElasticSearchUtil.DOCUMENT_INDEX)
