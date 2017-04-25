@@ -195,13 +195,8 @@ public class InitializingBeanImpl implements InitializingBean {
 
         }
         if (createAndAddInIndex) {
-            List<Document> documents = documentService.findAll();
             documentIndexer.deleteDocumentIndexes();
-            if (documents.isEmpty()) {
-                documentIndexer.createDocumentIndexIfNotExists();
-            } else {
-                documentIndexer.indexDocuments(documentService.findAll());
-            }
+            documentIndexer.createDocumentIndexIfNotExists();
         }
     }
 }

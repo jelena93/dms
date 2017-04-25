@@ -48,17 +48,17 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public boolean insertValuesInDB() {
-        return Boolean.valueOf(ResourceBundle.getBundle("application").getString("insert_values_in_db"));
+        return Boolean.valueOf(ResourceBundle.getBundle("config").getString("insert_values_in_db"));
     }
 
     @Bean
     public boolean dropAndCreateDB() {
-        return Boolean.valueOf(ResourceBundle.getBundle("application").getString("drop_and_create_db"));
+        return Boolean.valueOf(ResourceBundle.getBundle("config").getString("drop_and_create_db"));
     }
 
     @Bean
     public boolean createAndAddInIndex() {
-        return Boolean.valueOf(ResourceBundle.getBundle("application").getString("create_and_add_in_index"));
+        return Boolean.valueOf(ResourceBundle.getBundle("config").getString("create_and_add_in_index"));
     }
 
     @Bean

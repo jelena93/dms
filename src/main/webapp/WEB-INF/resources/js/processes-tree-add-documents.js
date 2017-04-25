@@ -117,7 +117,7 @@ function displayActivityInfo(activity) {
                 '<div class="panel-body">';
         for (var j = 0; j < activity.inputList[i].descriptors.length; j++) {
             inputList += '<p><strong>' + activity.inputList[i].descriptors[j].descriptorKey + '</strong>: ' +
-                    activity.inputList[i].descriptors[j].valueAsString + '</p>';
+                    activity.inputList[i].descriptors[j].value + '</p>';
         }
         inputList += "</div><div class='panel-footer clearfix'>";
         inputList += "<a class='btn btn-default' target='_blank' href='" + action_url_display_document + "/" + activity.inputList[i].id
@@ -140,7 +140,7 @@ function displayActivityInfo(activity) {
                 '<div class="panel-body">';
         for (var j = 0; j < activity.outputList[i].descriptors.length; j++) {
             outputList += '<p><strong>' + activity.outputList[i].descriptors[j].descriptorKey + '</strong>: ' +
-                    activity.outputList[i].descriptors[j].valueAsString + '</p>';
+                    activity.outputList[i].descriptors[j].value + '</p>';
         }
         outputList += "</div><div class='panel-footer'>";
         outputList += "<a target='_blank' href='" + action_url_display_document + "/" + activity.outputList[i].id + "'>View file </a>" +
@@ -160,7 +160,7 @@ function showDescriptors(descriptors) {
     var html = "";
     if (descriptors !== null) {
         for (var i = 0; i < descriptors.length; i++) {
-            if (descriptors[i].valueAsString === null) {
+            if (descriptors[i].value === null) {
                 if (descriptors[i].descriptorType.paramClass.name === 'java.util.Date') {
                     html = '<div class="form-group">' +
                             '<label for="' + descriptors[i].id + '" class="control-label col-lg-4">' + descriptors[i].descriptorKey

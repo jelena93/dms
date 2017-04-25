@@ -22,22 +22,22 @@ public class DocumentIndexer {
     private Tika tika;
     private final Logger logger = LogManager.getLogger(ElasticClient.class);
 
-    public void indexDocuments(List<Document> documents) throws Exception {
+    public void indexDocuments(long companyID, List<Document> documents) throws Exception {
         for (Document document : documents) {
-            indexDocument(document);
+            indexDocument(companyID, document);
         }
     }
 
-    public void indexDocument(Document document) throws Exception {
+    public void indexDocument(long companyID, Document document) throws Exception {
         elasticClient.getClient().prepareIndex(
                 ElasticSearchUtil.DOCUMENT_INDEX, ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId()))
-                .setSource(buildDocument(document)).get();
+                .setSource(buildDocument(companyID, document)).get();
     }
 
-    public void updateDocument(Document document) throws Exception {
+    public void updateDocument(long companyID, Document document) throws Exception {
         elasticClient.getClient().prepareUpdate(
                 ElasticSearchUtil.DOCUMENT_INDEX, ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId()))
-                .setDoc(buildDocument(document)).get();
+                .setDoc(buildDocument(companyID, document)).get();
     }
 
     public void createDocumentIndexIfNotExists() {
@@ -65,12 +65,12 @@ public class DocumentIndexer {
                 ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId())).get();
     }
 
-    public XContentBuilder buildDocument(Document document) throws Exception {
+    public XContentBuilder buildDocument(long companyID, Document document) throws Exception {
         String parsedContent = tika.parseToString(new ByteArrayInputStream(document.getFileContent()));
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         builder.field("id", document.getId());
-        builder.field("companyID", document.getCompanyID());
+        builder.field("companyID", companyID);
         builder.field("fileName", document.getFileName());
         List<Descriptor> descriptors = document.getDescriptors();
         builder.startArray("descriptors");
@@ -79,7 +79,7 @@ public class DocumentIndexer {
             builder.field("id", d.getId());
             builder.field("documentType", d.getDocumentType());
             builder.field("descriptorKey", d.getDescriptorKey());
-            builder.field("valueAsString", d.asd());
+            builder.field("value", d.convertValueToString());
             builder.endObject();
         }
         builder.endArray();

@@ -5,8 +5,6 @@
  */
 package org.nst.dms.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +29,6 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table (name = "document")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Document implements Serializable {
     @Id
     @Basic(optional = false)
@@ -46,14 +43,12 @@ public class Document implements Serializable {
     @Column(name = "file_name")
     @NotNull
     private String fileName;
-    @JsonIgnore
     @Column(name = "file_content", length = 1024 * 1024 * 25)
     @NotNull
     private byte[] fileContent;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "document_descriptors", joinColumns = @JoinColumn(name = "document"), inverseJoinColumns = @JoinColumn(name = "descriptor"))
     private List<Descriptor> descriptors;
-    private long companyID;
     
     public Document() { }
     public Long getId() { return id; }
@@ -66,15 +61,14 @@ public class Document implements Serializable {
     public void setFileContent(byte[] fileContent) { this.fileContent = fileContent;}
     public List<Descriptor> getDescriptors() { return descriptors; }
     public void setDescriptors(List<Descriptor> descriptors) { this.descriptors = descriptors; }
-    public long getCompanyID() { return companyID; }
-    public void setCompanyID(long companyID) {  this.companyID = companyID;  }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 29 * hash + Objects.hashCode(this.id);
         return hash;
-    }
+    }    
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

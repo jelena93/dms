@@ -21,7 +21,7 @@ public class ElasticSearchService {
     @Autowired
     private ElasticClient elasticClient;
 
-    public List<Document> searchDocumentsForCompany(long companyID, String query, int limit, int page) throws IOException {
+    public SearchResponse searchDocumentsForCompany(long companyID, String query, int limit, int page) throws IOException {
         int offset = (page - 1) * limit;
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery.must(QueryBuilders.termQuery("companyID", companyID));
@@ -29,7 +29,7 @@ public class ElasticSearchService {
             boolQuery.should(QueryBuilders.queryStringQuery("*" + query + "*").field("fileName"))
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("content"))
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.descriptorKey"))
-                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.valueAsString"))
+                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.value"))
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.fileContent"))
                     .minimumNumberShouldMatch(1);
         }
@@ -40,12 +40,7 @@ public class ElasticSearchService {
                 .setFrom(offset)
                 .setSize(limit)
                 .execute().actionGet();
-        List<Document> documents = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-        for (SearchHit hit : searchResponse.getHits()) {
-            documents.add(mapper.readValue(hit.getSourceAsString(), Document.class));
-        }
-        return documents;
+        return searchResponse;
     }
 
     public List<Document> findDocumentsForCompany(long companyID, String descriptorKey, long docType, String value, int limit, int page) throws IOException {
@@ -54,7 +49,7 @@ public class ElasticSearchService {
         boolQuery.must(QueryBuilders.termQuery("companyID", companyID)).
                 must(QueryBuilders.termQuery("descriptors.documentType", docType))
                 .must(QueryBuilders.matchQuery("descriptors.descriptorKey", descriptorKey))
-                .must(QueryBuilders.matchQuery("descriptors.valueAsString", value))
+                .must(QueryBuilders.matchQuery("descriptors.value", value))
                 .must(QueryBuilders.matchQuery("content", value));
 
         SearchResponse searchResponse = elasticClient.getClient()

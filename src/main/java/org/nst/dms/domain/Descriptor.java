@@ -5,8 +5,6 @@
  */
 package org.nst.dms.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,10 +70,6 @@ public class Descriptor implements Serializable {
     @Column(name = "STRING_VALUE")
     private String stringValue;
 
-    @JsonInclude()
-    @Transient
-    private String valueAsString;
-
     private final String DATE_FORMAT = "dd.MM.yyyy";
 
     public Descriptor() {
@@ -129,7 +123,14 @@ public class Descriptor implements Serializable {
     public void setDescriptorType(DescriptorType descriptorType) {
         this.descriptorType = descriptorType;
     }
-
+    public String convertValueToString() {
+        if (Date.class.equals(descriptorType.getParamClass())) {
+            return new SimpleDateFormat(DATE_FORMAT).format(getValue());
+        } else {
+            return getValue() + "";
+        }
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;
@@ -157,9 +158,6 @@ public class Descriptor implements Serializable {
         return "Descriptor{" + "id=" + id + ", documentType=" + documentType + ", descriptorKey=" + descriptorKey + ", descriptorType=" + descriptorType + ", longValue=" + longValue + ", doubleValue=" + doubleValue + ", dateValue=" + dateValue + ", stringValue=" + stringValue + ", DATE_FORMAT=" + DATE_FORMAT + '}';
     }
     
-//    @JsonInclude(Include.NON_EMPTY)
-//    @JsonSerialize(include = Inclusion.NON_NULL)
-    @JsonIgnore
     public Object getValue() {
         Class paramClass = descriptorType.getParamClass();
         if (Integer.class.equals(paramClass)) {
@@ -176,24 +174,6 @@ public class Descriptor implements Serializable {
         return null;
     }
     
-//    @JsonIgnore
-    public void setValueAsString(String valueAsString) {
-        this.valueAsString = valueAsString;
-    }
-
-    public String getValueAsString() {
-        return valueAsString;
-    }
-
-    public String asd() {
-        if (Date.class.equals(descriptorType.getParamClass())) {
-            return new SimpleDateFormat(DATE_FORMAT).format(dateValue);
-        } else {
-            this.valueAsString = getValue().toString();
-        }
-        return valueAsString;
-    }
-
     public void setValue(Object value) {
         try {
             Class paramClass = descriptorType.getParamClass();
@@ -202,7 +182,6 @@ public class Descriptor implements Serializable {
                 doubleValue = null;
                 stringValue = null;
                 dateValue = null;
-                valueAsString = null;
             } else {
                 if (Integer.class.equals(paramClass)) {
                     if (value instanceof String) {
@@ -237,14 +216,12 @@ public class Descriptor implements Serializable {
                         dateValue = (Date) value;
                     }
                 }
-                valueAsString = value.toString();
             }
         } catch (Exception ex) {
             longValue = null;
             doubleValue = null;
             stringValue = null;
             dateValue = null;
-            valueAsString = null;
         }
     }
 }

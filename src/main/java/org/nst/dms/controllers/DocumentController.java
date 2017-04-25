@@ -5,20 +5,25 @@
  */
 package org.nst.dms.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.nst.dms.dto.MessageDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHit;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.User;
+import org.nst.dms.dto.DocumentDto;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.elasticsearch.indexing.DocumentIndexer;
 import org.nst.dms.elasticsearch.services.ElasticSearchService;
+import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,8 +79,16 @@ public class DocumentController {
     public ModelAndView search(Authentication authentication) throws IOException {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
-        List<Document> documents = elasticSearchService.searchDocumentsForCompany(user.getCompany().getId(), "", 10, 1);
-        return new ModelAndView("search_documents", "documents", documents);
+        SearchResponse searchResponse = elasticSearchService.searchDocumentsForCompany(user.getCompany().getId(), "", ElasticSearchUtil.QUERY_SIZE_LIMIT, 1);
+        List<DocumentDto> documents = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        for (SearchHit hit : searchResponse.getHits()) {
+            documents.add(mapper.readValue(hit.getSourceAsString(), DocumentDto.class));
+        }
+        ModelAndView mv = new ModelAndView("search_documents");
+        mv.addObject("documents", documents);
+        mv.addObject("total", searchResponse.getHits().getTotalHits());
+        return mv;
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
@@ -83,6 +96,8 @@ public class DocumentController {
         Activity activity = activityService.find(activityID);
         DocumentType documentType = documentTypeService.find(docType);
         List<Descriptor> descriptors = documentType.getDescriptors();
+        UserDto userDto = (UserDto) authentication.getPrincipal();
+        User user = userService.findOne(userDto.getUsername());
         List<Descriptor> newDescriptors = new ArrayList<>();
         for (Descriptor descriptor : descriptors) {
             if (descriptor.getValue() == null) {
@@ -107,7 +122,7 @@ public class DocumentController {
         document.setDescriptors(newDescriptors);
         if (existingDocumentID != null) {
             document = documentService.save(document);
-            documentIndexer.updateDocument(document);
+            documentIndexer.updateDocument(user.getCompany().getId(), document);
         }
         if (inputOutput.equals("input") && !activity.getInputList().contains(document)) {
             activity.getInputList().add(document);
@@ -119,10 +134,7 @@ public class DocumentController {
             activity = activityService.save(activity);
             document = activity.getOutputList().get((activity.getOutputList().size() - 1));
         }
-        UserDto userDto = (UserDto) authentication.getPrincipal();
-        User user = userService.findOne(userDto.getUsername());
-        document.setCompanyID(user.getCompany().getId());
-        saveDocumentToElasticSearch(file, document);
+        saveDocumentToElasticSearch(user.getCompany().getId(), document);
         ModelAndView mv = new ModelAndView("add_document");
         List<DocumentType> documentTypes = documentTypeService.findAll();
         mv.addObject("documentTypes", documentTypes);
@@ -136,11 +148,8 @@ public class DocumentController {
         return mv;
     }
 
-    private void saveDocumentToElasticSearch(MultipartFile file, Document document) throws Exception {
-        documentIndexer.indexDocument(document);
-    }
-    private List<Document> searchDocumentsForCompany(long companyID, String query, int limit, int page) throws IOException{
-        return elasticSearchService.searchDocumentsForCompany(companyID, query, limit, page);
+    private void saveDocumentToElasticSearch(long companyID, Document document) throws Exception {
+        documentIndexer.indexDocument(companyID, document);
     }
 
     @RequestMapping(path = "/document/{id}", method = RequestMethod.GET)

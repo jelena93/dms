@@ -1,54 +1,53 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
-var action_url_search_documents_api, action_url_display_document, action_url_download_document, total_pages;
-$(document).ready(function () {
+var action_url_search_documents_api, action_url_display_document, action_url_download_document, total;
+function pagination(currentPage) {
+    console.log("total " + total);
     $('#pagination-demo').twbsPagination({
-        totalPages: "3",
-        visiblePages: "3",
+        totalPages: total,
+        page: currentPage,
+        visiblePages: "1",
         onPageClick: function (event, page) {
+            console.log("page " + page);
+            var query = $("#input-search-docs").val();
+            search(query, page);
             $('#page-content').text('Page ' + page);
         }
     });
-
-//    $('#visible-pages-example').twbsPagination({
-//        totalPages: 35,
-//        visiblePages: 10
-//    });
-
-//    $('.sync-pagination').twbsPagination({
-//        totalPages: 20,
-//        onPageClick: function (evt, page) {
-//            $('#sync-example-page-content').text('Page ' + page);
-//        }
-//    });
+}
+$(document).ready(function () {
+    pagination("1");
 });
-function search(value) {
+function search(query, page) {
     $.ajax({
         type: "GET",
         url: action_url_search_documents_api,
-        data: {query: value},
+        data: {query: query, page: page},
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
         dataType: 'json',
         success: function (data) {
-            var documents = "";
-            for (var i = 0; i < data.length; i++) {
-                documents += '<ul class="list-group">' +
+            var documentsHtml = "";
+            var documents = data.documents;
+            total = data.total;
+            for (var i = 0; i < documents.length; i++) {
+                documentsHtml += '<ul class="list-group">' +
                         '<li class="list-group-item clearfix">' +
-                        '<a class="btn btn-default pull-right" href="' + action_url_download_document + '/' + data[i].id + '" title="Download">' +
+                        '<a class="btn btn-default pull-right" href="' + action_url_download_document + '/' + documents[i].id + '" title="Download">' +
                         '<span class="icon_folder_download"></span> Download file</a>' +
-                        '<a class="btn btn-default pull-right" href="' + action_url_display_document + '/' + data[i].id + '" target="_blank" title="View file">' +
+                        '<a class="btn btn-default pull-right" href="' + action_url_display_document + '/' + documents[i].id + '" target="_blank" title="View file">' +
                         '<span class="icon_folder-open"></span> View file</a>' +
-                        '<h3 class="list-group-item-heading">' + data[i].fileName + '</h3>';
-                for (var j = 0; j < data[i].descriptors.length; j++) {
-                    documents += '<p class="list-group-item-text">' +
-                            '<strong>' + data[i].descriptors[j].descriptorKey + ': </strong>' +
-                            data[i].descriptors[j].valueAsString + '</p>';
+                        '<h3 class="list-group-item-heading">' + documents[i].fileName + '</h3>';
+                for (var j = 0; j < documents[i].descriptors.length; j++) {
+                    documentsHtml += '<p class="list-group-item-text">' +
+                            '<strong>' + documents[i].descriptors[j].descriptorKey + ': </strong>' +
+                            documents[i].descriptors[j].value + '</p>';
                 }
-                documents += ' </li> </ul>';
+                documentsHtml += ' </li> </ul>';
             }
-            $("#documents").html(documents);
+            $("#documents").html(documentsHtml);
+            pagination(page + "");
         },
         error: function (request, status, error) {
             try {

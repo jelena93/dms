@@ -5,16 +5,23 @@
  */
 package org.nst.dms.controllers.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHit;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.User;
+import org.nst.dms.dto.DocumentDto;
 import org.nst.dms.dto.MessageDto;
 import org.nst.dms.dto.UserDto;
 import org.nst.dms.elasticsearch.services.ElasticSearchService;
@@ -83,7 +90,7 @@ public class RestApiDocumentController {
                             + descriptor.getDescriptorType().getStringMessageByParamClass() + ".");
                 }
                 numberOfDefaultDescripotrs++;
-                document = findByDescriptors(user.getCompany().getId(), key, docType, descriptor.getValueAsString(), 10, 1);
+                document = findByDescriptors(user.getCompany().getId(), key, docType, descriptor.convertValueToString(), 10, 1);
                 if (document != null) {
                     numberOfExistingDescripotrs++;
                     documentID = document.getId();
@@ -108,12 +115,19 @@ public class RestApiDocumentController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<List<Document>> search(Authentication authentication, String query, int page) throws IOException, TikaException, TikaException {
+    public ResponseEntity<Map<String, Object>> search(Authentication authentication, String query, int page) throws IOException, TikaException, TikaException {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
-        System.out.println("@@@ page " + page);
-        List<Document> documents = searchDocumentsForCompany(user.getCompany().getId(), query, ElasticSearchUtil.SIZE_LIMIT, page);
-        return new ResponseEntity<>(documents, HttpStatus.OK);
+        Map<String, Object> map = new HashMap<>();
+        List<DocumentDto> documents = new ArrayList<>();
+        SearchResponse searchResponse = elasticSearchService.searchDocumentsForCompany(user.getCompany().getId(), query, ElasticSearchUtil.QUERY_SIZE_LIMIT, page);
+        ObjectMapper mapper = new ObjectMapper();
+        for (SearchHit hit : searchResponse.getHits()) {
+            documents.add(mapper.readValue(hit.getSourceAsString(), DocumentDto.class));
+        }
+        map.put("documents", documents);
+        map.put("total", searchResponse.getHits().getTotalHits());
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     private List<Document> findByName(String fileName) {
@@ -122,13 +136,13 @@ public class RestApiDocumentController {
     }
 
     private Document checkIfDocumentContentExists(Long companyID, MultipartFile file) throws IOException, TikaException {
-        List<Document> documents = documentService.findAll();
-        for (Document document : documents) {
-            if (document.getCompanyID() == companyID
-                    && tika.parseToString(file.getInputStream()).equals(tika.parseToString(new ByteArrayInputStream(document.getFileContent())))) {
-                return document;
-            }
-        }
+//        List<Document> documents = documentService.findAll();
+//        for (Document document : documents) {
+//            if (document.getCompanyID() == companyID
+//                    && tika.parseToString(file.getInputStream()).equals(tika.parseToString(new ByteArrayInputStream(document.getFileContent())))) {
+//                return document;
+//            }
+//        }
         return null;
     }
 
@@ -138,10 +152,6 @@ public class RestApiDocumentController {
             return documents.get(0);
         }
         return null;
-    }
-
-    private List<Document> searchDocumentsForCompany(long companyID, String query, int limit, int page) throws IOException {
-        return elasticSearchService.searchDocumentsForCompany(companyID, query, limit, page);
     }
 
     @InitBinder
