@@ -39,7 +39,8 @@
         </div>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="hidden" name="isActivity" id="isActivity"/>
-        <input type="hidden" name="parent" id ="id" />
+        <input type="hidden" name="parent" id ="parent" />
+        <input type="hidden" name="id" id ="id" />
         <div class="form-group">
             <div class="col-lg-offset-8 col-lg-2">
                 <button class="btn btn-primary" id="btn-edit" type="button" onclick="checkData()">Edit</button>

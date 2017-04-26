@@ -53,8 +53,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public class RestApiDocumentController {
 
     @Autowired
-    private DocumentService documentService;
-    @Autowired
     private DocumentTypeService documentTypeService;
     @Autowired
     private UserService userService;
@@ -68,10 +66,11 @@ public class RestApiDocumentController {
         MultipartFile file = req.getFile("file");
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
-        Document document;
+        DocumentDto document;
         boolean sameName = false;
         Long documentID = null;
-        List<Document> documents = findByName(file.getOriginalFilename());
+        List<DocumentDto> documents = findByName(user.getCompany().getId(), file.getOriginalFilename(), 1, 1);
+        System.out.println("@@@@@@ documents sameName " + documents);
         if (!documents.isEmpty()) {
             documentID = documents.get(0).getId();
             sameName = true;
@@ -97,16 +96,17 @@ public class RestApiDocumentController {
                 }
             }
         }
-        if (numberOfDefaultDescripotrs == numberOfExistingDescripotrs) {
-            if (sameName) {
-                return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
-                        "Document with same name and descriptors already exists. Do you want to rewrite it?", documentID, MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
-                        "Document with same descriptors already exists. Do you want to rewrite it?", documentID, MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
-            }
+        if (sameName) {
+            return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
+                    "Document with same name already exists. Do you want to rewrite it?", documentID, MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
         }
-        document = checkIfDocumentContentExists(user.getCompany().getId(), file);
+        if (numberOfDefaultDescripotrs == numberOfExistingDescripotrs) {
+            return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION,
+                    "Document with same descriptors already exists. Do you want to rewrite it?", documentID, MessageDto.MESSAGE_ACTION_EDIT), HttpStatus.OK);
+        }
+        document = checkIfDocumentContentExists(user.getCompany().getId(), file, 1, 1);
+        System.out.println("@@@@@@ documents content " + document);
+
         if (document != null) {
             return new ResponseEntity<>(new MessageDto(MessageDto.MESSAGE_TYPE_QUESTION, "Document: " + document.getFileName()
                     + " with same content already exists. Do you want to save it anyway?", MessageDto.MESSAGE_ACTION_ADD), HttpStatus.OK);
@@ -130,24 +130,22 @@ public class RestApiDocumentController {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    private List<Document> findByName(String fileName) {
-        List<Document> documents = documentService.findByFileName(fileName);
+    private List<DocumentDto> findByName(long companyID, String fileName, int limit, int page) throws IOException {
+        List<DocumentDto> documents = elasticSearchService.findDocumentsForCompanyByFileName(companyID, fileName, limit, page);
         return documents;
     }
 
-    private Document checkIfDocumentContentExists(Long companyID, MultipartFile file) throws IOException, TikaException {
-//        List<Document> documents = documentService.findAll();
-//        for (Document document : documents) {
-//            if (document.getCompanyID() == companyID
-//                    && tika.parseToString(file.getInputStream()).equals(tika.parseToString(new ByteArrayInputStream(document.getFileContent())))) {
-//                return document;
-//            }
-//        }
+    private DocumentDto checkIfDocumentContentExists(Long companyID, MultipartFile file, int limit, int page) throws IOException, TikaException {
+        String parsedContent = tika.parseToString(file.getInputStream());
+        List<DocumentDto> documents = elasticSearchService.findDocumentsForCompanyByContent(companyID, parsedContent, limit, page);
+        if (!documents.isEmpty()) {
+            return documents.get(0);
+        }
         return null;
     }
 
-    private Document findByDescriptors(long companyID, String descriptorKey, long docType, String value, int limit, int page) throws IOException {
-        List<Document> documents = elasticSearchService.findDocumentsForCompany(companyID, descriptorKey, docType, value, limit, page);
+    private DocumentDto findByDescriptors(long companyID, String descriptorKey, long docType, String value, int limit, int page) throws IOException {
+        List<DocumentDto> documents = elasticSearchService.findDocumentsForCompanyByDescriptors(companyID, descriptorKey, docType, value, limit, page);
         if (!documents.isEmpty()) {
             return documents.get(0);
         }

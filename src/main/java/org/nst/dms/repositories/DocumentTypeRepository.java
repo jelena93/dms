@@ -8,6 +8,7 @@ package org.nst.dms.repositories;
 import java.util.List;
 import org.nst.dms.domain.DocumentType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,5 +18,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DocumentTypeRepository extends JpaRepository<DocumentType, Long> {
 
-    List<DocumentType> findByIdIn(List<Long> ids);
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM document_type WHERE document_type_id = ?1")
+    List<DocumentType> findById(List<Long> ids);
 }

@@ -34,7 +34,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     }
     @Override
     public List<DocumentType> findByIdIn(List<Long> ids) {
-        return documentTypeRepository.findByIdIn(ids);
+        return documentTypeRepository.findById(ids);
     }
 
 }

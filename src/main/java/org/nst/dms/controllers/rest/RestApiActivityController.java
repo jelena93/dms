@@ -5,6 +5,8 @@
  */
 package org.nst.dms.controllers.rest;
 
+import java.util.Arrays;
+import javax.servlet.http.HttpServletRequest;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.dto.MessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.nst.dms.services.ActivityService;
+import org.nst.dms.services.DocumentTypeService;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
@@ -31,18 +34,24 @@ public class RestApiActivityController {
 
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private DocumentTypeService documentTypeService;
 
     @RequestMapping(path = "/activity/{id}", method = RequestMethod.GET)
     public ResponseEntity<Activity> showActivity(@PathVariable("id") long id) throws Exception {
         Activity activity = activityService.find(id);
-        if (activity == null) throw new Exception("There is no activity with id " + id); 
+        if (activity == null) {
+            throw new Exception("There is no activity with id " + id);
+        }
         return new ResponseEntity<>(activity, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/edit", method = RequestMethod.POST)
-    public ResponseEntity<String> editActivity(Long id, String name) {
+    public ResponseEntity<String> editActivity(Long id, String name, Long[] inputActivityDocumentTypes, Long[] outputActivityDocumentTypes) {
         Activity activity = activityService.find(id);
         activity.setName(name);
+        activity.setInputListDocumentTypes(documentTypeService.findByIdIn(Arrays.asList(inputActivityDocumentTypes)));
+        activity.setOutputListDocumentTypes(documentTypeService.findByIdIn(Arrays.asList(outputActivityDocumentTypes)));
         activityService.save(activity);
         return new ResponseEntity<>("Activity successfully edited", HttpStatus.OK);
     }

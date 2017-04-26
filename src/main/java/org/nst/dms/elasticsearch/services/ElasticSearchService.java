@@ -9,7 +9,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.nst.dms.domain.Document;
+import org.nst.dms.dto.DocumentDto;
 import org.nst.dms.elasticsearch.indexing.ElasticClient;
 import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,6 @@ public class ElasticSearchService {
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("content"))
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.descriptorKey"))
                     .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.value"))
-                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.fileContent"))
                     .minimumNumberShouldMatch(1);
         }
         SearchResponse searchResponse = elasticClient.getClient()
@@ -43,14 +42,13 @@ public class ElasticSearchService {
         return searchResponse;
     }
 
-    public List<Document> findDocumentsForCompany(long companyID, String descriptorKey, long docType, String value, int limit, int page) throws IOException {
+    public List<DocumentDto> findDocumentsForCompanyByDescriptors(long companyID, String descriptorKey, long docType, String value, int limit, int page) throws IOException {
         int offset = (page - 1) * limit;
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery.must(QueryBuilders.termQuery("companyID", companyID)).
                 must(QueryBuilders.termQuery("descriptors.documentType", docType))
                 .must(QueryBuilders.matchQuery("descriptors.descriptorKey", descriptorKey))
-                .must(QueryBuilders.matchQuery("descriptors.value", value))
-                .must(QueryBuilders.matchQuery("content", value));
+                .must(QueryBuilders.matchQuery("descriptors.value", value));
 
         SearchResponse searchResponse = elasticClient.getClient()
                 .prepareSearch(ElasticSearchUtil.DOCUMENT_INDEX)
@@ -59,10 +57,52 @@ public class ElasticSearchService {
                 .setFrom(offset)
                 .setSize(limit)
                 .execute().actionGet();
-        List<Document> documents = new ArrayList<>();
+        List<DocumentDto> documents = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         for (SearchHit hit : searchResponse.getHits()) {
-            documents.add(mapper.readValue(hit.getSourceAsString(), Document.class));
+            documents.add(mapper.readValue(hit.getSourceAsString(), DocumentDto.class));
+        }
+        return documents;
+    }
+
+    public List<DocumentDto> findDocumentsForCompanyByFileName(long companyID, String fileName, int limit, int page) throws IOException {
+        int offset = (page - 1) * limit;
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        boolQuery.must(QueryBuilders.termQuery("companyID", companyID)).
+                must(QueryBuilders.termQuery("fileName", fileName));
+
+        SearchResponse searchResponse = elasticClient.getClient()
+                .prepareSearch(ElasticSearchUtil.DOCUMENT_INDEX)
+                .setTypes(ElasticSearchUtil.DOCUMENT_TYPE)
+                .setQuery(boolQuery)
+                .setFrom(offset)
+                .setSize(limit)
+                .execute().actionGet();
+        List<DocumentDto> documents = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        for (SearchHit hit : searchResponse.getHits()) {
+            documents.add(mapper.readValue(hit.getSourceAsString(), DocumentDto.class));
+        }
+        return documents;
+    }
+
+    public List<DocumentDto> findDocumentsForCompanyByContent(long companyID, String content, int limit, int page) throws IOException {
+        int offset = (page - 1) * limit;
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        boolQuery.must(QueryBuilders.termQuery("companyID", companyID)).
+                must(QueryBuilders.matchQuery("content", content));
+
+        SearchResponse searchResponse = elasticClient.getClient()
+                .prepareSearch(ElasticSearchUtil.DOCUMENT_INDEX)
+                .setTypes(ElasticSearchUtil.DOCUMENT_TYPE)
+                .setQuery(boolQuery)
+                .setFrom(offset)
+                .setSize(limit)
+                .execute().actionGet();
+        List<DocumentDto> documents = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        for (SearchHit hit : searchResponse.getHits()) {
+            documents.add(mapper.readValue(hit.getSourceAsString(), DocumentDto.class));
         }
         return documents;
     }

@@ -93,6 +93,9 @@ function checkData() {
         if (!canEdit) {
             $('#name').prop("disabled", false);
             $('#primitive').prop("disabled", false);
+            $("#input_document_types").prop("disabled", false);
+            $("#output_document_types").prop("disabled", false);
+            $("#primitive").prop("disabled", true);
             canEdit = true;
             $("#btn-edit").text("Save");
         } else {
@@ -106,11 +109,14 @@ function checkData() {
             var url = "";
             if (selectedNode.activity) {
                 url = action_url_edit_activity_api;
+                var selected = [];
+                $('#input_document_types :selected').each(function () {
+                    selected[$(this).val()] = $(this).val();
+                });
             } else {
                 url = action_url_edit_process_api;
                 params.primitive = $("#primitive").prop('checked');
             }
-            console.log("Params: " + params.id + " " + params.name + " " + params.primitive);
             if (!isSure && !selectedNode.activity && !selectedNode.primitive && params.primitive) {
                 showPopUp("Setting process to primitive will delete all child nodes of this process, are you sure?");
             } else if (!isSure && !selectedNode.activity && selectedNode.primitive && !params.primitive) {
@@ -122,6 +128,7 @@ function checkData() {
         }
     } else if (mode === modeAdd) {
         $("#isActivity").val(selectedNode !== null ? selectedNode.primitive : false);
+        $("#parent").val(selectedNode.id);
         $("#register_form").submit();
     }
 }
@@ -143,10 +150,13 @@ function closeModal() {
     $('#modal').modal('hide');
 }
 function edit(url, params) {
+    console.log(params);
+    console.log(JSON.stringify(params));
+    console.log($("#register_form").serialize());
     $.ajax({
         type: "POST",
         url: url,
-        data: params,
+        data: $("#register_form").serialize(),
         beforeSend: function (request) {
             request.setRequestHeader(header, token);
         },
@@ -191,6 +201,8 @@ function reset(data) {
 }
 function disableForm() {
     $("#name").prop("disabled", true);
+    $("#input_document_types").prop("disabled", true);
+    $("#output_document_types").prop("disabled", true);
     $("#primitive").prop("disabled", true);
     $("#btn-edit").text("Edit");
     $("#btn-edit").text("Edit");
@@ -209,12 +221,13 @@ function showFormForAdding() {
     $("#name").prop("disabled", false);
     $("#name").val("");
     if (selectedNode !== null && selectedNode.primitive) {
+        $("#input_document_types").prop("disabled", false);
+        $("#output_document_types").prop("disabled", false);
         $("#form-primitive").hide();
         $("#form_output_document_types").show();
         $("#form_input_document_types").show();
         $("#form_input_document_types option:selected").removeAttr("selected");
         $("#form_output_document_types option:selected").removeAttr("selected");
-
     } else {
         $("#form-primitive").show();
         $("#form_output_document_types").hide();
@@ -232,6 +245,3 @@ function hideErrorForName() {
         $("#name").removeClass("error");
     }
 }
-$('#register_form').on('keypress', function (e) {
-    return e.which !== 13;
-});
