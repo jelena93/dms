@@ -57,10 +57,12 @@ function getInfo(url) {
             canEdit = false;
             if (selectedNode !== null && selectedNode.activity) {
                 $("#form-primitive").hide();
+                $("#input_document_types > option").attr("selected", false);
                 for (var i = 0; i < data.inputListDocumentTypes.length; i++) {
                     $("#input_document_types").find("option[value=" + data.inputListDocumentTypes[i].id + "]").
                             prop("selected", "selected");
                 }
+                $("#output_document_types > option").attr("selected", false);
                 for (var i = 0; i < data.outputListDocumentTypes.length; i++) {
                     $("#output_document_types").find("option[value=" + data.outputListDocumentTypes[i].id + "]").
                             prop("selected", "selected");
