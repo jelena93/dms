@@ -105,8 +105,10 @@ public class Activity implements Serializable{
         }
         return true;
     }
+
     @Override
     public String toString() {
-        return name;
+        return "Activity{" + "id=" + id + ", name=" + name + ", inputList=" + inputList;
     }
+  
 }

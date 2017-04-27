@@ -5,6 +5,7 @@
  */
 package org.nst.dms.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,7 +70,8 @@ public class Descriptor implements Serializable {
 
     @Column(name = "STRING_VALUE")
     private String stringValue;
-
+    @Transient
+    @JsonInclude
     private final String DATE_FORMAT = "dd.MM.yyyy";
 
     public Descriptor() {

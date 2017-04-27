@@ -40,6 +40,7 @@ function search(query, page) {
                         '<span class="icon_folder-open"></span> View file</a>' +
                         '<h3 class="list-group-item-heading">' + documents[i].fileName + '</h3>';
                 for (var j = 0; j < documents[i].descriptors.length; j++) {
+                    console.log(documents[i].fileName)
                     documentsHtml += '<p class="list-group-item-text">' +
                             '<strong>' + documents[i].descriptors[j].descriptorKey + ': </strong>' +
                             documents[i].descriptors[j].value + '</p>';

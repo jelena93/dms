@@ -25,6 +25,7 @@ import org.nst.dms.services.ProcessService;
 import org.nst.dms.services.UserService;
 import org.nst.dms.elasticsearch.indexing.DocumentIndexer;
 import org.nst.dms.elasticsearch.indexing.ElasticClient;
+import org.nst.dms.services.DescriptorTypeService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,6 +39,8 @@ public class InitializingBeanImpl implements InitializingBean {
     UserService userService;
     @Autowired
     CompanyService companyService;
+    @Autowired
+    DescriptorTypeService descriptorTypeService;
     @Autowired
     DocumentTypeService documentTypeService;
     @Autowired
@@ -57,15 +60,22 @@ public class InitializingBeanImpl implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         if (insertValuesInDB) {
             // zadata kompanija
+            DescriptorType descriptorTypeInteger = new DescriptorType(Integer.class);
+            DescriptorType descriptorTypeDouble = new DescriptorType(Double.class);
+            DescriptorType descriptorTypeDate = new DescriptorType(Date.class);
+
+            descriptorTypeInteger = descriptorTypeService.save(descriptorTypeInteger);
+            descriptorTypeDouble = descriptorTypeService.save(descriptorTypeDouble);
+            descriptorTypeDate = descriptorTypeService.save(descriptorTypeDate);
             Company company = new Company("Silab d.o.o", "011111111", "01111111", "Vozdovac, Beograd");
             companyService.save(company);
 
             Process test = new Process("test", null, true);
             Activity testAct = new Activity("Test act");
-            DocumentType documentType = new DocumentType("test desc");
+            DocumentType documentType = new DocumentType("test doc type");
             documentType = documentTypeService.save(documentType);
-            Descriptor descriptor = new Descriptor("Broj test", documentType.getId(), new DescriptorType(Integer.class));
-            documentType.getDescriptors().add(descriptor);
+            documentType.getDescriptors().add(new Descriptor("Broj test", documentType.getId(), descriptorTypeInteger));
+            documentType.getDescriptors().add(new Descriptor("Datum test", documentType.getId(), descriptorTypeDate));
             documentType = documentTypeService.save(documentType);
             testAct.getInputListDocumentTypes().add(documentType);
             testAct.getOutputListDocumentTypes().add(documentType);
@@ -164,19 +174,19 @@ public class InitializingBeanImpl implements InitializingBean {
             documentType = new DocumentType("Nalog za placanje");
             documentType = documentTypeService.save(documentType);
 
-            descriptor = new Descriptor("Broj naloga", documentType.getId(), new DescriptorType(Integer.class));
+            Descriptor descriptor = new Descriptor("Broj naloga", documentType.getId(), descriptorTypeInteger);
             documentType.getDescriptors().add(descriptor);
-            descriptor = new Descriptor("Suma", documentType.getId(), new DescriptorType(Double.class));
+            descriptor = new Descriptor("Suma", documentType.getId(), descriptorTypeDouble);
             documentType.getDescriptors().add(descriptor);
-            descriptor = new Descriptor("Datum", documentType.getId(), new DescriptorType(Date.class));
+            descriptor = new Descriptor("Datum", documentType.getId(), descriptorTypeDate);
             documentType.getDescriptors().add(descriptor);
             documentTypeService.save(documentType);
 
             documentType = new DocumentType("Otpremnica dobavljaca");
             documentType = documentTypeService.save(documentType);
-            descriptor = new Descriptor("Broj otpremnice", documentType.getId(), new DescriptorType(Integer.class));
+            descriptor = new Descriptor("Broj otpremnice", documentType.getId(), descriptorTypeInteger);
             documentType.getDescriptors().add(descriptor);
-            descriptor = new Descriptor("Datum", documentType.getId(), new DescriptorType(Date.class));
+            descriptor = new Descriptor("Datum", documentType.getId(), descriptorTypeDate);
             documentType.getDescriptors().add(descriptor);
             documentTypeService.save(documentType);
 

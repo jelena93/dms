@@ -26,10 +26,10 @@ public class ElasticSearchService {
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery.must(QueryBuilders.termQuery("companyID", companyID));
         if (query != null && !query.isEmpty()) {
-            boolQuery.should(QueryBuilders.queryStringQuery("*" + query + "*").field("fileName"))
-                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("content"))
-                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.descriptorKey"))
-                    .should(QueryBuilders.queryStringQuery("*" + query + "*").field("descriptors.value"))
+            boolQuery.should(QueryBuilders.queryStringQuery(query + "*").field("fileName"))
+                    .should(QueryBuilders.queryStringQuery(query + "*").field("content"))
+                    .should(QueryBuilders.queryStringQuery(query + "*").field("descriptors.descriptorKey"))
+                    .should(QueryBuilders.queryStringQuery(query + "*").field("descriptors.value"))
                     .minimumNumberShouldMatch(1);
         }
         SearchResponse searchResponse = elasticClient.getClient()
@@ -86,25 +86,25 @@ public class ElasticSearchService {
         return documents;
     }
 
-    public List<DocumentDto> findDocumentsForCompanyByContent(long companyID, String content, int limit, int page) throws IOException {
-        int offset = (page - 1) * limit;
-        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-        boolQuery.must(QueryBuilders.termQuery("companyID", companyID)).
-                must(QueryBuilders.matchQuery("content", content));
-
-        SearchResponse searchResponse = elasticClient.getClient()
-                .prepareSearch(ElasticSearchUtil.DOCUMENT_INDEX)
-                .setTypes(ElasticSearchUtil.DOCUMENT_TYPE)
-                .setQuery(boolQuery)
-                .setFrom(offset)
-                .setSize(limit)
-                .execute().actionGet();
-        List<DocumentDto> documents = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-        for (SearchHit hit : searchResponse.getHits()) {
-            documents.add(mapper.readValue(hit.getSourceAsString(), DocumentDto.class));
-        }
-        return documents;
-    }
+//    public List<DocumentDto> findDocumentsForCompanyByContent(long companyID, String content, int limit, int page) throws IOException {
+//        int offset = (page - 1) * limit;
+//        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+//        boolQuery.must(QueryBuilders.termQuery("companyID", companyID)).
+//                must(QueryBuilders.matchQuery("content", content));
+//
+//        SearchResponse searchResponse = elasticClient.getClient()
+//                .prepareSearch(ElasticSearchUtil.DOCUMENT_INDEX)
+//                .setTypes(ElasticSearchUtil.DOCUMENT_TYPE)
+//                .setQuery(boolQuery)
+//                .setFrom(offset)
+//                .setSize(limit)
+//                .execute().actionGet();
+//        List<DocumentDto> documents = new ArrayList<>();
+//        ObjectMapper mapper = new ObjectMapper();
+//        for (SearchHit hit : searchResponse.getHits()) {
+//            documents.add(mapper.readValue(hit.getSourceAsString(), DocumentDto.class));
+//        }
+//        return documents;
+//    }
 
 }

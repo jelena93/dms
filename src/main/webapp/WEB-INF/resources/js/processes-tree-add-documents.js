@@ -116,8 +116,13 @@ function displayActivityInfo(activity) {
                 '<div id="colapse' + activity.inputList[i].id + '" class="panel-collapse collapse">' +
                 '<div class="panel-body">';
         for (var j = 0; j < activity.inputList[i].descriptors.length; j++) {
-            inputList += '<p><strong>' + activity.inputList[i].descriptors[j].descriptorKey + '</strong>: ' +
-                    activity.inputList[i].descriptors[j].value + '</p>';
+            if (activity.inputList[i].descriptors[j].descriptorType.paramClass === "java.util.Date") {
+                inputList += '<p><strong>' + activity.inputList[i].descriptors[j].descriptorKey + '</strong>: ' +
+                        getFormattedDate(activity.inputList[i].descriptors[j].value) + '</p>';
+            } else {
+                inputList += '<p><strong>' + activity.inputList[i].descriptors[j].descriptorKey + '</strong>: ' +
+                        activity.inputList[i].descriptors[j].value + '</p>';
+            }
         }
         inputList += "</div><div class='panel-footer clearfix'>";
         inputList += "<a class='btn btn-default' target='_blank' href='" + action_url_display_document + "/" + activity.inputList[i].id
@@ -161,13 +166,13 @@ function showDescriptors(descriptors) {
     if (descriptors !== null) {
         for (var i = 0; i < descriptors.length; i++) {
             if (descriptors[i].value === null) {
-                if (descriptors[i].descriptorType.paramClass.name === 'java.util.Date') {
+                if (descriptors[i].descriptorType.paramClass === 'java.util.Date') {
                     html = '<div class="form-group">' +
                             '<label for="' + descriptors[i].id + '" class="control-label col-lg-4">' + descriptors[i].descriptorKey
                             + '<span class="required">*</span></label><div class="col-lg-8">' +
                             '<input type="text" class="form-control descriptors" name="' + descriptors[i].descriptorKey
                             + '" id="' + descriptors[i].id + '" placeholder="Enter ' + descriptors[i].descriptorKey
-                            + ' in format ${desc.DATE_FORMAT}" required></div></div>';
+                            + ' in format ' + descriptors[i].date_FORMAT + '" required></div></div>';
                 } else {
                     html = '<div class="form-group">' +
                             '<label for="' + descriptors[i].id + '" class="control-label col-lg-4">' + descriptors[i].descriptorKey +
@@ -295,4 +300,11 @@ function closeModal() {
     isSure = false;
     $("#existingDocumentID").val(null);
     $('#modal').modal('hide');
+}
+function getFormattedDate(dateString) {
+    var date = new Date(dateString);
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    return day + "." + month + "." + year;
 }

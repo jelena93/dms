@@ -95,8 +95,8 @@ function checkData() {
         if (!canEdit) {
             $('#name').prop("disabled", false);
             $('#primitive').prop("disabled", false);
-            $("#input_document_types").prop("disabled", false);
-            $("#output_document_types").prop("disabled", false);
+            $("#input_document_types").prop("disabled", true);
+            $("#output_document_types").prop("disabled", true);
             $("#primitive").prop("disabled", true);
             canEdit = true;
             $("#btn-edit").text("Save");
@@ -152,9 +152,6 @@ function closeModal() {
     $('#modal').modal('hide');
 }
 function edit(url, params) {
-    console.log(params);
-    console.log(JSON.stringify(params));
-    console.log($("#register_form").serialize());
     $.ajax({
         type: "POST",
         url: url,
