@@ -10,6 +10,7 @@ import java.util.List;
 import org.nst.dms.domain.Company;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.User;
+import org.nst.dms.elasticsearch.indexing.CompanyIndexer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,14 +34,17 @@ public class CompanyController {
     private CompanyService companyService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CompanyIndexer companyIndexer;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     public String addCompany() { return "add_company"; }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    public ModelAndView save(String name, String pib, String identificationNumber, String headquarters) {
+    public ModelAndView save(String name, String pib, String identificationNumber, String headquarters) throws Exception {
         Company c = new Company(name, pib, identificationNumber, headquarters);
         companyService.save(c);
+        saveCompanyToElasticSearch(c);
         return new ModelAndView("add_company", "message", new MessageDto(MessageDto.MESSAGE_TYPE_SUCCESS, "Company successfully added"));
     }
 
@@ -59,6 +63,10 @@ public class CompanyController {
         mv.addObject("company", company);
         mv.addObject("users", usersOfCompany);
         return mv;
+    }
+    
+    private void saveCompanyToElasticSearch(Company company) throws Exception {
+        companyIndexer.indexCompany(company);
     }
     
     @InitBinder

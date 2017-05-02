@@ -9,6 +9,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.nst.dms.dto.CompanyDto;
 import org.nst.dms.dto.DocumentDto;
 import org.nst.dms.elasticsearch.indexing.ElasticClient;
 import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
@@ -107,4 +108,26 @@ public class ElasticSearchService {
 //        return documents;
 //    }
 
+    public List<CompanyDto> searchCompanies(String name, String pib, String identif, String headquarters, int limit, int page) throws IOException {
+        int offset = (page - 1) * limit;
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        boolQuery.should(QueryBuilders.termQuery("name", name)).
+                should(QueryBuilders.termQuery("pib", pib)).
+                should(QueryBuilders.termQuery("identificationNumber", identif)).
+                should(QueryBuilders.termQuery("headquarters", headquarters));
+
+        SearchResponse searchResponse = elasticClient.getClient()
+                .prepareSearch(ElasticSearchUtil.COMPANY_INDEX)
+                .setTypes(ElasticSearchUtil.COMPANY_TYPE)
+                .setQuery(boolQuery)
+                .setFrom(offset)
+                .setSize(limit)
+                .execute().actionGet();
+        List<CompanyDto> companies = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        for (SearchHit hit : searchResponse.getHits()) {
+            companies.add(mapper.readValue(hit.getSourceAsString(), CompanyDto.class));
+        }
+        return companies;
+    }
 }

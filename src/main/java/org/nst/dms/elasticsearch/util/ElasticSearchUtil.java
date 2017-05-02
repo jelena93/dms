@@ -16,5 +16,7 @@ public class ElasticSearchUtil {
     public static final int PORT = 9300;
     public static final String DOCUMENT_INDEX = "document_index";
     public static final String DOCUMENT_TYPE = "document";
+    public static final String COMPANY_INDEX = "company_index";
+    public static final String COMPANY_TYPE = "company";
     public static final int QUERY_SIZE_LIMIT = 1;
 }

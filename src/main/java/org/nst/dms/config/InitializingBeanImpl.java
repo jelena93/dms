@@ -8,16 +8,15 @@ package org.nst.dms.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import org.nst.dms.domain.Activity;
 import org.nst.dms.domain.Company;
 import org.nst.dms.domain.Descriptor;
 import org.nst.dms.domain.DescriptorType;
-import org.nst.dms.domain.Document;
 import org.nst.dms.domain.DocumentType;
 import org.nst.dms.domain.Role;
 import org.nst.dms.domain.User;
 import org.nst.dms.domain.Process;
+import org.nst.dms.elasticsearch.indexing.CompanyIndexer;
 import org.nst.dms.services.CompanyService;
 import org.nst.dms.services.DocumentService;
 import org.nst.dms.services.DocumentTypeService;
@@ -55,6 +54,8 @@ public class InitializingBeanImpl implements InitializingBean {
     ElasticClient elasticClient;
     @Autowired
     DocumentIndexer documentIndexer;
+    @Autowired
+    CompanyIndexer companyIndexer;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -207,6 +208,8 @@ public class InitializingBeanImpl implements InitializingBean {
         if (createAndAddInIndex) {
             documentIndexer.deleteDocumentIndexes();
             documentIndexer.createDocumentIndexIfNotExists();
+            companyIndexer.deleteCompanyIndexes();
+            companyIndexer.createCompanyIndexIfNotExists();
         }
     }
 }

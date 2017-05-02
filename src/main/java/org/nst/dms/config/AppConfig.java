@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import org.apache.tika.Tika;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.nst.dms.config.security.SecurityConfig;
+import org.nst.dms.elasticsearch.indexing.CompanyIndexer;
 import org.nst.dms.elasticsearch.indexing.DocumentIndexer;
 import org.nst.dms.elasticsearch.indexing.ElasticClient;
 import org.springframework.context.annotation.Bean;
@@ -69,6 +70,11 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Bean
     public DocumentIndexer documentIndexer() {
         return new DocumentIndexer();
+    }
+    
+    @Bean
+    public CompanyIndexer companyIndexer() {
+        return new CompanyIndexer();
     }
 
     @Bean
