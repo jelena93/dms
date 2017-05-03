@@ -68,6 +68,7 @@
         <put-attribute name="action_url_search_companies" value="companies/search" cascade="true" />  
         <put-attribute name="action_url_search_companies_api" value="api/companies/search" cascade="true" />  
         <put-attribute name="action_url_add_company" value="companies/add" cascade="true" />  
+        <put-attribute name="action_url_edit_company_api" value="companies/edit" cascade="true" />  
         <put-attribute name="action_url_add_user" value="users/add" cascade="true" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
     </definition>  
@@ -105,7 +106,6 @@
     <definition name="add_user" extends="admin_home">  
         <put-attribute name="title" value="Add user" />  
         <put-attribute name="search_companies" value="/WEB-INF/views/pages/search_companies_set_user.jsp" cascade="true"/>  
-        <put-attribute name="action_url_search_companies_api" value="api/companies/search" cascade="true" />  
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_user.jsp" />  
     </definition>  
   
@@ -137,9 +137,9 @@
         <put-attribute name="site_content" value="/WEB-INF/views/pages/add_document.jsp" />  
     </definition>  
     
-    <definition name="company_info" extends="admin_home">  
+    <definition name="company" extends="admin_home">  
         <put-attribute name="title" value="Company" />  
-        <put-attribute name="site_content" value="/WEB-INF/views/pages/company_info.jsp" />  
+        <put-attribute name="site_content" value="/WEB-INF/views/pages/company.jsp" />  
     </definition>  
     
     <definition name="search_documents" extends="uploader_home">  

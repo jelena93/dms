@@ -5,12 +5,20 @@
  */
 package org.nst.dms.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayList;
 import org.nst.dms.dto.MessageDto;
 import java.util.List;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHit;
 import org.nst.dms.domain.Company;
 import org.nst.dms.controllers.exceptions.CustomException;
 import org.nst.dms.domain.User;
+import org.nst.dms.dto.CompanyDto;
 import org.nst.dms.elasticsearch.indexing.CompanyIndexer;
+import org.nst.dms.elasticsearch.services.ElasticSearchService;
+import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,15 +38,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 @RequestMapping("/companies")
 public class CompanyController {
+
     @Autowired
     private CompanyService companyService;
     @Autowired
     private UserService userService;
     @Autowired
     private CompanyIndexer companyIndexer;
+    @Autowired
+    private ElasticSearchService elasticSearchService;
 
     @RequestMapping(path = "/add", method = RequestMethod.GET)
-    public String addCompany() { return "add_company"; }
+    public String addCompany() {
+        return "add_company";
+    }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ModelAndView save(String name, String pib, String identificationNumber, String headquarters) throws Exception {
@@ -49,26 +62,36 @@ public class CompanyController {
     }
 
     @RequestMapping(path = "/search", method = RequestMethod.GET)
-    public ModelAndView findAll() {
-        List<Company> companies = companyService.findAll();
-        return new ModelAndView("search_companies", "companies", companies);
+    public ModelAndView findAll() throws IOException {
+        SearchResponse searchResponse = elasticSearchService.searchCompanies("", ElasticSearchUtil.QUERY_SIZE_LIMIT, 1);
+        List< CompanyDto> companies = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        for (SearchHit hit : searchResponse.getHits()) {
+            companies.add(mapper.readValue(hit.getSourceAsString(), CompanyDto.class));
+        }
+        ModelAndView mv = new ModelAndView("search_companies");
+        mv.addObject("companies", companies);
+        mv.addObject("total", searchResponse.getHits().getTotalHits());
+        return mv;
     }
 
     @RequestMapping(path = "/company/{id}", method = RequestMethod.GET)
     public ModelAndView showCompany(@PathVariable("id") long id) {
         Company company = companyService.findOne(id);
-        if (company == null) throw new CustomException("There is no company with id " + id, "404");
+        if (company == null) {
+            throw new CustomException("There is no company with id " + id, "404");
+        }
         List<User> usersOfCompany = userService.findByCompanyId(id);
-        ModelAndView mv = new ModelAndView("company_info");
+        ModelAndView mv = new ModelAndView("company");
         mv.addObject("company", company);
         mv.addObject("users", usersOfCompany);
         return mv;
     }
-    
+
     private void saveCompanyToElasticSearch(Company company) throws Exception {
         companyIndexer.indexCompany(company);
     }
-    
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));

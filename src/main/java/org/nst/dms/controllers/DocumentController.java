@@ -122,7 +122,7 @@ public class DocumentController {
         document.setDescriptors(newDescriptors);
         if (existingDocumentID != null) {
             document = documentService.save(document);
-            documentIndexer.updateDocument(user.getCompany().getId(), document);
+            documentIndexer.insertOrUpdateDocument(user.getCompany().getId(), document);
         }
         if (inputOutput.equals("input") && !activity.getInputList().contains(document)) {
             activity.getInputList().add(document);

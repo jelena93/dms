@@ -108,7 +108,7 @@ public class RestApiDocumentController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> search(Authentication authentication, String query, int page) throws IOException, TikaException, TikaException {
+    public ResponseEntity<Map<String, Object>> search(Authentication authentication, String query, int page) throws IOException {
         UserDto userDto = (UserDto) authentication.getPrincipal();
         User user = userService.findOne(userDto.getUsername());
         Map<String, Object> map = new HashMap<>();

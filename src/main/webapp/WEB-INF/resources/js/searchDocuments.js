@@ -11,7 +11,6 @@ function pagination(currentPage) {
             console.log("page " + page);
             var query = $("#input-search-docs").val();
             search(query, page);
-            $('#page-content').text('Page ' + page);
         }
     });
 }
@@ -40,7 +39,6 @@ function search(query, page) {
                         '<span class="icon_folder-open"></span> View file</a>' +
                         '<h3 class="list-group-item-heading">' + documents[i].fileName + '</h3>';
                 for (var j = 0; j < documents[i].descriptors.length; j++) {
-                    console.log(documents[i].fileName)
                     documentsHtml += '<p class="list-group-item-text">' +
                             '<strong>' + documents[i].descriptors[j].descriptorKey + ': </strong>' +
                             documents[i].descriptors[j].value + '</p>';
@@ -59,7 +57,6 @@ function search(query, page) {
             }
         }
     });
-
 }
 function showMessage(data, messageType) {
     $("#message-box").removeClass("alert-success");

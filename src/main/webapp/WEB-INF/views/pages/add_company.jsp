@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>            
 <div class="row">
     <div class="col-lg-12">
-        ${poruka}
         <section class="panel">
             <header class="panel-heading"> ${title}</header>
             <div class="panel-body">

@@ -3,10 +3,10 @@ package org.nst.dms.elasticsearch.indexing;
 import java.io.ByteArrayInputStream;
 import org.nst.dms.elasticsearch.util.ElasticSearchUtil;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tika.Tika;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateRequest;
 import static org.elasticsearch.client.Requests.createIndexRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -20,13 +20,6 @@ public class DocumentIndexer {
     private ElasticClient elasticClient;
     @Autowired
     private Tika tika;
-    private final Logger logger = LogManager.getLogger(ElasticClient.class);
-
-    public void indexDocuments(long companyID, List<Document> documents) throws Exception {
-        for (Document document : documents) {
-            indexDocument(companyID, document);
-        }
-    }
 
     public void indexDocument(long companyID, Document document) throws Exception {
         elasticClient.getClient().prepareIndex(
@@ -34,10 +27,18 @@ public class DocumentIndexer {
                 .setSource(buildDocument(companyID, document)).get();
     }
 
-    public void updateDocument(long companyID, Document document) throws Exception {
-        elasticClient.getClient().prepareUpdate(
-                ElasticSearchUtil.DOCUMENT_INDEX, ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId()))
-                .setDoc(buildDocument(companyID, document)).get();
+    public void insertOrUpdateDocuments(long companyID, List<Document> documents) throws Exception {
+        for (Document document : documents) {
+            insertOrUpdateDocument(companyID, document);
+        }
+    }
+
+    public void insertOrUpdateDocument(long companyID, Document document) throws Exception {
+        IndexRequest indexRequest = new IndexRequest(ElasticSearchUtil.DOCUMENT_INDEX, ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId()))
+                .source(buildDocument(companyID, document));
+        UpdateRequest updateRequest = new UpdateRequest(ElasticSearchUtil.DOCUMENT_INDEX, ElasticSearchUtil.DOCUMENT_TYPE, String.valueOf(document.getId()))
+                .doc(buildDocument(companyID, document)).upsert(indexRequest);
+        elasticClient.getClient().update(updateRequest).get();
     }
 
     public void createDocumentIndexIfNotExists() {

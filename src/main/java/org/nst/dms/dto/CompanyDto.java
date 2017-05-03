@@ -42,25 +42,25 @@ public class CompanyDto {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.id);
-        hash = 53 * hash + Objects.hashCode(this.name);
-        hash = 53 * hash + Objects.hashCode(this.pib);
-        hash = 53 * hash + Objects.hashCode(this.identificationNumber);
-        hash = 53 * hash + Objects.hashCode(this.headquarters);
+        hash = 23 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         final CompanyDto other = (CompanyDto) obj;
-        if (!Objects.equals(this.name, other.name)) return false;
-        if (!Objects.equals(this.pib, other.pib)) return false;
-        if (!Objects.equals(this.identificationNumber, other.identificationNumber)) return false;
-        if (!Objects.equals(this.headquarters, other.headquarters)) return false;
-        if (!Objects.equals(this.id, other.id)) return false;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
         return true;
     }
 
