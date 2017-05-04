@@ -24,8 +24,8 @@ Add the following code to tomcat server.xml in GlobalNamingResources:
             url="jdbc:mysql://localhost:3306/dms?allowMultiQueries=true"
         />
 ```
-Parameters for mySql database connection: 
-name: dms
-port:3306
-username: admin
-password: admin
+Parameters for mySql database connection:  
+name: dms  
+port:3306  
+username: admin  
+password: admin  
