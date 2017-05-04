@@ -57,7 +57,7 @@ public class RestApiCompanyController {
         company.setPib(pib);
         company.setIdentificationNumber(identificationNumber);
         company.setHeadquarters(headquarters);
-        companyService.save(company);
+        company = companyService.save(company);
         companyIndexer.updateCompany(company);
         return new ResponseEntity<>("Company successfully edited", HttpStatus.OK);
     }

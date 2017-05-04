@@ -68,7 +68,7 @@
         <put-attribute name="action_url_search_companies" value="companies/search" cascade="true" />  
         <put-attribute name="action_url_search_companies_api" value="api/companies/search" cascade="true" />  
         <put-attribute name="action_url_add_company" value="companies/add" cascade="true" />  
-        <put-attribute name="action_url_edit_company_api" value="companies/edit" cascade="true" />  
+        <put-attribute name="action_url_edit_company_api" value="api/companies/edit" cascade="true" />  
         <put-attribute name="action_url_add_user" value="users/add" cascade="true" />  
         <put-attribute name="left_side_menu" value="/WEB-INF/views/pages/admin_left_side_menu.jsp" />  
     </definition>  
